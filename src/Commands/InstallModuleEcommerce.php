@@ -84,8 +84,41 @@ class InstallModuleEcommerce extends Command
                     'icon' => true,
                     'icon_data' => 'tag',
                     'route' => 'dashboard.module.ecommerce.products.index',
-                    'has_submenu' => false,
-                    'submenu' => null
+                    'has_submenu' => true,
+                    'submenu' => array(
+                        'first' => array(
+                            'name' => 'Overzicht',
+                            'icon' => false,
+                            'icon_data' => 'Ov',
+                            'route' => 'dashboard.module.ecommerce.products.index',
+                            'has_submenu' => false,
+                            'submenu' => null
+                        ),
+                        'second' => array(
+                            'name' => 'Collecties',
+                            'icon' => false,
+                            'icon_data' => 'Co',
+                            'route' => 'dashboard.module.ecommerce.collections.index',
+                            'has_submenu' => false,
+                            'submenu' => null
+                        ),
+                        'third' => array(
+                            'name' => 'Merken',
+                            'icon' => false,
+                            'icon_data' => 'Br',
+                            'route' => 'dashboard.module.ecommerce.brands.index',
+                            'has_submenu' => false,
+                            'submenu' => null
+                        ),
+                        'fourth' => array(
+                            'name' => 'Attributen',
+                            'icon' => false,
+                            'icon_data' => 'At',
+                            'route' => 'dashboard.module.ecommerce.attributes.index',
+                            'has_submenu' => false,
+                            'submenu' => null
+                        )
+                    )
                 ),
                 'fourth' => array(
                     'name' => 'Klanten',
