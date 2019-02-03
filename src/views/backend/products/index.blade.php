@@ -108,21 +108,16 @@
 								@foreach($products as $product)
 								<tr class="product_line" data-id="{{ $product->id }}">
 									<td class="v-align-middle">{{ $product->id }}</td>
-							    	<td class="v-align-middle semi-bold">{{ $product->json['title'] }}</td>
+							    	<td class="v-align-middle semi-bold">{{ $product->json['title'][ChuckSite::getFeaturedLocale()] }}</td>
 							    	<td class="v-align-middle">{{$product->slug}}</td>
 							    	<td class="v-align-middle semi-bold">
 							    		@can('edit forms')
-							    		<a href="{{ route('dashboard.forms.edit', ['slug' => $form->slug]) }}" class="btn btn-primary btn-sm btn-rounded m-r-20">
+							    		<a href="{{ route('dashboard.module.ecommerce.products.edit', ['product' => $product->id]) }}" class="btn btn-primary btn-sm btn-rounded m-r-20">
 							    			<i data-feather="edit-2"></i> edit
 							    		</a>
 							    		@endcan
-							    		@can('show formentries')
-							    		<a href="{{ route('dashboard.forms.entries', ['slug' => $form->slug]) }}" class="btn btn-default btn-sm btn-rounded m-r-20">
-							    			<i data-feather="clipboard"></i> entries
-							    		</a>
-							    		@endcan
 							    		@can('delete forms')
-							    		<a href="#" class="btn btn-danger btn-sm btn-rounded m-r-20 form_delete" data-id="{{ $form->id }}">
+							    		<a href="#" class="btn btn-danger btn-sm btn-rounded m-r-20 form_delete" data-id="{{ $product->id }}">
 							    			<i data-feather="trash"></i> delete
 							    		</a>
 							    		@endcan

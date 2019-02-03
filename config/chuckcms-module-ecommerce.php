@@ -31,14 +31,24 @@ return [
 		'url' => 'collections/',
 		'page' => 'chuckcms-template-antwerp::templates.chuckcms-template-antwerp.default'
 	],
-	/* you can set your own table prefix here */
-	'table_prefix' => 'chck_',
 
-    /* you can set your own table names */
-    'table_name_menus' => 'menus',
+	'products' => [
+		'slug' 	=> 'products',
+		'url' => 'products/',
+		'page' => 'chuckcms-module-ecommerce::frontend.products.detail'
+	],
 
-    'table_name_items' => 'menu_items',
+	'auth' => [
+		'redirect' => [
+			'user' => '/dashboard',
+			'moderator' => '/dashboard',
+			'administrator' => '/dashboard',
+			'super-admin' => '/dashboard',
+			'customer' => '/account/profile',
+		],
 
-    /* you can set your route path*/
-    'route_path' => '/admin/',
+		'template' => [
+			'hintpath' => 'chuckcms-template-london'
+		],
+	],
 ];

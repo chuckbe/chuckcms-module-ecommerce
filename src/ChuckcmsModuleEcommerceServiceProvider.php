@@ -18,6 +18,7 @@ class ChuckcmsModuleEcommerceServiceProvider extends ServiceProvider
         
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
         
+        //php artisan vendor:publish --tag=chuckcms-module-ecommerce-public --force
         $this->publishes([
             __DIR__.'/resources' => public_path('chuckbe/chuckcms-module-ecommerce'),
         ], 'chuckcms-module-ecommerce-public');
@@ -31,6 +32,11 @@ class ChuckcmsModuleEcommerceServiceProvider extends ServiceProvider
                 InstallModuleEcommerce::class,
             ]);
         }
+
+        config([
+            // laravel/laravel
+            'auth.providers.users.model' => \Chuckbe\Chuckcms\Models\User::class
+        ]);
     }
 
     /**
@@ -41,6 +47,13 @@ class ChuckcmsModuleEcommerceServiceProvider extends ServiceProvider
     public function register()
     {   
         $this->loadViewsFrom(__DIR__.'/views', 'chuckcms-module-ecommerce');
+
+        $this->app->register(
+            'Chuckbe\ChuckcmsModuleEcommerce\Providers\ChuckCustomerServiceProvider'
+        );
+
+        $loader = \Illuminate\Foundation\AliasLoader::getInstance();
+        $loader->alias('ChuckCustomer', 'Chuckbe\ChuckcmsModuleEcommerce\Facades\Customer');
 
         $this->mergeConfigFrom(
             __DIR__ . '/../config/chuckcms-module-ecommerce.php', 'chuckcms-module-ecommerce'

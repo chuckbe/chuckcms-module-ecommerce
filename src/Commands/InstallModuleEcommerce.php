@@ -4,6 +4,8 @@ namespace Chuckbe\ChuckcmsModuleEcommerce\Commands;
 
 use Chuckbe\Chuckcms\Chuck\ModuleRepository;
 use Illuminate\Console\Command;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 
 class InstallModuleEcommerce extends Command
 {
@@ -149,6 +151,16 @@ class InstallModuleEcommerce extends Command
             'version' => $version,
             'author' => $author,
             'json' => $json
+        ]);
+
+        // Permissions
+        Permission::firstOrCreate(['name' => 'show account']);
+
+        // create roles and assign created permissions
+        $role = Role::firstOrCreate(['name' => 'customer']);
+        $role->revokePermissionTo(Permission::all());
+        $role->givePermissionTo([
+            'show account',
         ]);
 
         $this->info('.         .');

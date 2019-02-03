@@ -4,23 +4,23 @@ namespace Chuckbe\ChuckcmsModuleEcommerce\Models;
 
 use Eloquent;
 
-use Spatie\Translatable\HasTranslations;
-
-class Product extends Eloquent
+class Customer extends Eloquent
 {
-    use HasTranslations;
 	/**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'slug', 'json'
+        'user_id', 'surname', 'name', 'tel', 'json'
     ];
+
+    public function user()
+    {
+        return $this->belongsTo('Chuckbe\ChuckcmsModuleEcommerce\Models\User');
+    }
 
     protected $casts = [
         'json' => 'array',
     ];
-
-    public $translatable = ['slug', 'json'];
 }

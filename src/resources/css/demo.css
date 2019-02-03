@@ -1,0 +1,100 @@
+html, body {
+    height: 100%;
+}
+.mt-30 {
+    margin-top: 30px;
+}
+.main-heading h2 {
+    color: #222;
+    font-size: 40px;
+    font-weight: 600;
+    text-align: center;
+    margin-top: 40px;
+}
+.primary-color {
+    color: #d21e2b!important;
+}
+.main-heading h3 {
+    color: #222;
+    font-size: 24px;
+    font-weight: 500;
+    line-height: 1.5;
+    text-align: center;
+    margin-top: 20px;
+    opacity: .6;
+}
+.mt-70 {
+    margin-top: 70px;
+}
+.gradient-number {
+    padding: 0;
+}
+.gradient-number h3 {
+    background: linear-gradient(120deg,rgba(210,30,43,.6) 0%,#d21e2b 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 80px;
+    line-height: 1;
+    text-align: center;
+    font-weight: 600;
+    padding-right: 0;
+}
+.welcome-slide .align-container {
+    max-width: 500px;
+    margin: 0 auto;
+}
+.template-link-entry {
+    display: block;
+    position: relative;
+}
+.template-link-entry .background {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+.template-link-entry .preview {
+    position: absolute;
+    width: 92%;
+    height: 64%;
+    left: 4%;
+    top: 4.5%;
+    overflow: hidden;
+}
+.template-link-entry .preview img {
+    position: absolute;
+    width: 100%;
+    left: 0;
+    top: 0;
+    -moz-transition: all 1000ms ease-out;
+    -o-transition: all 1000ms ease-out;
+    -webkit-transition: all 1000ms ease-out;
+    transition: all 1000ms ease-out;
+    -ms-transition: all 1000ms ease-out;
+}
+.align-container .description {
+    text-align: center;
+    top: 100%;
+    margin-top: 40px;
+    font-size: 18px;
+    line-height: 20px;
+    text-transform: uppercase;
+    font-family: 'bold';
+    color: #222;
+    position: relative;
+    padding-bottom: 10px;
+    margin-bottom: 50px;
+    display: inline-block;
+}
+
+
+.template-link-entry:hover .preview img {
+    transform: translateY(-90%);
+    -moz-transform: translateY(-90%);
+    -webkit-transform: translateY(-90%);
+    -ms-transform: translateY(-90%);
+    -moz-transition: all 10000ms linear;
+    -o-transition: all 10000ms linear;
+    -webkit-transition: all 10000ms linear;
+    transition: all 10000ms linear;
+    -ms-transition: all 10000ms linear;
+}

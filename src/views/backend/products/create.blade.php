@@ -250,7 +250,7 @@
   <div class="row">
     <div class="col-lg-12">
       <div class="card card-default">
-        <div class="card-block">
+        <div class="card-block attributes-combinations-block" data-langs="{{ ChuckSite::getSetting('lang') }}">
 
           <div class="row">
             <div class="col-sm-12">
@@ -267,7 +267,7 @@
           </div>
           
           <hr>
-
+          <label for="">Opties</label>
           @foreach($attributes as $attribute)
           <div class="row attribute-select-row" data-attribute="{{ $attribute->id }}" style="display:none;">
             <div class="col-sm-12">
@@ -276,7 +276,7 @@
                 <select class="full-width attribute-multi-select-input" name="attribute[{{ $attribute->id }}][]" data-attribute="{{ $attribute->id }}" data-init-plugin="select2" data-minimum-results-for-search="Infinity" data-placeholder="Selecteer attribuuts" data-allow-clear="true" multiple="multiple" required>
                   <option></option>
                   @foreach($attribute->json['values'] as $attributeKey => $attributeValue)
-                    <option value="{{ $attributeKey }}" data-name="{{ $attribute->json['name'] }} {{ $attributeValue['display_name'][config('app.locale')] }}">{{ $attributeValue['display_name'][config('app.locale')] }}</option>
+                    <option value="{{ $attributeKey }}" data-type="{{ $attribute->json['name'] }}" data-name="{{ $attribute->json['name'] }} {{ $attributeValue['display_name'][config('app.locale')] }}"  data-langs="{{ ChuckSite::getSetting('lang') }}" @foreach(ChuckSite::getSupportedLocales() as $langKey => $langValue) data-name-{{ $langKey }}="{{ $attributeValue['display_name'][$langKey] }}" @endforeach >{{ $attributeValue['display_name'][config('app.locale')] }}</option>
                   @endforeach
                 </select>
               </div>
@@ -285,22 +285,45 @@
           @endforeach
 
           <hr>
-
-          <div class="row combination-row">
+          <label for="">Combinaties</label>
+          <div class="row combination-row" data-combination-key="" style="display:none;d">
             <div class="col-sm-4">
               <div class="form-group form-group-default required">
                 <label>Combinatie Aantal</label>
-                <input type="text" data-v-min="0" data-v-max="999999" data-m-dec="0" data-a-pad=true class="autonumeric form-control" name="combinations[slug][quantity]" value="0">
+                <input type="text" data-v-min="0" data-v-max="999999" data-m-dec="0" data-a-pad=true class="autonumeric form-control combination_quantity_input" name="combinations[slug][quantity]" value="0">
               </div>
             </div>
             <div class="col-sm-8">
               <div class="form-group form-group-default required">
                 <label>Combinatie Naam </label>
                 <input type="text" class="form-control combination_name_input" value="" disabled>
+                @foreach(ChuckSite::getSupportedLocales() as $langKey => $langValue)
+                <input type="hidden" class="combination_display_name_{{ $langKey }}" name="combinations[slug][display_name][langKey]" value="">
+                @endforeach
+                <input type="hidden" class="combination_slug" name="combination_slugs[]" value="">
               </div>
             </div>
           </div>
 
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card-block quantity-row">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="card card-default">
+        <div class="card-block">
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="form-group form-group-default required">
+                <label>Globaal Aantal</label>
+                <input type="text" data-v-min="0" data-v-max="999999" data-m-dec="0" data-a-pad=true class="autonumeric form-control quantity_input_global" name="quantity" value="0">
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -454,28 +477,182 @@
             $(this).hide();
           }
         });
-
-        for (var i = selectedAttributes.length - 1; i >= 0; i--) {
-           selectedAttributes[i]
-        };
       });
 
       $(".attribute-multi-select-input").on('change', function(){
         //check if all attributes are filled
         var selectedAttributes = $("#attributes_multi_select").val();
-        var totalCombinations = parseInt(0);
+        var totalCombinations = parseInt(1);
+        var attributesList = [];
+        var attributesFullList = [];
+        var isSelected = 0;
+
         for (var i = selectedAttributes.length - 1; i >= 0; i--) {
-          if(!$(".attribute-multi-select-input[data-attribute="+selectedAttributes[i]+"]").val()){
-            return; //break off function as not all attributes are filled
+          if( $(".attribute-multi-select-input[data-attribute="+selectedAttributes[i]+"]").val() == null ){
+            break; //break off function as not all attributes are filled
           } else {
-            var isAllSelected = true;
-            totalCombinations = totalCombinations + parseInt($(".attribute-multi-select-input[data-attribute="+selectedAttributes[i]+"]").val().length);
+            isSelected++;
+            totalCombinations = totalCombinations * parseInt($(".attribute-multi-select-input[data-attribute="+selectedAttributes[i]+"]").val().length);
+
+            var selectedOptions = $(".attribute-multi-select-input[data-attribute="+selectedAttributes[i]+"]").find('option:selected');
+
+            attributesList[i] = [];
+            attributesFullList[i] = [];
+
+            selectedOptions.each(function(index) {
+              var langs = $(this).attr('data-langs').split(',');
+              var name = {};
+              for (var g = 0; g < langs.length; g++) {
+                name[langs[g]] =$(this).attr('data-type')+' '+$(this).attr('data-name-'+langs[g]);
+              };
+              console.log('name :: ', name);
+              attributesList[i][index] = {
+                'key':$(this).attr('value'),
+                'name':$(this).attr('data-name'),
+                'display_name':name
+              };
+              attributesFullList[i][index] = {
+                'key':$(this).attr('value'),
+                'name':$(this).attr('data-name'),
+                'display_name':name
+              };
+            });
+            
           }
         };
+
+
+        if(selectedAttributes.length == isSelected) {
+          var isAllSelected = true;
+        } else {
+          var isAllSelected = false;
+        }
+
+
         if(isAllSelected == true){
-          for (var i = totalCombinations.length - 1; i >= 0; i--) {
-            // combine data from options and add/copy to combination ---- totalCombinations[i]
+          $('.quantity-row').hide();
+          var finalCombinations = [];
+
+          function cartesian(cartes) {
+              var r = [], arg = cartes, max = arg.length-1;
+              function helper(arr, i) {
+                  for (var j=0, l=arg[i].length; j<l; j++) {
+                      var a = arr.slice(0); // clone arr
+                      a.push(arg[i][j]);
+                      if (i==max)
+                          r.push(a);
+                      else
+                          helper(a, i+1);
+                  }
+              }
+              helper([], 0);
+              return r;
+          }
+          console.log('og og list ::  ', attributesList);
+          preFinalCombinationsList = cartesian(attributesList);
+          console.log('cartesian function :: ', preFinalCombinationsList);
+          console.log('original attributes :: ', attributesFullList);
+
+          //$(".combination-row:not(:first)").remove();
+          for (var i = 0; i < totalCombinations; i++) {
+            // add/copy attributes data to combination - preFinalCombinationsList[i]
+            
+            var combinationKey = '';
+            var combinationName = '';
+            var combinationDisplayName = {};
+            var langs = $('.attributes-combinations-block:first').attr('data-langs').split(',');
+
+            for (var g = 0; g < preFinalCombinationsList[i].length; g++) {
+
+              if(combinationKey == ''){
+                combinationKey = preFinalCombinationsList[i][g].key;
+                combinationName = preFinalCombinationsList[i][g].name;
+                for (var k = 0; k < langs.length; k++) {
+                  combinationDisplayName[langs[k]] = preFinalCombinationsList[i][g].display_name[langs[k]];
+                };
+                
+              } else {
+                combinationKey = combinationKey+'__'+preFinalCombinationsList[i][g].key;
+                combinationName = combinationName+' '+preFinalCombinationsList[i][g].name;
+                for (var k = 0; k < langs.length; k++) {
+                  combinationDisplayName[langs[k]] = combinationDisplayName[langs[k]]+' '+preFinalCombinationsList[i][g].display_name[langs[k]];
+                };
+              }
+
+            };
+
+            finalCombinations[i] = {'key':combinationKey,'name':combinationName,'display_name':combinationDisplayName};       
           };
+
+          
+          if($('.combination-row').length == 1) { // only 1 row => so no previous combinations...
+            console.log('is this a check ?');
+            for (var i = 0; i < finalCombinations.length; i++) {
+              if(i == 0){
+                $('.combination-row:first').show();
+                $('.combination-row:first').attr('data-combination-key',finalCombinations[i].key);
+                $('.combination-row:first').find('.combination_name_input').attr('value', finalCombinations[i].name);
+                //change name attributes of inputs
+              } else if(i > 0) {
+                $('.combination-row:first').clone().appendTo('.attributes-combinations-block');
+                $('.combination-row:last').attr('data-combination-key',finalCombinations[i].key);
+                $('.combination-row:last').find('.combination_name_input').attr('value', finalCombinations[i].name);
+                //change name attributes of inputs
+              }
+            };
+          } else {
+            console.log(' second check bruhh ');
+            $('.combination-row').addClass('old-combination-row');
+            for (var i = 0; i < finalCombinations.length; i++) {
+              //keep combinations that are present, remove others and add remaining new combinations
+              
+                
+                
+                if($('.combination-row[data-combination-key="'+finalCombinations[i].key+'"]').length == 0){
+                  var oldQuantity = '0';
+                } else {
+                  var oldQuantity = $('.old-combination-row[data-combination-key="'+finalCombinations[i].key+'"]').find('.combination_quantity_input').val();
+                  console.log('ahja :: ', $('.combination-row[data-combination-key="'+finalCombinations[i].key+'"]').find('.combination_quantity_input').val());
+                }
+
+                console.log('da old quantity :: ', oldQuantity);
+
+                $('.combination-row:first').clone().appendTo('.attributes-combinations-block');
+                $('.combination-row:last').removeClass('old-combination-row');
+                $('.combination-row:last').attr('data-combination-key',finalCombinations[i].key);
+                
+                $('.combination-row:last').find('.combination_quantity_input').val(oldQuantity);
+                $('.combination-row:last').find('.combination_quantity_input').attr('name', 'combinations['+finalCombinations[i].key+'][quantity]');
+
+                $('.combination-row:last').find('.combination_name_input').attr('value', finalCombinations[i].name);
+                
+                for (var k = 0; k < langs.length; k++) {
+                  $('.combination-row:last').find('.combination_display_name_'+langs[k]).attr('name', 'combinations['+finalCombinations[i].key+'][display_name]['+langs[k]+']');
+                  $('.combination-row:last').find('.combination_display_name_'+langs[k]).attr('value', finalCombinations[i].display_name[langs[k]]);
+                };
+                $('.combination-row:last').find('input.combination_slug').attr('value', finalCombinations[i].key);
+
+                $('.combination-row:last').show();
+                
+            };
+            $('.old-combination-row').remove();
+          }
+          
+
+          console.log('combinatieLijst :: ', finalCombinations);
+
+          init();
+
+        } else {
+          //remove current combination rows / hide will cause fields to be submitted...
+          //$('.combination-row').hide();
+          $('.combination-row:not(:first)').remove();
+          $('.combination-row:first').attr('data-combination-key', '');
+          $('.combination-row:first').find('.combination_quantity_input').val('0');
+          $('.combination-row:first').hide();
+          $('.quantity-row').show();
+
+          init();
         }
       });
 
