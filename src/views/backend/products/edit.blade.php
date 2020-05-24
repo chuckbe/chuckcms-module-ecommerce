@@ -20,7 +20,7 @@
           
           <div class="form-group form-group-default required">
             <label>Slug *</label>
-            <input type="text" class="form-control product_slug_input" placeholder="slug" id="product_slug" name="slug" value="{{ $product->url }}" required>
+            <input type="text" class="form-control product_slug_input" placeholder="slug" id="product_slug" name="slug" value="{{ explode('/', $product->url)[1] }}" required>
           </div>
 
           <div class="row">
@@ -187,7 +187,7 @@
                   </span>
                   <input id="featured_image_input" name="featured_image" class="img_lfm_input form-control" accept="image/x-png" type="text" value="{{ $product->json['images']['image0']['url'] }}" required>
                 </div>
-                <img id="featured_image_holder" src="{{ ChuckSite::getSite('domain') . $product->json['images']['image0']['url'] }}" style="margin-top:15px;max-height:100px;">
+                <img id="featured_image_holder" src="{{ $product->json['images']['image0']['url'] == null ? '' : ChuckSite::getSite('domain') . $product->json['images']['image0']['url'] }}" style="margin-top:15px;max-height:100px;">
               </div>
             </div>
           </div>
@@ -201,9 +201,9 @@
                       <i class="fa fa-picture-o"></i> Upload afbeelding
                     </a>
                   </span>
-                  <input id="image_input" name="image[]" class="img_lfm_input form-control" accept="image/x-png" type="text">
+                  <input id="image_input" name="image[]" class="img_lfm_input form-control" accept="image/x-png" type="text" value="{{ $product->json['images']['image1']['url'] }}">
                 </div>
-                <img id="image_holder" src="" style="margin-top:15px;max-height:100px;">
+                <img id="image_holder" src="{{ $product->json['images']['image1']['url'] == null ? '' : ChuckSite::getSite('domain') . $product->json['images']['image1']['url'] }}" style="margin-top:15px;max-height:100px;">
               </div>
             </div>
           </div>
@@ -217,9 +217,9 @@
                       <i class="fa fa-picture-o"></i> Upload afbeelding
                     </a>
                   </span>
-                  <input id="image1_input" name="image[]" class="img_lfm_input form-control" accept="image/x-png" type="text">
+                  <input id="image1_input" name="image[]" class="img_lfm_input form-control" accept="image/x-png" type="text" value="{{ $product->json['images']['image2']['url'] }}">
                 </div>
-                <img id="image1_holder" src="" style="margin-top:15px;max-height:100px;">
+                <img id="image1_holder" src="{{ $product->json['images']['image2']['url'] == null ? '' : ChuckSite::getSite('domain') . $product->json['images']['image2']['url'] }}" style="margin-top:15px;max-height:100px;">
               </div>
             </div>
           </div>
@@ -233,9 +233,9 @@
                       <i class="fa fa-picture-o"></i> Upload afbeelding
                     </a>
                   </span>
-                  <input id="image2_input" name="image[]" class="img_lfm_input form-control" accept="image/x-png" type="text">
+                  <input id="image2_input" name="image[]" class="img_lfm_input form-control" accept="image/x-png" type="text" value="{{ $product->json['images']['image3']['url'] }}">
                 </div>
-                <img id="image2_holder" src="" style="margin-top:15px;max-height:100px;">
+                <img id="image2_holder" src="{{ $product->json['images']['image3']['url'] == null ? '' : ChuckSite::getSite('domain') . $product->json['images']['image3']['url'] }}" style="margin-top:15px;max-height:100px;">
               </div>
             </div>
           </div>
@@ -259,7 +259,7 @@
                 <select class="full-width" id="attributes_multi_select" name="attributes[]" data-init-plugin="select2" data-minimum-results-for-search="5" data-placeholder="Selecteer attributen" multiple="multiple">
                   <option></option>
                   @foreach($attributes as $attribute)
-                    <option value="{{ $attribute->id }}">{{ $attribute->json['name'] }} ({{ count($attribute->json['values']) }})</option>
+                    <option value="{{ $attribute->id }}" @if(array_key_exists(''.$attribute->id.'', $product->json['attributes'])) selected @endif>{{ $attribute->json['name'] }} ({{ count($attribute->json['values']) }})</option>
                   @endforeach
                 </select>
               </div>
@@ -269,14 +269,14 @@
           <hr>
           <label for="">Opties</label>
           @foreach($attributes as $attribute)
-          <div class="row attribute-select-row" data-attribute="{{ $attribute->id }}" style="display:none;">
+          <div class="row attribute-select-row" data-attribute="{{ $attribute->id }}" @if(!array_key_exists(''.$attribute->id.'', $product->json['attributes'])) style="display:none;" @endif>
             <div class="col-sm-12">
               <div class="form-group form-group-default form-group-default-select2 required">
                 <label>Attribuut {{ $attribute->json['name'] }}</label>
-                <select class="full-width attribute-multi-select-input" name="attribute[{{ $attribute->id }}][]" data-attribute="{{ $attribute->id }}" data-init-plugin="select2" data-minimum-results-for-search="Infinity" data-placeholder="Selecteer attribuuts" data-allow-clear="true" multiple="multiple" required>
+                <select class="full-width attribute-multi-select-input" name="attribute[{{ $attribute->id }}][]" data-attribute="{{ $attribute->id }}" data-init-plugin="select2" data-minimum-results-for-search="Infinity" data-placeholder="Selecteer attribuuts" data-allow-clear="true" multiple="multiple">
                   <option></option>
                   @foreach($attribute->json['values'] as $attributeKey => $attributeValue)
-                    <option value="{{ $attributeKey }}" data-type="{{ $attribute->json['name'] }}" data-name="{{ $attribute->json['name'] }} {{ $attributeValue['display_name'][config('app.locale')] }}"  data-langs="{{ ChuckSite::getSetting('lang') }}" @foreach(ChuckSite::getSupportedLocales() as $langKey => $langValue) data-name-{{ $langKey }}="{{ $attributeValue['display_name'][$langKey] }}" @endforeach >{{ $attributeValue['display_name'][config('app.locale')] }}</option>
+                    <option value="{{ $attributeKey }}" data-type="{{ $attribute->json['name'] }}" data-name="{{ $attribute->json['name'] }} {{ $attributeValue['display_name'][config('app.locale')] }}"  data-langs="{{ ChuckSite::getSetting('lang') }}" @foreach(ChuckSite::getSupportedLocales() as $langKey => $langValue) data-name-{{ $langKey }}="{{ $attributeValue['display_name'][$langKey] }}" @endforeach @if(count($product->json['attributes']) > 0) @if(array_key_exists(''.$attribute->id.'', $product->json['attributes']) && array_key_exists($attributeKey, $product->json['attributes'][''.$attribute->id.'']['values'])) selected @endif @endif>{{ $attributeValue['display_name'][config('app.locale')] }}</option>
                   @endforeach
                 </select>
               </div>
@@ -286,13 +286,52 @@
 
           <hr>
           <label for="">Combinaties</label>
-          <div class="row combination-row" data-combination-key="" style="display:none;d">
+          @if(count($product->json['combinations']) > 0)
+          @foreach($product->json['combinations'] as $combinationKey => $combination)
+          <div class="row combination-row" data-combination-key="{{ $combinationKey }}">
+            
+            <div class="col-sm-8">
+              <div class="form-group form-group-default required">
+                <label>Combinatie Naam </label>
+                <input type="text" class="form-control combination_name_input" value="{{ $combination['display_name'][config('app.locale')] }}" disabled>
+                @foreach(ChuckSite::getSupportedLocales() as $langKey => $langValue)
+                <input type="hidden" class="combination_display_name_{{ $langKey }}" name="combinations[{{ $combinationKey }}][display_name][{{ $langKey }}]" value="{{ $combination['display_name'][$langKey] }}">
+                @endforeach
+                <input type="hidden" class="combination_slug" name="combination_slugs[]" value="{{ $combinationKey }}">
+              </div>
+            </div>
             <div class="col-sm-4">
               <div class="form-group form-group-default required">
                 <label>Combinatie Aantal</label>
-                <input type="text" data-v-min="0" data-v-max="999999" data-m-dec="0" data-a-pad=true class="autonumeric form-control combination_quantity_input" name="combinations[slug][quantity]" value="0">
+                <input type="text" data-v-min="0" data-v-max="999999" data-m-dec="0" data-a-pad=true class="autonumeric form-control combination_quantity_input" name="combinations[{{ $combinationKey }}][quantity]" value="{{ $combination['quantity'] }}">
               </div>
             </div>
+
+
+            <div class="col-sm-4">
+              <div class="form-group form-group-default required">
+                <label>Combinatie Prijs</label>
+                <input class="form-control sale_price_ex_input combination_price_sale_input" type="text" data-a-dec="." data-a-sep="" data-m-dec="6" data-a-pad=true class="autonumeric form-control" name="combinations[{{ $combinationKey }}][price][sale]" value="{{ $combination['price']['sale'] }}" data-combination-key="{{ $combinationKey }}" placeholder="Verkoopprijs" required>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="form-group form-group-default required">
+                <label>Combinatie Prijs met BTW</label>
+                <input class="form-control sale_price_in_input combination_price_final_input" type="text" data-a-dec="." data-a-sep="" data-m-dec="6" data-a-pad=true class="autonumeric form-control" name="combinations[{{ $combinationKey }}][price][final]" value="{{ $combination['price']['final'] }}" data-combination-key="{{ $combinationKey }}" placeholder="Verkoopprijs met BTW" required>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="form-group form-group-default required">
+                <label>Combinatie Kortingsprijs met BTW</label>
+                <input class="form-control combination_price_discount_input" type="text" data-a-dec="." data-a-sep="" data-m-dec="6" data-a-pad=true class="autonumeric form-control" name="combinations[{{ $combinationKey }}][price][discount]" value="{{ $combination['price']['discount'] }}" placeholder="Kortingsprijs met BTW" required>
+              </div>
+            </div>
+
+
+          </div>
+          @endforeach
+          @else
+          <div class="row combination-row" data-combination-key="" style="display:none;">
             <div class="col-sm-8">
               <div class="form-group form-group-default required">
                 <label>Combinatie Naam </label>
@@ -303,15 +342,43 @@
                 <input type="hidden" class="combination_slug" name="combination_slugs[]" value="">
               </div>
             </div>
-          </div>
+            <div class="col-sm-4">
+              <div class="form-group form-group-default required">
+                <label>Combinatie Aantal</label>
+                <input type="text" data-v-min="0" data-v-max="999999" data-m-dec="0" data-a-pad=true class="autonumeric form-control combination_quantity_input" name="combinations[slug][quantity]" value="0">
+              </div>
+            </div>
 
+
+            <div class="col-sm-4">
+              <div class="form-group form-group-default required">
+                <label>Combinatie Prijs</label>
+                <input class="form-control sale_price_ex_input combination_price_sale_input" type="text" data-a-dec="." data-a-sep="" data-m-dec="6" data-a-pad=true class="autonumeric form-control" name="combinations[slug][price][sale]" value="0.000000" data-combination-key="" placeholder="Verkoopprijs" required>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="form-group form-group-default required">
+                <label>Combinatie Prijs met BTW</label>
+                <input class="form-control sale_price_in_input combination_price_final_input" type="text" data-a-dec="." data-a-sep="" data-m-dec="6" data-a-pad=true class="autonumeric form-control" name="combinations[slug][price][final]" value="0.000000" data-combination-key="" placeholder="Verkoopprijs met BTW" required>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="form-group form-group-default required">
+                <label>Combinatie Kortingsprijs met BTW</label>
+                <input class="form-control combination_price_discount_input" type="text" data-a-dec="." data-a-sep="" data-m-dec="6" data-a-pad=true class="autonumeric form-control" name="combinations[slug][price][discount]" placeholder="Kortingsprijs met BTW" required>
+              </div>
+            </div>
+
+            
+          </div>
+          @endif
         </div>
       </div>
     </div>
   </div>
 </div>
 
-<div class="card-block quantity-row">
+<div class="card-block quantity-row" @if(count($product->json['combinations']) > 0) style="display:none" @endif >
   <div class="row">
     <div class="col-lg-12">
       <div class="card card-default">
@@ -320,7 +387,7 @@
             <div class="col-sm-12">
               <div class="form-group form-group-default required">
                 <label>Globaal Aantal</label>
-                <input type="text" data-v-min="0" data-v-max="999999" data-m-dec="0" data-a-pad=true class="autonumeric form-control quantity_input_global" name="quantity" value="0">
+                <input type="text" data-v-min="0" data-v-max="999999" data-m-dec="0" data-a-pad=true class="autonumeric form-control quantity_input_global" name="quantity" value="{{ $product->json['quantity'] }}">
               </div>
             </div>
           </div>
@@ -350,36 +417,36 @@
             <div class="tab-pane fade show @if($loop->iteration == 1) active @endif" id="tab_product_{{ $langKey }}">
                   <div class="form-group form-group-default required">
                     <label>Titel</label>
-                    <input type="text" class="form-control" placeholder="Titel" name="title[{{ $langKey }}]" required>
+                    <input type="text" class="form-control" placeholder="Titel" name="title[{{ $langKey }}]" value="{{ $product->json['title'][$langKey] }}" required>
                   </div>
                   
                   <div class="form-group">
                     <label>Korte Beschrijving</label>
                     <div class="summernote-wrapper">
-                    <textarea name="description[short][{{ $langKey }}]" class="summernote-text-editor" placeholder="Korte Beschrijving"></textarea>
+                    <textarea name="description[short][{{ $langKey }}]" class="summernote-text-editor" placeholder="Korte Beschrijving">{!! $product->json['description']['short'][$langKey] !!}</textarea>
                     </div>
                   </div>
                   
                   <div class="form-group">
                     <label>Lange Beschrijving</label>
                     <div class="summernote-wrapper">
-                    <textarea name="description[long][{{ $langKey }}]" class="summernote-text-editor" placeholder="Lange Beschrijving"></textarea>
+                    <textarea name="description[long][{{ $langKey }}]" class="summernote-text-editor" placeholder="Lange Beschrijving">{!! $product->json['description']['long'][$langKey] !!}</textarea>
                     </div>
                   </div>
                 
                   <div class="form-group form-group-default required">
                     <label>Meta Titel</label>
-                    <input type="text" class="form-control" placeholder="Meta Titel" name="meta_title[{{ $langKey }}]" required>
+                    <input type="text" class="form-control" placeholder="Meta Titel" name="meta_title[{{ $langKey }}]" value="{{ $product->json['meta']['title'][$langKey] }}" required>
                   </div>
                 
                   <div class="form-group form-group-default required">
                     <label>Meta Beschrijving</label>
-                    <textarea class="form-control" name="meta_description[{{ $langKey }}]" placeholder="Meta Beschrijving" cols="30" rows="10" style="height:80px" required></textarea>
+                    <textarea class="form-control" name="meta_description[{{ $langKey }}]" placeholder="Meta Beschrijving" cols="30" rows="10" style="height:80px" required>{{ $product->json['meta']['description'][$langKey] }}</textarea>
                   </div>
                 
                   <div class="form-group form-group-default required">
                     <label>Meta Keywords (scheiden met komma)</label>
-                    <textarea class="form-control" name="meta_keywords[{{ $langKey }}]" placeholder="Meta Keywords (scheiden met komma)" cols="30" rows="10" style="height:80px" required></textarea>
+                    <textarea class="form-control" name="meta_keywords[{{ $langKey }}]" placeholder="Meta Keywords (scheiden met komma)" cols="30" rows="10" style="height:80px" required>{{ $product->json['meta']['keywords'][$langKey] }}</textarea>
                   </div>
                 
 
@@ -389,6 +456,7 @@
           </div>
           <br>
           <p class="pull-right">
+            <input type="hidden" name="product_id" value="{{ $product->id }}">
             <input type="hidden" name="_token" value="{{ Session::token() }}">
             <button type="submit" name="create" class="btn btn-success btn-cons pull-right" value="1">Opslaan</button>
             <a href="{{ route('dashboard.content.resources') }}" class="pull-right"><button type="button" class="btn btn-info btn-cons">Annuleren</button></a>
@@ -467,6 +535,27 @@
         console.log(exvat);
         $("#sale_price_ex_input").val(exvat).change();
       });
+
+
+      $(".sale_price_ex_input").keyup(function(){
+        var combi_slug = $(this).attr('data-combination-key');
+        var vat = parseFloat($('#tax-input').find(":selected").attr("data-amount"));
+        var exvat = parseFloat($(this).val());
+        var invat = (exvat + ((exvat / 100) * vat)).toFixed(6);
+        $(".sale_price_in_input[data-combination-key="+combi_slug+"]").val(invat).change();
+      });
+
+      $(".sale_price_in_input").keyup(function(){
+        var combi_slug = $(this).attr('data-combination-key');
+        var vat = parseFloat('1.'+$('#tax-input').find(":selected").attr("data-amount"));
+        console.log(vat);
+        var invat = parseFloat($(this).val());
+        var exvat = (invat / vat).toFixed(6);
+        console.log(exvat);
+        $(".sale_price_ex_input[data-combination-key="+combi_slug+"]").val(exvat).change();
+      });
+
+
 
       $("#attributes_multi_select").on('change', function(){
         var selectedAttributes = $(this).val();
@@ -548,10 +637,10 @@
               helper([], 0);
               return r;
           }
-          console.log('og og list ::  ', attributesList);
+          //console.log('og og list ::  ', attributesList);
           preFinalCombinationsList = cartesian(attributesList);
-          console.log('cartesian function :: ', preFinalCombinationsList);
-          console.log('original attributes :: ', attributesFullList);
+          //console.log('cartesian function :: ', preFinalCombinationsList);
+          //console.log('original attributes :: ', attributesFullList);
 
           //$(".combination-row:not(:first)").remove();
           for (var i = 0; i < totalCombinations; i++) {
@@ -586,7 +675,6 @@
 
           
           if($('.combination-row').length == 1) { // only 1 row => so no previous combinations...
-            console.log('is this a check ?');
             for (var i = 0; i < finalCombinations.length; i++) {
               if(i == 0){
                 $('.combination-row:first').show();
@@ -600,8 +688,7 @@
                 //change name attributes of inputs
               }
             };
-          } else {
-            console.log(' second check bruhh ');
+          } else { // there are previous combinations
             $('.combination-row').addClass('old-combination-row');
             for (var i = 0; i < finalCombinations.length; i++) {
               //keep combinations that are present, remove others and add remaining new combinations
@@ -610,9 +697,14 @@
                 
                 if($('.combination-row[data-combination-key="'+finalCombinations[i].key+'"]').length == 0){
                   var oldQuantity = '0';
+                  var oldPriceSale = '0.000000';
+                  var oldPriceFinal = '0.000000';
+                  var oldPriceDiscount = '0.000000';
                 } else {
                   var oldQuantity = $('.old-combination-row[data-combination-key="'+finalCombinations[i].key+'"]').find('.combination_quantity_input').val();
-                  console.log('ahja :: ', $('.combination-row[data-combination-key="'+finalCombinations[i].key+'"]').find('.combination_quantity_input').val());
+                  var oldPriceSale = $('.old-combination-row[data-combination-key="'+finalCombinations[i].key+'"]').find('.combination_price_sale_input').val();
+                  var oldPriceFinal = $('.old-combination-row[data-combination-key="'+finalCombinations[i].key+'"]').find('.combination_price_final_input').val();
+                  var oldPriceDiscount = $('.old-combination-row[data-combination-key="'+finalCombinations[i].key+'"]').find('.combination_price_discount_input').val();
                 }
 
                 console.log('da old quantity :: ', oldQuantity);
@@ -623,6 +715,23 @@
                 
                 $('.combination-row:last').find('.combination_quantity_input').val(oldQuantity);
                 $('.combination-row:last').find('.combination_quantity_input').attr('name', 'combinations['+finalCombinations[i].key+'][quantity]');
+
+
+
+
+                $('.combination-row:last').find('.combination_price_sale_input').val(oldPriceSale);
+                $('.combination-row:last').find('.combination_price_sale_input').attr('name', 'combinations['+finalCombinations[i].key+'][price][sale]');
+                $('.combination-row:last').find('.combination_price_sale_input').attr('data-combination-key', finalCombinations[i].key);
+
+                $('.combination-row:last').find('.combination_price_final_input').val(oldPriceFinal);
+                $('.combination-row:last').find('.combination_price_final_input').attr('name', 'combinations['+finalCombinations[i].key+'][price][final]');
+                $('.combination-row:last').find('.combination_price_final_input').attr('data-combination-key', finalCombinations[i].key);
+
+                $('.combination-row:last').find('.combination_price_discount_input').val(oldPriceDiscount);
+                $('.combination-row:last').find('.combination_price_discount_input').attr('name', 'combinations['+finalCombinations[i].key+'][price][discount]');
+
+
+
 
                 $('.combination-row:last').find('.combination_name_input').attr('value', finalCombinations[i].name);
                 

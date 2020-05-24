@@ -74,13 +74,32 @@ class ProductController extends Controller
     public function update(Request $request)
     {
         $this->validate(request(), [ //@todo create custom Request class for product validation
-            'id' => 'required',
+            'product_id' => 'required',
             'slug' => 'required'
         ]);
 
         $product = $this->productRepository->update($request);
 
         return redirect()->route('dashboard.module.ecommerce.products.index');
+    }
+
+    public function getCombination(Request $request)
+    {
+        $this->validate(request(), [ //@todo create custom Request class for product validation
+            'product_id' => 'required',
+            'attribute_keys' => 'required|array'
+        ]);
+
+        $product = $this->productRepository->get($request->get('product_id'));
+        $attributes = $request->get('attribute_keys');
+
+        $combination = $this->productRepository->getCombination($product, $attributes);
+
+        if ( is_array($combination) && count($combination) > 0 ) {
+            return response()->json(['status' => 'success', 'combination' => $combination]);
+        }
+
+        return response()->json(['status' => 'error']);
     }
 
     

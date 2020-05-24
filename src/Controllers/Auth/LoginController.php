@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Auth;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Chuckbe\Chuckcms\Models\Template;
+use Cart;
 
 class LoginController extends Controller
 {
@@ -30,6 +31,15 @@ class LoginController extends Controller
     protected $redirectTo = '/dashboard';
 
     public function redirectTo(){
+        $userId = Auth::user()->id;
+
+        Cart::instance('shopping')->restore('shopping_'.$userId);
+        $cart = Cart::instance('shopping')->content();
+        Cart::instance('shopping')->store('shopping_'.$userId);
+
+        Cart::instance('wishlist')->restore('wishlist_'.$userId);
+        $wishlist = Cart::instance('wishlist')->content();
+        Cart::instance('wishlist')->store('wishlist_'.$userId);
         
         if(Auth::user()->hasRole('customer')){
             return config('chuckcms-module-ecommerce.auth.redirect.customer');

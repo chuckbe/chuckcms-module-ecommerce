@@ -8,10 +8,13 @@ use Chuckbe\ChuckcmsModuleEcommerce\Chuck\AttributeRepository;
 use Chuckbe\ChuckcmsModuleEcommerce\Chuck\BrandRepository;
 use Chuckbe\ChuckcmsModuleEcommerce\Chuck\CollectionRepository;
 use Chuckbe\ChuckcmsModuleEcommerce\Chuck\ProductRepository;
+use Chuckbe\ChuckcmsModuleEcommerce\Chuck\OrderRepository;
 
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use Auth;
+use ChuckEcommerce;
 
 class AccountOrderController extends Controller
 {
@@ -29,60 +32,36 @@ class AccountOrderController extends Controller
         AttributeRepository $attributeRepository,
         BrandRepository $brandRepository,
         CollectionRepository $collectionRepository,
-        ProductRepository $productRepository)
+        ProductRepository $productRepository,
+        OrderRepository $orderRepository)
     {
         $this->attributeRepository = $attributeRepository;
         $this->brandRepository = $brandRepository;
         $this->collectionRepository = $collectionRepository;
         $this->productRepository = $productRepository;
+        $this->orderRepository = $orderRepository;
     }
 
     public function index()
     {
-        $templateHintpath = config('chuckcms-module-ecommerce.auth.template.hintpath');
-        $template = Template::where('type', 'ecommerce')->where('active', 1)->where('hintpath', $templateHintpath)->first();
+        $template = ChuckEcommerce::getTemplate();
 
+        $orders = $this->orderRepository->getForCustomer(Auth::user()->customer);
 
-        return view($templateHintpath.'::templates.'.$templateHintpath.'.account.order.index', compact('template'));
+        return view($template->hintpath.'::templates.'.$template->slug.'.account.order.index', compact('template', 'orders'));
     }
 
-    public function edit(int $id)
+    public function detail($order_number)
     {
-        $attribute = $this->attributeRepository->getById($id);
-        return view('chuckcms-module-ecommerce::backend.attributes.edit', compact('attribute'));
-    }
+        $template = ChuckEcommerce::getTemplate();
 
-    public function save(Request $request)
-    {
-        $this->validate($request, [ 
-            'name' => 'max:185|required',
-            'type' => 'required|in:select,radio,color',
-            'id' => 'required_with:update'
-        ]);
-        if($request->has('id') && $request->has('update')) {
-            $attribute = $this->attributeRepository->update($request);
-        } elseif($request->has('create')) {
-            $attribute = $this->attributeRepository->create($request);
+        $order = $this->orderRepository->getByOrderNumber($order_number);
+
+        if($order->customer_id !== Auth::user()->customer->id) {
+            return redirect()->back();
         }
 
-        if($attribute->save() && $request->has('id') && $request->has('update')){
-            return redirect()->route('dashboard.module.ecommerce.attributes.index');
-        } elseif($attribute->save()) {
-            return redirect()->route('dashboard.module.ecommerce.attributes.edit', ['id' => $attribute->id]);
-        } else {
-            return 'error';//add ThrowNewException
-        }
+        return view($template->hintpath.'::templates.'.$template->slug.'.account.order.detail', compact('template', 'order'));
     }
 
-    public function delete(Request $request)
-    {
-        $this->validate($request, ['id' => 'required']);
-
-        $delete = $this->attributeRepository->delete($request->get('id'));
-
-        if($delete){
-            return redirect()->route('dashboard.module.ecommerce.attributes.index');
-        }
-    }
-    
 }

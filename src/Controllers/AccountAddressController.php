@@ -7,6 +7,7 @@ use Chuckbe\Chuckcms\Models\Template;
 use Chuckbe\ChuckcmsModuleEcommerce\Chuck\AttributeRepository;
 use Chuckbe\ChuckcmsModuleEcommerce\Chuck\BrandRepository;
 use Chuckbe\ChuckcmsModuleEcommerce\Chuck\CollectionRepository;
+use Chuckbe\ChuckcmsModuleEcommerce\Chuck\CustomerRepository;
 use Chuckbe\ChuckcmsModuleEcommerce\Chuck\ProductRepository;
 
 use Illuminate\Http\Request;
@@ -18,6 +19,7 @@ class AccountAddressController extends Controller
     private $attributeRepository;
     private $brandRepository;
     private $collectionRepository;
+    private $customerRepository;
     private $productRepository;
 
     /**
@@ -29,11 +31,13 @@ class AccountAddressController extends Controller
         AttributeRepository $attributeRepository,
         BrandRepository $brandRepository,
         CollectionRepository $collectionRepository,
+        CustomerRepository $customerRepository,
         ProductRepository $productRepository)
     {
         $this->attributeRepository = $attributeRepository;
         $this->brandRepository = $brandRepository;
         $this->collectionRepository = $collectionRepository;
+        $this->customerRepository = $customerRepository;
         $this->productRepository = $productRepository;
     }
 
@@ -46,43 +50,29 @@ class AccountAddressController extends Controller
         return view($templateHintpath.'::templates.'.$templateHintpath.'.account.address.index', compact('template'));
     }
 
-    public function edit(int $id)
-    {
-        $attribute = $this->attributeRepository->getById($id);
-        return view('chuckcms-module-ecommerce::backend.attributes.edit', compact('attribute'));
-    }
-
-    public function save(Request $request)
+    public function update(Request $request)
     {
         $this->validate($request, [ 
-            'name' => 'max:185|required',
-            'type' => 'required|in:select,radio,color',
-            'id' => 'required_with:update'
+            'customer_street' => 'max:185|required',
+            'customer_housenumber' => 'max:60|required',
+            'customer_postalcode' => 'max:8|required',
+            'customer_city' => 'max:185|required',
+            'customer_country' => 'max:3|required',
+            'customer_company_name' => 'max:185|nullable',
+            'customer_company_vat' => 'max:18|nullable',
+            'customer_shipping_equal_to_billing' => 'required|in:0,1',
+            'customer_shipping_street' => 'max:185|required_if:customer_shipping_equal_to_billing,0',
+            'customer_shipping_housenumber' => 'max:60|required_if:customer_shipping_equal_to_billing,0',
+            'customer_shipping_postalcode' => 'max:8|required_if:customer_shipping_equal_to_billing,0',
+            'customer_shipping_city' => 'max:185|required_if:customer_shipping_equal_to_billing,0',
+            'customer_shipping_country' => 'max:3|required_if:customer_shipping_equal_to_billing,0'
+
         ]);
-        if($request->has('id') && $request->has('update')) {
-            $attribute = $this->attributeRepository->update($request);
-        } elseif($request->has('create')) {
-            $attribute = $this->attributeRepository->create($request);
-        }
 
-        if($attribute->save() && $request->has('id') && $request->has('update')){
-            return redirect()->route('dashboard.module.ecommerce.attributes.index');
-        } elseif($attribute->save()) {
-            return redirect()->route('dashboard.module.ecommerce.attributes.edit', ['id' => $attribute->id]);
-        } else {
-            return 'error';//add ThrowNewException
-        }
-    }
+        $customer = $this->customerRepository->updateAddress($request);
+        $customer = $this->customerRepository->updateCompany($request);
 
-    public function delete(Request $request)
-    {
-        $this->validate($request, ['id' => 'required']);
-
-        $delete = $this->attributeRepository->delete($request->get('id'));
-
-        if($delete){
-            return redirect()->route('dashboard.module.ecommerce.attributes.index');
-        }
+        return redirect()->route('module.ecommerce.account.address.index')->with('notification', 'Adres gewijzigd!');
     }
     
 }

@@ -29,13 +29,12 @@ class ChuckCustomerServiceProvider extends ServiceProvider
     {
         $this->app->singleton('ChuckCustomer',function(){
             $user = \Auth::user();
-            if($user == null) {
-                throw new Exception('Whoops! User not logged in...');
+            if($user !== null) {
+                $customer = Customer::where('user_id', \Auth::user()->id)->first();
+            } else {
+                $customer = new Customer();
             }
-            $customer = Customer::where('user_id', \Auth::user()->id)->first();
-            if($customer == null) {
-                throw new Exception('Whoops! No customer profile found for user...');
-            }
+            
             return new \Chuckbe\ChuckcmsModuleEcommerce\Chuck\Accessors\Customer($customer, \App::make(CustomerRepository::class));
         });
     }

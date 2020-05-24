@@ -5,6 +5,7 @@ namespace Chuckbe\ChuckcmsModuleEcommerce\Controllers\Auth;
 use Chuckbe\ChuckcmsModuleEcommerce\Models\User;
 use Chuckbe\ChuckcmsModuleEcommerce\Models\Customer;
 
+use Chuckbe\ChuckcmsModuleEcommerce\Chuck\CustomerRepository;
 use Chuckbe\Chuckcms\Chuck\UserRepository;
 
 use App\Http\Controllers\Controller;
@@ -69,13 +70,21 @@ class RegisterController extends Controller
     private $userRepository;
 
     /**
+     * Customer Repository.
+     *
+     * @var string
+     */
+    private $customerRepository;
+
+    /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct(UserRepository $userRepository)
+    public function __construct(UserRepository $userRepository, CustomerRepository $customerRepository)
     {
         $this->userRepository = $userRepository;
+        $this->customerRepository = $customerRepository;
         $this->middleware('guest');
     }
 
@@ -123,9 +132,12 @@ class RegisterController extends Controller
 
         $json = [];
 
+        $json['group'] = $this->customerRepository->defaultGroup();
+
         $customer = $user->customer()->create([
             'surname' => $data['surname'],
             'name' => $data['name'],
+            'email' => $data['email'],
             'tel' => $data['tel'],
             'json' => $json
         ]);

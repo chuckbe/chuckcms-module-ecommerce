@@ -1,0 +1,6 @@
+@include('chuckcms-module-ecommerce::scripts.ecommerce.urls')
+@include('chuckcms-module-ecommerce::scripts.ecommerce.notifications')
+@include('chuckcms-module-ecommerce::scripts.cart.html')
+@include('chuckcms-module-ecommerce::scripts.cart.overview')
+@include('chuckcms-module-ecommerce::scripts.cart.product')
+@include('chuckcms-module-ecommerce::scripts.cart.detail')

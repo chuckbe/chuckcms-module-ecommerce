@@ -4,10 +4,12 @@
     "keywords": ["chuckbe", "chuckcms", "cms", "laravel", "php"],
     "homepage": "https://github.com/chuckbe/chuckcms-module-ecommerce",
     "require": {
-        "php": ">=7.0.0",
-        "laravel/framework": "~5.5||~5.6",
+        "php": ">=7.2.0",
+        "laravel/framework": "~5.8||^6.0||^7.0.0",
+        "barryvdh/laravel-dompdf": "^0.8.1",
         "chuckbe/chuckcms": "~0.1",
-        "darryldecode/cart": "~4.0"
+        "hardevine/shoppingcart": "^2.7",
+        "mollie/laravel-mollie": "^2.0"
     },
     "authors": [
         {
