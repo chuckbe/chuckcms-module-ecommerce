@@ -47,10 +47,10 @@ class PlaceOrderRequest extends FormRequest
 
             'customer_shipping_equal_to_billing' => 'required|in:0,1',
 
-            'check_out_as_guest' => 'required|in:0,1',
+            'check_out_as_guest' => 'required|in:-1,0,1',
 
-            'customer_password' => 'required_if:check_out_as_guest,1',
-            'customer_password_repeat' => 'required_if:check_out_as_guest,1',
+            'customer_password' => 'required_if:check_out_as_guest,0',
+            'customer_password_repeat' => 'required_if:check_out_as_guest,0',
 
             'shipping_method' => 'required',
             'payment_method' => 'required',

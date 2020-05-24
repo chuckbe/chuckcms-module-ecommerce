@@ -6,6 +6,7 @@ use Chuckbe\ChuckcmsModuleEcommerce\Chuck\CustomerRepository;
 use Chuckbe\ChuckcmsModuleEcommerce\Models\Customer as CustomerModel;
 use Exception;
 use Illuminate\Support\Facades\Schema;
+use Auth;
 
 use App\Http\Requests;
 
@@ -38,6 +39,10 @@ class Customer
     public function address($billing = true) :array
     {
         $empty = array('street' => null, 'housenumber' => null, 'postalcode' => null, 'city' => null, 'country' => null);
+        if(is_null($this->currentCustomer->json)){
+            return $empty;
+        }
+
         if(!array_key_exists('address', $this->currentCustomer->json)) {
             return $empty;
         }
@@ -63,6 +68,9 @@ class Customer
     public function company() :array
     {
         $empty = array('name' => null, 'vat' => null);
+        if(is_null($this->currentCustomer->json)){
+            return $empty;
+        }
         if(!array_key_exists('company', $this->currentCustomer->json)) {
             return $empty;
         }
@@ -72,6 +80,10 @@ class Customer
 
     public function isShippingEqualToBilling() :bool
     {
+        if(is_null($this->currentCustomer->json)){
+            return true;
+        }
+
         if (!array_key_exists('address', $this->currentCustomer->json)) {
             return true;
         }

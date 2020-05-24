@@ -66,9 +66,11 @@ class CheckoutController extends Controller
 
     public function placeOrder(PlaceOrderRequest $request)
     {
+        //dd(!Auth::check() && !(bool)$request->get('check_out_as_guest'));
         // make the user / customer if needed — and — send the email
         if (!Auth::check() && !(bool)$request->get('check_out_as_guest')) {
             $user = $this->userRepository->create($request);
+            Auth::login($user);
             $customer = $this->customerRepository->createFromUser($user, $request);
             Cart::instance('shopping')->store('shopping_'.$user->id);
             //send email for customer creation

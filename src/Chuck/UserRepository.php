@@ -4,6 +4,7 @@ namespace Chuckbe\ChuckcmsModuleEcommerce\Chuck;
 
 use Chuckbe\Chuckcms\Models\Repeater;
 use Chuckbe\ChuckcmsModuleEcommerce\Models\User;
+use Chuckbe\Chuckcms\Chuck\UserRepository as ChuckcmsUserRepository;
 use ChuckSite;
 use Auth;
 use Illuminate\Http\Request;
@@ -11,9 +12,11 @@ use Illuminate\Http\Request;
 class UserRepository
 {
 	private $repeater;
+    private $chuckcmsUserRepository;
 
-	public function __construct(Repeater $repeater)
+	public function __construct(Repeater $repeater, ChuckcmsUserRepository $chuckcmsUserRepository)
     {
+        $this->chuckcmsUserRepository = $chuckcmsUserRepository;
         $this->repeater = $repeater;
     }
 
@@ -43,7 +46,7 @@ class UserRepository
             'name' => $request->get('customer_surname') . ' ' . $request->get('customer_name'),
             'email' => $request->get('customer_email'),
             'password' => bcrypt($request->get('customer_password')),
-            'token' => $this->userRepository->createToken(),
+            'token' => $this->chuckcmsUserRepository->createToken(),
             'active' => 1,
         ]);
         //event: user.created

@@ -64,7 +64,7 @@ $(document).ready(function() {
     });
 
     $('body').on('change', '.country_select_input', function (event) {
-        if($('#ce_shippingEqualToBilling').is('checked')) {
+        if($('#ce_shippingEqualToBilling').is(':checked')) {
             var country = $('#country').val();
         } else {
             var country = $('#shipping_country').val();
@@ -214,14 +214,14 @@ $(document).ready(function() {
             promo = "0";
         }
 
-        if($('.ce_checkoutAsGuest').length > 0) {
-            if($('.ce_checkoutAsGuest').is(':checked')) {
+        if($('#ce_checkoutAsGuest').length > 0) {
+            if($('#ce_checkoutAsGuest').is(':checked')) {
                 check_out_as_guest = "1";
             } else {
                 check_out_as_guest = "0";
             }
         } else {
-            check_out_as_guest = "0";
+            check_out_as_guest = "-1";
         }
 
         if($('input[type=checkbox][name=customer_shipping_equal_to_billing]').is(':checked')) {
@@ -229,7 +229,6 @@ $(document).ready(function() {
         } else {
             customer_shipping_equal_to_billing = "0";
         }
-        console.log('whuuut?', customer_shipping_equal_to_billing);
 
         $.ajax({
             method: 'POST',
@@ -259,8 +258,8 @@ $(document).ready(function() {
 
                 check_out_as_guest: check_out_as_guest,
 
-                customer_password: (check_out_as_guest == "1") ? $('input[name=customer_password]').val() : null,
-                customer_password_repeat: (check_out_as_guest == "1") ? $('input[name=customer_password_repeat]').val() : null,
+                customer_password: (check_out_as_guest == "0") ? $('input[name=customer_password]').val() : null,
+                customer_password_repeat: (check_out_as_guest == "0") ? $('input[name=customer_password_repeat]').val() : null,
 
                 shipping_method: $('input[name=shippingMethod]:checked').val(),
                 payment_method: $('input[name=paymentMethod]:checked').val(),
