@@ -60,6 +60,10 @@ class CheckoutController extends Controller
             return redirect()->route('module.ecommerce.cart.overview');
         }
 
+        if (Cart::instance('shopping')->total() < ChuckEcommerce::getSetting('order.minimum')) {
+            return redirect()->route('module.ecommerce.cart.overview');
+        }
+
         $template = ChuckEcommerce::getTemplate();
     	return view('chuckcms-module-ecommerce::checkout.index', compact('template'));
     }
