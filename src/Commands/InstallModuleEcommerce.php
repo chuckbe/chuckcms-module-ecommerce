@@ -54,7 +54,7 @@ class InstallModuleEcommerce extends Command
         $hintpath = 'chuckcms-module-ecommerce';
         $path = 'chuckbe/chuckcms-module-ecommerce';
         $type = 'module';
-        $version = '0.1.0';
+        $version = '0.1.1';
         $author = 'Karel Brijs (karel@chuck.be)';
 
         $json = [];
@@ -155,7 +155,7 @@ class InstallModuleEcommerce extends Command
         $json['settings']['general']['decimals_separator'] = ',';
         $json['settings']['general']['thousands_separator'] = '.';
 
-        $json['settings']['layout']['template'] = 'chuckcms-template-london';
+        $json['settings']['layout']['template'] = 'chuckcms-template-starter';
 
         $json['settings']['customer']['groups'] = [
             'guest' => [
