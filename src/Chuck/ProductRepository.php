@@ -4,6 +4,7 @@ namespace Chuckbe\ChuckcmsModuleEcommerce\Chuck;
 
 use Chuckbe\ChuckcmsModuleEcommerce\Chuck\AttributeRepository;
 use Chuckbe\Chuckcms\Models\Repeater;
+use Chuckbe\ChuckcmsModuleEcommerce\Models\Collection;
 use ChuckSite;
 use ChuckEcommerce;
 use Illuminate\Http\Request;
@@ -13,11 +14,13 @@ class ProductRepository
 {
 	private $attributeRepository;
 	private $repeater;
+    private $collection;
 
-	public function __construct(AttributeRepository $attributeRepository, Repeater $repeater)
+	public function __construct(AttributeRepository $attributeRepository, Repeater $repeater, Collection $collection)
     {
         $this->attributeRepository = $attributeRepository;
         $this->repeater = $repeater;
+        $this->collection = $collection;
     }
 
     /**
@@ -31,6 +34,30 @@ class ProductRepository
             return $this->repeater->where('slug', 'products')->where('id', $id)->first();
         }
         return $this->repeater->where('slug', 'products')->get();
+    }
+
+    public function getFeatured()
+    {
+        return $this->repeater->where('slug', 'products')->get();
+    }
+
+    public function forCollection($collection, $parent = null)
+    {
+        $query = $this->collection->where('json->name', $collection);
+        
+        if (!is_null($parent)) {
+            $query = $query->where('json->parent', $parent);
+        }
+        
+        $collection = $query->first();
+
+        if ($collection == null) {
+            return array();
+        }
+
+        return $this->repeater->where('slug', 'products')
+                                ->where('json->collection', ''.$collection->id.'')
+                                ->get();
     }
 
     public function sku($sku)
@@ -459,11 +486,6 @@ class ProductRepository
             }
         }
         return array();
-    }
-
-    public function getFeatured()
-    {
-        return $this->repeater->where('slug', 'products')->get();
     }
 
     public function title(Repeater $product)

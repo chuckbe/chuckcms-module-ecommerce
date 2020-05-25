@@ -34,6 +34,11 @@ class Product
         return $this->productRepository->getFeatured();
     }
 
+    public function forCollection(string $collection, $parent = null)
+    {
+        return $this->productRepository->forCollection($collection, $parent = null);
+    }
+
     public function combinationBySKU($sku)
     {
         return $this->productRepository->combinationBySKU($sku);

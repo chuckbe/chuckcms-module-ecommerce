@@ -66,7 +66,6 @@ class CheckoutController extends Controller
 
     public function placeOrder(PlaceOrderRequest $request)
     {
-        //dd(!Auth::check() && !(bool)$request->get('check_out_as_guest'));
         // make the user / customer if needed — and — send the email
         if (!Auth::check() && !(bool)$request->get('check_out_as_guest')) {
             $user = $this->userRepository->create($request);

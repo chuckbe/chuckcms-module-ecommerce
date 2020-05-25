@@ -2,7 +2,7 @@
 
 namespace Chuckbe\ChuckcmsModuleEcommerce\Controllers;
 
-use Chuckbe\ChuckcmsModuleEcommerce\Models\Product;
+use Chuckbe\ChuckcmsModuleEcommerce\Models\Order;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
@@ -21,6 +21,9 @@ class EcommerceController extends Controller
 
     public function dashboard()
     {
-        return view('chuckcms-module-ecommerce::backend.dashboard.index');
+        $orders_count = Order::where('status', 'payment')->count();
+        $orders = Order::where('status', 'payment')->limit(30)->get();
+
+        return view('chuckcms-module-ecommerce::backend.dashboard.index', compact('orders', 'orders_count'));
     }
 }

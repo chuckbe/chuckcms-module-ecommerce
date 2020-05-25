@@ -207,4 +207,19 @@ class Ecommerce
         return $this->customerRepository->defaultGroup();
     }
 
+    public function totalSales()
+    {
+        return $this->orderRepository->totalSales();
+    }
+
+    public function totalSalesLast7Days()
+    {
+        return $this->orderRepository->totalSalesLast7Days();
+    }
+
+    public function totalSalesLast7DaysQty()
+    {
+        return $this->orderRepository->totalSalesLast7DaysQty();
+    }
+
 }

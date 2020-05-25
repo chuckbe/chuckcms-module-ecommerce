@@ -10,6 +10,7 @@ use Chuckbe\ChuckcmsModuleEcommerce\Models\Order;
 use Gloudemans\Shoppingcart\Cart;
 use Illuminate\Http\Request;
 use ChuckEcommerce;
+use Carbon\Carbon;
 use ChuckSite;
 use Mail;
 use PDF;
@@ -162,6 +163,27 @@ class OrderRepository
         $invoice_number = ChuckEcommerce::getSetting('invoice.number') + 1;
         ChuckEcommerce::setSetting('invoice.number', $invoice_number);
         return $invoice_number;
+    }
+
+    public function totalSales()
+    {
+        $total = Order::where('status', 'payment')->sum('final');
+        
+        return ChuckEcommerce::formatPrice($total);
+    }
+
+    public function totalSalesLast7Days()
+    {
+        $total = Order::where('status', 'payment')->whereDate('created_at', '>', Carbon::today()->subDays(7))->sum('final');
+
+        return ChuckEcommerce::formatPrice($total);
+    }
+
+    public function totalSalesLast7DaysQty()
+    {
+        $total = Order::where('status', 'payment')->whereDate('created_at', '>', Carbon::today()->subDays(7))->count();
+
+        return $total;
     }
 
 }
