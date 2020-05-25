@@ -36,7 +36,7 @@ class Product
 
     public function forCollection(string $collection, $parent = null)
     {
-        return $this->productRepository->forCollection($collection, $parent = null);
+        return $this->productRepository->forCollection($collection, $parent);
     }
 
     public function combinationBySKU($sku)
