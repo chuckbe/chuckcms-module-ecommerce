@@ -3,6 +3,7 @@
 namespace Chuckbe\ChuckcmsModuleEcommerce\Chuck;
 
 use Chuckbe\ChuckcmsModuleEcommerce\Chuck\AttributeRepository;
+use Chuckbe\ChuckcmsModuleEcommerce\Chuck\CollectionRepository;
 use Chuckbe\Chuckcms\Models\Repeater;
 use Chuckbe\ChuckcmsModuleEcommerce\Models\Collection;
 use ChuckSite;
@@ -16,9 +17,10 @@ class ProductRepository
 	private $repeater;
     private $collection;
 
-	public function __construct(AttributeRepository $attributeRepository, Repeater $repeater, Collection $collection)
+	public function __construct(AttributeRepository $attributeRepository, CollectionRepository $collectionRepository, Repeater $repeater, Collection $collection)
     {
         $this->attributeRepository = $attributeRepository;
+        $this->collectionRepository = $collectionRepository;
         $this->repeater = $repeater;
         $this->collection = $collection;
     }
@@ -383,6 +385,11 @@ class ProductRepository
     public function getAttributes(Repeater $product)
     {
         return $product->json['attributes'];
+    }
+
+    public function getCollection(Repeater $product)
+    {
+        return $this->collectionRepository->getById($product->json['collection']); 
     }
 
     public function hasSKU(Repeater $product, $sku) :bool

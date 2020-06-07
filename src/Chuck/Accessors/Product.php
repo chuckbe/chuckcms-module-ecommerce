@@ -69,6 +69,11 @@ class Product
         return $this->productRepository->sku($sku);
     }
 
+    public function collection(ProductModel $product)
+    {
+        return $this->productRepository->getCollection($product);
+    }
+
     public function images(ProductModel $product)
     {
         return $this->productRepository->images($product);
@@ -157,6 +162,16 @@ class Product
     public function getOptions(ProductModel $product, $sku)
     {
         return $this->productRepository->getOptions($product, $sku);
+    }
+
+    public function isBuyable(ProductModel $product)
+    {
+        return array_key_exists('is_buyable', $product->json) ? $product->json['is_buyable'] : false;
+    }
+
+    public function isDisplayed(ProductModel $product)
+    {
+        return array_key_exists('is_displayed', $product->json) ? $product->json['is_displayed'] : false;
     }
 
 }

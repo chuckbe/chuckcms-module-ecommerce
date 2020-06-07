@@ -25,6 +25,16 @@ class CollectionRepository
     }
 
     /**
+     * Get the collection
+     *
+     * @var string
+     **/
+    public function getById(int $id)
+    {
+        return $this->repeater->where('slug', 'collections')->where('id', $id)->first();
+    }
+
+    /**
      * Create a new collection
      *
      * @var array $values
