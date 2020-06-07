@@ -34,26 +34,49 @@
 			<div class="card card-transparent">
 				<div class="card-header ">
 					<div class="card-title">Orders</div>
-					<div class="tools">
-						<a class="collapse" href="javascript:;"></a>
-						<a class="config" data-toggle="modal" href="#grid-config"></a>
-						<a class="reload" href="javascript:;"></a>
-						<a class="remove" href="javascript:;"></a>
-					</div>
-					<div class="pull-right">
-				    	<div class="col-xs-12">
-				    		<input type="text" id="search-table" class="form-control pull-right" placeholder="Search">
-				    	</div>
-				    </div>
-				    <div class="clearfix"></div>
 				</div>
+
+				<div class="card-block">
+					<h4>Gegevens <span class="label {{ ChuckEcommerce::getSetting('order.statuses.'.$order->status.'.paid') ? 'label-inverse' : '' }}">{{ ChuckEcommerce::getSetting('order.statuses.'.$order->status.'.short.'.app()->getLocale()) }}</span></h4>
+					<b>Verzending:</b> {{ $order->json['shipping']['name'] }} <br>
+                    <b>Verzendtijd:</b> {{ $order->json['shipping']['transit_time'] }} 
+                    <br><br>
+
+
+                    @if($order->json['address']['shipping_equal_to_billing'])
+                    <b>Facturatie & Verzendadres: </b>
+                    @else 
+                    <b>Facturatie adres: </b>
+                    @endif  
+                    <br>
+
+                    <b>Naam</b>: {{ $order->surname . ' ' . $order->name }} <br>
+                    <b>E-mail</b>: {{ $order->email }} 
+                    @if(!is_null($order->tel)) 
+                    <br>
+                    <b>Tel</b>: {{ $order->tel }} 
+                    @endif
+                    <br>
+                    @if(!is_null($order->customer->json['company']['name']))
+                    <b>Bedrijfsnaam</b>: {{ $order->customer->json['company']['name'] }} <br>
+                    <b>BTW-nummer</b>: {{ $order->customer->json['company']['vat'] }} <br>
+                    @endif
+                    <b>Adres</b>: <br> {{ $order->json['address']['billing']['street'] . ' ' . $order->json['address']['billing']['housenumber'] }}, <br> {{ $order->json['address']['billing']['postalcode'] . ' ' . $order->json['address']['billing']['city'] .', '. config('chuckcms-module-ecommerce.countries_data.'.$order->json['address']['billing']['country'].'.native') }} <br>
+                    @if(!$order->json['address']['shipping_equal_to_billing'])
+                    <br>
+                    <b>Verzend adres: </b><br> 
+                    {{ $order->json['address']['shipping']['street'] . ' ' . $order->json['address']['shipping']['housenumber'] }}, <br> {{ $order->json['address']['shipping']['postalcode'] . ' ' . $order->json['address']['shipping']['city'] .', '. config('chuckcms-module-ecommerce.countries_data.'.$order->json['address']['shipping']['country'].'.native') }} <br>
+                    @endif
+				</div>
+
 				<div class="card-block">
 					<div class="table-responsive">
 						<table class="table table-hover table-condensed" id="condensedTable" data-table-count="30">
 						<thead>
 							<tr>
-								<th style="width:32%">Product</th>
-								<th style="width:18%">Hoeveelheid</th>
+								<th style="width:8%">#</th>
+								<th style="width:28%">Product</th>
+								<th style="width:14%">Hvl</th>
 								<th style="width:34%">Prijs</th>
 								<th style="width:16%">Totaal</th>
 							</tr>
@@ -61,6 +84,7 @@
 							<tbody>
 								@foreach($order->json['products'] as $sku => $product)
 								<tr class="order_line" data-id="{{ $sku }}">
+									<td class="v-align-middle semi-bold">{{ $loop->iteration }}</td>
 							    	<td class="v-align-middle semi-bold">{{ $product['title'] }}</td>
 							    	<td class="v-align-middle">{{ $product['quantity'] }}</td>
 							    	<td class="v-align-middle">{{ ChuckEcommerce::formatPrice($product['price_tax'])  }} </td>
@@ -68,12 +92,14 @@
 							  	</tr>
 							  	@endforeach
 							  	<tr class="shipping_line">
+							  		<td class="v-align-middle semi-bold">{{ count($order->json['products']) + 1 }}</td>
 							    	<td class="v-align-middle semi-bold"></td>
 							    	<td class="v-align-middle"></td>
 							    	<td class="v-align-middle">Verzending </td>
 							    	<td class="v-align-middle semi-bold">{{ $order->shipping > 0 ? ChuckEcommerce::formatPrice($order->shipping + $order->shipping_tax) : 'gratis' }}</td>
 							  	</tr>
 							  	<tr class="total_line">
+							  		<td class="v-align-middle semi-bold">{{ count($order->json['products']) + 2 }}</td>
 							    	<td class="v-align-middle semi-bold"></td>
 							    	<td class="v-align-middle"></td>
 							    	<td class="v-align-middle">Totaal </td>
