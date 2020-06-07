@@ -95,13 +95,16 @@
 				</div>
 				<div class="card-block">
 					<div class="table-responsive">
-						<table class="table table-hover table-condensed" id="condensedTable">
+						<table class="table table-hover " id="condensedTable" data-table-count="30">
 						<thead>
 							<tr>
 								<th style="width:5%">ID</th>
-								<th style="width:25%">Titel</th>
-								<th style="width:20%">Slug</th>
-								<th style="width:35%">Actions</th>
+								<th style="width:21%">Titel</th>
+								<th style="width:15%">Collectie</th>
+								<th style="width:10%">Prijs</th>
+								<th style="width:8%">Status</th>
+								<th style="width:6%">Hvl</th>
+								<th style="width:20%">Actions</th>
 							</tr>
 						</thead>
 							<tbody>
@@ -109,16 +112,19 @@
 								<tr class="product_line" data-id="{{ $product->id }}">
 									<td class="v-align-middle">{{ $product->id }}</td>
 							    	<td class="v-align-middle semi-bold">{{ $product->json['title'][ChuckSite::getFeaturedLocale()] }}</td>
-							    	<td class="v-align-middle">{{$product->slug}}</td>
+							    	<td class="v-align-middle">{{ChuckProduct::collection($product)->json['name']}}</td>
+							    	<td class="v-align-middle">{{ChuckProduct::lowestPrice($product)}}</td>
+							    	<td class="v-align-middle">{!!ChuckProduct::isBuyable($product) ? '<i data-feather="check"></i>' : '<i data-feather="cross"></i>'!!}</td>
+							    	<td class="v-align-middle">{{ChuckProduct::quantity($product, ChuckProduct::defaultSku($product)) }}</td>
 							    	<td class="v-align-middle semi-bold">
 							    		@can('edit forms')
 							    		<a href="{{ route('dashboard.module.ecommerce.products.edit', ['product' => $product->id]) }}" class="btn btn-primary btn-sm btn-rounded m-r-20">
-							    			<i data-feather="edit-2"></i> edit
+							    			<i data-feather="edit-2"></i> 
 							    		</a>
 							    		@endcan
 							    		@can('delete forms')
 							    		<a href="#" class="btn btn-danger btn-sm btn-rounded m-r-20 form_delete" data-id="{{ $product->id }}">
-							    			<i data-feather="trash"></i> delete
+							    			<i data-feather="trash"></i> 
 							    		</a>
 							    		@endcan
 							    	</td>

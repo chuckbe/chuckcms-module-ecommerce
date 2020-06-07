@@ -353,19 +353,19 @@
             <div class="col-sm-4">
               <div class="form-group form-group-default required">
                 <label>Combinatie Prijs</label>
-                <input class="form-control sale_price_ex_input combination_price_sale_input" type="text" data-a-dec="." data-a-sep="" data-m-dec="6" data-a-pad=true class="autonumeric form-control" name="combinations[slug][price][sale]" value="0.000000" data-combination-key="" placeholder="Verkoopprijs" required>
+                <input class="form-control sale_price_ex_input combination_price_sale_input" type="text" data-a-dec="." data-a-sep="" data-m-dec="6" data-a-pad=true class="autonumeric form-control" name="combinations[slug][price][sale]" value="0.000000" data-combination-key="" placeholder="Verkoopprijs">
               </div>
             </div>
             <div class="col-sm-4">
               <div class="form-group form-group-default required">
                 <label>Combinatie Prijs met BTW</label>
-                <input class="form-control sale_price_in_input combination_price_final_input" type="text" data-a-dec="." data-a-sep="" data-m-dec="6" data-a-pad=true class="autonumeric form-control" name="combinations[slug][price][final]" value="0.000000" data-combination-key="" placeholder="Verkoopprijs met BTW" required>
+                <input class="form-control sale_price_in_input combination_price_final_input" type="text" data-a-dec="." data-a-sep="" data-m-dec="6" data-a-pad=true class="autonumeric form-control" name="combinations[slug][price][final]" value="0.000000" data-combination-key="" placeholder="Verkoopprijs met BTW">
               </div>
             </div>
             <div class="col-sm-4">
               <div class="form-group form-group-default required">
                 <label>Combinatie Kortingsprijs met BTW</label>
-                <input class="form-control combination_price_discount_input" type="text" data-a-dec="." data-a-sep="" data-m-dec="6" data-a-pad=true class="autonumeric form-control" name="combinations[slug][price][discount]" placeholder="Kortingsprijs met BTW" required>
+                <input class="form-control combination_price_discount_input" type="text" data-a-dec="." data-a-sep="" data-m-dec="6" data-a-pad=true class="autonumeric form-control" name="combinations[slug][price][discount]" placeholder="Kortingsprijs met BTW">
               </div>
             </div>
 
