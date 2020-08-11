@@ -20,4 +20,9 @@ class Brand extends Repeater
 
         parent::boot();
     }
+
+    public function getNameAttribute()
+    {
+        return $this->json['name'];
+    }
 }

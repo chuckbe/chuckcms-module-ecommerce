@@ -39,6 +39,11 @@ class Product
         return $this->productRepository->forCollection($collection, $parent);
     }
 
+    public function forBrand(string $brand)
+    {
+        return $this->productRepository->forBrand($brand);
+    }
+
     public function combinationBySKU($sku)
     {
         return $this->productRepository->combinationBySKU($sku);
@@ -62,6 +67,11 @@ class Product
     public function title(ProductModel $product)
     {
         return $this->productRepository->title($product);
+    }
+
+    public function brand(ProductModel $product)
+    {
+        return $this->productRepository->brand($product);
     }
 
     public function sku($sku)

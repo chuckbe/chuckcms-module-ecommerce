@@ -6,6 +6,8 @@ use Chuckbe\ChuckcmsModuleEcommerce\Chuck\AttributeRepository;
 use Chuckbe\ChuckcmsModuleEcommerce\Chuck\CollectionRepository;
 use Chuckbe\Chuckcms\Models\Repeater;
 use Chuckbe\ChuckcmsModuleEcommerce\Models\Collection;
+use Chuckbe\ChuckcmsModuleEcommerce\Models\Brand;
+use Chuckbe\ChuckcmsModuleEcommerce\Models\Product;
 use ChuckSite;
 use ChuckEcommerce;
 use Illuminate\Http\Request;
@@ -15,14 +17,24 @@ class ProductRepository
 {
 	private $attributeRepository;
 	private $repeater;
+    private $product;
     private $collection;
+    private $brand;
 
-	public function __construct(AttributeRepository $attributeRepository, CollectionRepository $collectionRepository, Repeater $repeater, Collection $collection)
+	public function __construct(
+        AttributeRepository $attributeRepository, 
+        CollectionRepository $collectionRepository, 
+        Repeater $repeater, 
+        Product $product, 
+        Collection $collection, 
+        Brand $brand)
     {
         $this->attributeRepository = $attributeRepository;
         $this->collectionRepository = $collectionRepository;
         $this->repeater = $repeater;
+        $this->product = $product;
         $this->collection = $collection;
+        $this->brand = $brand;
     }
 
     /**
@@ -33,14 +45,14 @@ class ProductRepository
     public function get($id = null)
     {
         if ( !is_null($id) ) {
-            return $this->repeater->where('slug', 'products')->where('id', $id)->first();
+            return $this->product->where('id', $id)->first();
         }
-        return $this->repeater->where('slug', 'products')->get();
+        return $this->product->get();
     }
 
     public function getFeatured()
     {
-        return $this->repeater->where('slug', 'products')->get();
+        return $this->product->get();
     }
 
     public function forCollection($collection, $parent = null)
@@ -57,9 +69,20 @@ class ProductRepository
             return array();
         }
 
-        return $this->repeater->where('slug', 'products')
-                                ->where('json->collection', ''.$collection->id.'')
-                                ->get();
+        return $this->product->where('json->collection', ''.$collection->id.'')->get();
+    }
+
+    public function forBrand($brand)
+    {
+        $query = $this->brand->where('json->name', $brand);
+        
+        $brand = $query->first();
+
+        if ($brand == null) {
+            return array();
+        }
+
+        return $this->product->where('json->brand', ''.$brand->id.'')->get();
     }
 
     public function sku($sku)
@@ -71,7 +94,7 @@ class ProductRepository
             }
             return $query->get(); 
         }
-        return $this->repeater->where('slug', config('chuckcms-module-ecommerce.products.slug'))->whereRaw('json LIKE "%'.$sku.'%"', [20000])->first();
+        return $this->repeater->whereRaw('json LIKE "%'.$sku.'%"', [20000])->first();
     }
 
     public function save(Request $values)
@@ -167,6 +190,11 @@ class ProductRepository
         	        $combinations[$combinationKey]['price']['vat']['type'] = config('chuckcms-module-ecommerce.vat.'.$values->get('price')['vat'].'.type');
         	        $combinations[$combinationKey]['price']['final'] = $values->get('price')['final'];//verkoopprijs incl korting, incl btw
 
+                    $combinations[$combinationKey]['dimensions']['width'] = $values->get('width');
+                    $combinations[$combinationKey]['dimensions']['height'] = $values->get('height');
+                    $combinations[$combinationKey]['dimensions']['depth'] = $values->get('depth');
+                    $combinations[$combinationKey]['dimensions']['weight'] = $values->get('weight');
+
         	        $combinations[$combinationKey]['quantity'] = (int)$values->get('combinations')[$combinationKey]['quantity'];
         	        $totalQuantity = $totalQuantity + (int)$values->get('combinations')[$combinationKey]['quantity'];
 
@@ -210,6 +238,11 @@ class ProductRepository
             $json['meta']['description'][$langKey] = $values->get('meta_description')[$langKey];
             $json['meta']['keywords'][$langKey] = $values->get('meta_keywords')[$langKey];
         }
+
+        $json['dimensions']['width'] = $values->get('width');
+        $json['dimensions']['height'] = $values->get('height');
+        $json['dimensions']['depth'] = $values->get('depth');
+        $json['dimensions']['weight'] = $values->get('weight');
 
         $input['json'] = $json;
 
@@ -319,6 +352,11 @@ class ProductRepository
         	        $combinations[$combinationKey]['price']['vat']['type'] = config('chuckcms-module-ecommerce.vat.'.$values->get('price')['vat'].'.type');
         	        $combinations[$combinationKey]['price']['final'] = $values->get('combinations')[$combinationKey]['price']['final'];//verkoopprijs incl korting, incl btw
 
+                    $combinations[$combinationKey]['dimensions']['width'] = $values->get('combinations')[$combinationKey]['dimensions']['width'];
+                    $combinations[$combinationKey]['dimensions']['height'] = $values->get('combinations')[$combinationKey]['dimensions']['height'];
+                    $combinations[$combinationKey]['dimensions']['depth'] = $values->get('combinations')[$combinationKey]['dimensions']['depth'];
+                    $combinations[$combinationKey]['dimensions']['weight'] = $values->get('combinations')[$combinationKey]['dimensions']['weight'];
+
         	        $combinations[$combinationKey]['quantity'] = (int)$values->get('combinations')[$combinationKey]['quantity'];
         	        $totalQuantity = $totalQuantity + (int)$values->get('combinations')[$combinationKey]['quantity'];
 
@@ -363,6 +401,11 @@ class ProductRepository
             $json['meta']['description'][$langKey] = $values->get('meta_description')[$langKey];
             $json['meta']['keywords'][$langKey] = $values->get('meta_keywords')[$langKey];
         }
+
+        $json['dimensions']['width'] = $values->get('width');
+        $json['dimensions']['height'] = $values->get('height');
+        $json['dimensions']['depth'] = $values->get('depth');
+        $json['dimensions']['weight'] = $values->get('weight');
 
         $input['json'] = $json;
 
@@ -409,7 +452,11 @@ class ProductRepository
 
     public function isCombination(Repeater $product, $sku) :bool
     {
-        return $product->json['code']['sku'] !== $sku;
+        if (count($product->json['combinations']) > 0 ) {
+            return $product->json['code']['sku'] !== $sku;
+        } else {
+            return false;
+        }
     }
 
     public function defaultCombination(Repeater $product)
@@ -498,6 +545,12 @@ class ProductRepository
     public function title(Repeater $product)
     {
         return $product->json['title'][app()->getLocale()];
+    }
+
+    public function brand(Repeater $product)
+    {
+        $brand = $this->brand->where('id', (int)$product->json['brand'])->first();
+        return is_null($brand) ? null : $brand->name;
     }
 
     public function images(Repeater $product)

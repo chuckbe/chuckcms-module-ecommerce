@@ -34,6 +34,10 @@ class ChuckCustomerServiceProvider extends ServiceProvider
             } else {
                 $customer = new Customer();
             }
+
+            if($customer == null) {
+                $customer = new Customer();
+            }
             
             return new \Chuckbe\ChuckcmsModuleEcommerce\Chuck\Accessors\Customer($customer, \App::make(CustomerRepository::class));
         });

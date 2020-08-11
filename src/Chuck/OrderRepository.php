@@ -74,7 +74,7 @@ class OrderRepository
         $json = $this->customerRepository->mapAddress($request, $json); 
         $json = $this->customerRepository->mapCompany($request, $json); 
 
-        $order->subtotal = $cart->subtotal();
+        $order->subtotal = $cart->total() - $cart->tax();
         $order->subtotal_tax = $cart->tax();
         $order->shipping = ChuckEcommerce::getCarrierSubtotal($request->get('shipping_method'), 21);
         $order->shipping_tax = ChuckEcommerce::getCarrierTax($request->get('shipping_method'), 21);

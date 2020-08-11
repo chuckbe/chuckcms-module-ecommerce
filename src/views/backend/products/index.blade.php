@@ -1,4 +1,4 @@
-@extends('chuckcms::backend.layouts.admin')
+@extends('chuckcms::backend.layouts.base')
 
 @section('title')
 	Producten
@@ -10,133 +10,111 @@
 	@endcan
 @endsection
 
+
+
+
+@section('content')
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mt-3">
+                    <li class="breadcrumb-item active" aria-current="page">Producten</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+    <div class="row bg-light shadow-sm rounded p-3 mb-3 mx-1">
+    	<div class="col-sm-12 text-right">
+    		<a href="{{ route('dashboard.module.ecommerce.products.create') }}" class="btn btn-sm btn-outline-success">Product Toevoegen</a>
+    	</div>
+        <div class="col-sm-12 my-3">
+        	<div class="table-responsive">
+        		<table class="table" data-datatable  style="width:100%">
+        			<thead>
+        				<tr>
+        					<th scope="col">#</th>
+        					<th scope="col">Titel</th>
+        					<th scope="col">Collectie</th>
+        					<th scope="col" class="pr-5">Prijs</th>
+        					<th scope="col">Status</th>
+        					<th scope="col">Hvl</th>
+        					<th scope="col" style="min-width:170px">Acties</th>
+        				</tr>
+        			</thead>
+        			<tbody>
+        				@foreach($products as $product)
+        				<tr class="product_line" data-id="{{ $product->id }}">
+        					<th scope="row">{{ $product->id }}</th>
+        					<td>{{ $product->json['title'][ChuckSite::getFeaturedLocale()] }}</td>
+        					<td>{{ is_null(ChuckProduct::collection($product)) ? '' : ChuckProduct::collection($product)->json['name']}}</td>
+        					<td>{{ChuckProduct::lowestPrice($product)}}</td>
+        					<td class="text-center">{!!ChuckProduct::isBuyable($product) ? '✓' : '✕'!!}</td>
+        					<td>{{ChuckProduct::quantity($product, ChuckProduct::defaultSku($product)) }}</td>
+        					<td>
+        						@can('edit forms')
+					    		<a href="{{ route('dashboard.module.ecommerce.products.edit', ['product' => $product->id]) }}" class="btn btn-sm btn-outline-secondary rounded d-inline-block">
+					    			<i class="fa fa-pen"></i> edit 
+					    		</a>
+					    		@endcan
+					    		@can('delete forms')
+					    		<a href="#" class="btn btn-sm btn-outline-danger rounded d-inline-block form_delete" data-id="{{ $product->id }}">
+					    			<i class="fa fa-trash"></i> delete 
+					    		</a>
+					    		@endcan
+        					</td>
+        				</tr>
+        				@endforeach
+        			</tbody>
+        		</table>
+        	</div>
+        </div>
+    </div>
+</div>
+@endsection
+
 @section('css')
-	<link href="https://cdn.chuck.be/assets/plugins/jquery-datatable/media/css/dataTables.bootstrap.min.css" rel="stylesheet" type="text/css" />
-    <link href="https://cdn.chuck.be/assets/plugins/jquery-datatable/extensions/FixedColumns/css/dataTables.fixedColumns.min.css" rel="stylesheet" type="text/css" />
-    <link href="https://cdn.chuck.be/assets/plugins/datatables-responsive/css/datatables.responsive.css" rel="stylesheet" type="text/css" media="screen" />
+	
 @endsection
 
 @section('scripts')
-	<script src="https://cdn.chuck.be/assets/plugins/jquery-datatable/media/js/jquery.dataTables.min.js" type="text/javascript"></script>
-    <script src="https://cdn.chuck.be/assets/plugins/jquery-datatable/extensions/TableTools/js/dataTables.tableTools.min.js" type="text/javascript"></script>
-    <script src="https://cdn.chuck.be/assets/plugins/jquery-datatable/media/js/dataTables.bootstrap.js" type="text/javascript"></script>
-    <script src="https://cdn.chuck.be/assets/plugins/jquery-datatable/extensions/Bootstrap/jquery-datatable-bootstrap.js" type="text/javascript"></script>
-    <script type="text/javascript" src="https://cdn.chuck.be/assets/plugins/datatables-responsive/js/datatables.responsive.js"></script>
-    <script type="text/javascript" src="https://cdn.chuck.be/assets/plugins/datatables-responsive/js/lodash.min.js"></script>
-    <script src="https://cdn.chuck.be/assets/js/tables.js" type="text/javascript"></script>
-    <script src="https://cdn.chuck.be/assets/plugins/sweetalert2.all.js"></script>
-    <script>
-    $( document ).ready(function (){
-    	$('.product_delete').each(function(){
-			var form_id = $(this).attr("data-id");
-			var token = '{{ Session::token() }}';
-		  	$(this).click(function (event) {
-		  		event.preventDefault();
-		  		swal({
-					title: 'Are you sure?',
-					text: "You won't be able to revert this!",
-					type: 'warning',
-					showCancelButton: true,
-					confirmButtonColor: '#3085d6',
-					cancelButtonColor: '#d33',
-					confirmButtonText: 'Yes, delete it!'
-				}).then((result) => {
-				  	if (result.value) { 
-				  		$.ajax({
-	                        method: 'POST',
-	                        url: "{{ route('dashboard.forms.delete') }}",
-	                        data: { 
-	                        	form_id: form_id, 
-	                        	_token: token
-	                        }
-	                    })
-	                    .done(function (data) {
-	                    	if(data == 'success'){
-	                    		$(".product_line[data-id='"+product_id+"']").first().remove();
-	                    		swal(
-						      		'Deleted!',
-						      		'The product has been deleted.',
-						      		'success'
-						    	)
-	                    	} else {
-	                    		swal(
-						      		'Oops!',
-						      		'Something went wrong...',
-						      		'danger'
-						    	)
-	                    	}
-
-	                        
-	                    });
-				    	
-				  	}
-				})
-		    });
-		});
-    });
-
-    </script>
-@endsection
-
-@section('content')
-<div class=" container-fluid   container-fixed-lg">
-    <div class="row">
-		<div class="col-lg-12">
-		<!-- START card -->
-			<div class="card card-transparent">
-				<div class="card-header ">
-					<div class="card-title">Producten</div>
-					<div class="tools">
-						<a class="collapse" href="javascript:;"></a>
-						<a class="config" data-toggle="modal" href="#grid-config"></a>
-						<a class="reload" href="javascript:;"></a>
-						<a class="remove" href="javascript:;"></a>
-					</div>
-				</div>
-				<div class="card-block">
-					<div class="table-responsive">
-						<table class="table table-hover " id="condensedTable" data-table-count="30">
-						<thead>
-							<tr>
-								<th style="width:5%">ID</th>
-								<th style="width:21%">Titel</th>
-								<th style="width:15%">Collectie</th>
-								<th style="width:10%">Prijs</th>
-								<th style="width:8%">Status</th>
-								<th style="width:6%">Hvl</th>
-								<th style="width:20%">Actions</th>
-							</tr>
-						</thead>
-							<tbody>
-								@foreach($products as $product)
-								<tr class="product_line" data-id="{{ $product->id }}">
-									<td class="v-align-middle">{{ $product->id }}</td>
-							    	<td class="v-align-middle semi-bold">{{ $product->json['title'][ChuckSite::getFeaturedLocale()] }}</td>
-							    	<td class="v-align-middle">{{ChuckProduct::collection($product)->json['name']}}</td>
-							    	<td class="v-align-middle">{{ChuckProduct::lowestPrice($product)}}</td>
-							    	<td class="v-align-middle">{!!ChuckProduct::isBuyable($product) ? '<i data-feather="check"></i>' : '<i data-feather="cross"></i>'!!}</td>
-							    	<td class="v-align-middle">{{ChuckProduct::quantity($product, ChuckProduct::defaultSku($product)) }}</td>
-							    	<td class="v-align-middle semi-bold">
-							    		@can('edit forms')
-							    		<a href="{{ route('dashboard.module.ecommerce.products.edit', ['product' => $product->id]) }}" class="btn btn-primary btn-sm btn-rounded m-r-20">
-							    			<i data-feather="edit-2"></i> 
-							    		</a>
-							    		@endcan
-							    		@can('delete forms')
-							    		<a href="#" class="btn btn-danger btn-sm btn-rounded m-r-20 form_delete" data-id="{{ $product->id }}">
-							    			<i data-feather="trash"></i> 
-							    		</a>
-							    		@endcan
-							    	</td>
-							  	</tr>
-							  	@endforeach
-							</tbody>
-						</table>
-					</div>
-				</div>
-			</div>
-		<!-- END card -->
-		</div>
-    </div>
-</div>
+<script src="https://cdn.chuck.be/assets/plugins/sweetalert2.all.js"></script>
+<script>
+$( document ).ready(function (){
+	$('.product_delete').each(function(){
+		var form_id = $(this).attr("data-id");
+		var token = '{{ Session::token() }}';
+	  	$(this).click(function (event) {
+	  		event.preventDefault();
+	  		swal({
+				title: 'Are you sure?',
+				text: "You won't be able to revert this!",
+				type: 'warning',
+				showCancelButton: true,
+				confirmButtonColor: '#3085d6',
+				cancelButtonColor: '#d33',
+				confirmButtonText: 'Yes, delete it!'
+			}).then((result) => {
+			  	if (result.value) { 
+			  		$.ajax({
+                        method: 'POST',
+                        url: "{{ route('dashboard.forms.delete') }}",
+                        data: { 
+                        	form_id: form_id, 
+                        	_token: token
+                        }
+                    }).done(function (data) {
+                    	if(data == 'success'){
+                    		$(".product_line[data-id='"+product_id+"']").first().remove();
+                    		swal('Deleted!','The product has been deleted.','success')
+                    	} else {
+                    		swal('Oops!','Something went wrong...','danger')
+                    	}
+                    });
+			  	}
+			})
+	    });
+	});
+});
+</script>
 @endsection
