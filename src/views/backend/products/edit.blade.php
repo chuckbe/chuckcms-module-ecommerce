@@ -354,11 +354,20 @@
                 var oldPriceSale = '0.000000';
                 var oldPriceFinal = '0.000000';
                 var oldPriceDiscount = '0.000000';
+                var oldWidth = '0,00';
+                var oldHeight = '0,00';
+                var oldDepth = '0,00';
+                var oldWeight = '0,000';
               } else {
                 var oldQuantity = $('.old-combination-row[data-combination-key="'+finalCombinations[i].key+'"]').find('.combination_quantity_input').val();
                 var oldPriceSale = $('.old-combination-row[data-combination-key="'+finalCombinations[i].key+'"]').find('.combination_price_sale_input').val();
                 var oldPriceFinal = $('.old-combination-row[data-combination-key="'+finalCombinations[i].key+'"]').find('.combination_price_final_input').val();
                 var oldPriceDiscount = $('.old-combination-row[data-combination-key="'+finalCombinations[i].key+'"]').find('.combination_price_discount_input').val();
+
+                var oldWidth = $('.old-combination-row[data-combination-key="'+finalCombinations[i].key+'"]').find('.combination_width_input').val();
+                var oldHeight = $('.old-combination-row[data-combination-key="'+finalCombinations[i].key+'"]').find('.combination_height_input').val();
+                var oldDepth = $('.old-combination-row[data-combination-key="'+finalCombinations[i].key+'"]').find('.combination_depth_input').val();
+                var oldWeight = $('.old-combination-row[data-combination-key="'+finalCombinations[i].key+'"]').find('.combination_weight_input').val();
               }
 
               console.log('da old quantity :: ', oldQuantity);
@@ -383,6 +392,16 @@
 
               $('.combination-row:last').find('.combination_price_discount_input').val(oldPriceDiscount);
               $('.combination-row:last').find('.combination_price_discount_input').attr('name', 'combinations['+finalCombinations[i].key+'][price][discount]');
+
+
+              $('.combination-row:last').find('.combination_width_input').val(oldWidth);
+              $('.combination-row:last').find('.combination_width_input').attr('name', 'combinations['+finalCombinations[i].key+'][dimensions][width]');
+              $('.combination-row:last').find('.combination_height_input').val(oldHeight);
+              $('.combination-row:last').find('.combination_height_input').attr('name', 'combinations['+finalCombinations[i].key+'][dimensions][height]');
+              $('.combination-row:last').find('.combination_depth_input').val(oldDepth);
+              $('.combination-row:last').find('.combination_depth_input').attr('name', 'combinations['+finalCombinations[i].key+'][dimensions][depth]');
+              $('.combination-row:last').find('.combination_weight_input').val(oldWeight);
+              $('.combination-row:last').find('.combination_weight_input').attr('name', 'combinations['+finalCombinations[i].key+'][dimensions][weight]');
 
 
 
