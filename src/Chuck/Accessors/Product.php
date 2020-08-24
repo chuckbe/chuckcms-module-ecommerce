@@ -169,9 +169,9 @@ class Product
         return $this->productRepository->quantity($product, $sku);
     }
 
-    public function getOptions(ProductModel $product, $sku)
+    public function getOptions(ProductModel $product, $sku, $options = [])
     {
-        return $this->productRepository->getOptions($product, $sku);
+        return $this->productRepository->getOptions($product, $sku, $options);
     }
 
     public function isBuyable(ProductModel $product)

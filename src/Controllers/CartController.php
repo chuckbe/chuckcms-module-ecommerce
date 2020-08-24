@@ -7,6 +7,7 @@ use Cart;
 use Chuckbe\ChuckcmsModuleEcommerce\Chuck\ProductRepository;
 use ChuckEcommerce;
 use ChuckProduct;
+use Str;
 
 use Illuminate\Http\Request;
 use App\Http\Requests;
@@ -54,7 +55,7 @@ class CartController extends Controller
     	}
 
         foreach(Cart::instance('shopping')->content() as $item) {
-            if($item->id == $request->sku ) {
+            if($item->id == $request->sku) {
 
                 if($this->productRepository->quantity($product, $request->sku) < ($request->quantity + $item->qty)) {
                     $notification = [];
@@ -66,23 +67,23 @@ class CartController extends Controller
                     return response()->json(['status' => 'error', 'notification' => $notification]);
                 }
 
-                Cart::instance('shopping')->update($item->rowId, (int)$request->quantity + $item->qty);
+                if($this->compareOptions($item, $request->options)) {
+                    Cart::instance('shopping')->update($item->rowId, (int)$request->quantity + $item->qty);
 
-                if(Auth::user()) {
-                    Cart::instance('shopping')->store('shopping_'.Auth::user()->id);
+                    if(Auth::user()) {
+                        Cart::instance('shopping')->store('shopping_'.Auth::user()->id);
+                    }
+
+                    $count = Cart::instance('shopping')->count();
+            
+                    $notification = [];
+                    $notification['type'] = 'success';
+                    $notification['title'] = ChuckProduct::title($product);
+                    $notification['message'] = 'succesvol toegevoegd!';
+                    $notification['icon'] = 'icon-circle-check';
+
+                    return response()->json(['status' => 'success', 'notification' => $notification, 'cart_count' => $count]);
                 }
-
-                $count = Cart::instance('shopping')->count();
-        
-                $notification = [];
-                $notification['type'] = 'success';
-                $notification['title'] = ChuckProduct::title($product);
-                $notification['message'] = 'succesvol toegevoegd!';
-                $notification['icon'] = 'icon-circle-check';
-
-                return response()->json(['status' => 'success', 'notification' => $notification, 'cart_count' => $count]);
-                
-                
             }
         }
     	
@@ -91,7 +92,7 @@ class CartController extends Controller
                                 ChuckProduct::title($product), 
                                 (int)$request->quantity, 
                                 ChuckProduct::priceNoTaxRaw($product, $request->sku), 
-                                ChuckProduct::getOptions($product, $request->sku),
+                                ChuckProduct::getOptions($product, $request->sku, $request->options),
                                 ChuckProduct::taxRateForSKU($product, $request->sku)
                             );
 
@@ -198,5 +199,19 @@ class CartController extends Controller
         $view_overview = view($template->hintpath . '::templates.' . $template->slug . '.ecommerce.' . config('chuckcms-module-ecommerce.blade_layouts.cart_overview'))->render();
 
     	return response()->json(['status' => 'success', 'notification' => $notification, 'html_overview' => $view_overview, 'html_detail' => $view_detail]);
+    }
+
+    public function compareOptions($item, $options) 
+    {
+        $bool = false;
+        foreach($options as $given_option) {
+            $key = Str::slug(explode('%|%', $given_option)[0], '_');
+            if($item->options->has($key)) {
+                if($item->options->$key == explode('%|%', $given_option)[1]) {
+                    $bool = true;
+                }
+            } 
+        }
+        return $bool;
     }
 }

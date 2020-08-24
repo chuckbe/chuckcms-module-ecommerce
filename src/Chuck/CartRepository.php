@@ -36,8 +36,8 @@ class CartRepository
         foreach($cart->content() as $cartItem) {
             foreach($products as $productItem) {
                 if ($this->productRepository->hasSKU($productItem, $cartItem->id)) {
-                    $product_array[$cartItem->id]['options'] = $this->productRepository->getOptions($productItem, $cartItem->id);
-                    $product_array[$cartItem->id]['options_text'] = $this->productRepository->getOptionsText($productItem, $cartItem->id);
+                    $product_array[$cartItem->id]['options'] = $this->productRepository->getOptions($productItem, $cartItem->id, $cartItem->options);
+                    $product_array[$cartItem->id]['options_text'] = $this->productRepository->getOptionsText($productItem, $cartItem->id, $cartItem->options);
                     $product_array[$cartItem->id]['price_object'] = $this->productRepository->priceObject($productItem, $cartItem->id);
                     $product_array[$cartItem->id]['sku'] = $cartItem->id;
                     $product_array[$cartItem->id]['title'] = $this->productRepository->title($productItem);

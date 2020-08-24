@@ -60,9 +60,13 @@
 
 		product_id = $(this).attr('data-product-id');
 		sku = $('.ce_combinationInput[data-product-id='+product_id+']').val();
+		options = [];
+		$('.ce_optionSelectInput').each(function() {
+			options.push($(this).children("option:selected").attr('data-option-key')+'%|%'+$(this).children("option:selected").val());
+		});
 		quantity = $('.ce_productQuantityInput[data-product-id='+product_id+']').val();
 
-		addToCart(product_id, sku, quantity).done(function(data) {
+		addToCart(product_id, sku, options, quantity).done(function(data) {
 			if(data.status == 'success') {
 				console.log('graett jobb', data);
 
@@ -98,13 +102,14 @@
         });
 	}
 
-	function addToCart(product_id, sku, quantity) {
+	function addToCart(product_id, sku, options, quantity) {
 		return $.ajax({
             method: 'POST',
             url: add_to_cart_url,
             data: { 
             	product_id: product_id, 
             	sku: sku,
+            	options: options,
             	quantity: quantity,
             	_token: a_token
             }

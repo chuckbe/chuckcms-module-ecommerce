@@ -62,6 +62,9 @@
                         <a class="nav-link" id="p_combinations-tab" data-toggle="tab" href="#p_combinations" role="tab" aria-controls="p_combinations" aria-selected="false">Combinaties</a>
                     </li>
                     <li class="nav-item" role="presentation">
+                        <a class="nav-link" id="p_options-tab" data-toggle="tab" href="#p_options" role="tab" aria-controls="p_options" aria-selected="false">Opties</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
                         <a class="nav-link" id="p_texts-tab" data-toggle="tab" href="#p_texts" role="tab" aria-controls="p_texts" aria-selected="false">Teksten</a>
                     </li>
                     <li class="nav-item" role="presentation">
@@ -96,6 +99,10 @@
               @include('chuckcms-module-ecommerce::backend.products.edit._tab_combinations')
             </div>
 
+            <div class="col-sm-12 tab-pane fade" id="p_options" role="tabpanel" aria-labelledby="p_options-tab">
+              @include('chuckcms-module-ecommerce::backend.products.edit._tab_options')
+            </div>
+
             <div class="col-sm-12 tab-pane fade" id="p_texts" role="tabpanel" aria-labelledby="p_texts-tab">
               @include('chuckcms-module-ecommerce::backend.products.edit._tab_texts')
             </div>
@@ -125,6 +132,64 @@
 <script src="{{ URL::to('vendor/laravel-filemanager/js/lfm.js') }}"></script>
 <script src="//cdn.chuck.be/assets/plugins/jquery-autonumeric/autoNumeric.js"></script>
 <script src="//cdn.chuck.be/assets/plugins/summernote/js/summernote.min.js"></script>
+
+<script>
+$(document).ready(function() {
+$( "#options_input_container" ).sortable({revert: true});
+
+$('body').on('click', '.remove_line_button', function() {
+    checker = $(this).parents('._input_container').find('._input_line').length;
+    if(checker > 1) {
+        $(this).parents('._input_line').remove();
+    } else {
+        $(this).parents('._input_line').addClass('d-none');
+        $(this).parents('._input_line').find('input').prop('disabled', true);
+    }
+});
+
+$('body').on('click', '#new_option_button', function() {
+    $('#new_option_error').addClass('d-none');
+    if($('#new_option_key').val().length == 0 || $('#new_option_value').val().length == 0) {
+        $('#new_option_error').removeClass('d-none');
+        return;
+    }
+
+    new_key = $('#new_option_key').val();
+    new_value = $('#new_option_value').val();
+    //new_file = $('#new_css_asset').is(':checked');
+
+    if($('.option_input_line').length > 1) {
+        $('.option_input_line:first').clone().appendTo('.option_input_container');
+        $('.option_input_container').append('<hr>');
+    } else {
+      if($('.option_input_line:first').hasClass('d-none')) {
+        $('.option_input_line:first').removeClass('d-none');
+        $('.option_input_line:first').find('input').prop('disabled', false);
+      } else {
+        $('.option_input_line:first').clone().appendTo('.option_input_container');
+        $('.option_input_container').append('<hr>');
+      }
+        
+    }
+
+    $('.option_input_line:last').find('.option_key_input').attr('id', 'option_key_'+new_key);
+    $('.option_input_line:last').find('.option_key_input').val(new_key);
+    $('.option_input_line:last').find('.option_key_input').siblings('label').attr('for', 'option_key_'+new_key);
+
+    $('.option_input_line:last').find('.option_value_input').attr('id', 'option_value_'+new_key);
+    $('.option_input_line:last').find('.option_value_input').val(new_value);
+    $('.option_input_line:last').find('.option_value_input').siblings('label').attr('for', 'option_value_'+new_key);
+
+    
+
+    $('#new_option_key').val('');
+    $('#new_option_value').val('');
+});
+
+
+});
+</script>
+
 <script>
 	$( document ).ready(function() { 
 
@@ -222,7 +287,7 @@
       });
     });
 
-    $(".attribute-multi-select-input").on('change', function(){
+    $(".attribute-multi-select-input").on('focusout', function(){
       //check if all attributes are filled
       var selectedAttributes = $("#attributes_multi_select").val();
       var totalCombinations = parseInt(1);
@@ -439,8 +504,6 @@
     });
 
   }
-
-
 		
 	});
 </script>

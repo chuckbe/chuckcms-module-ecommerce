@@ -367,6 +367,13 @@ class ProductRepository
         }
         $json['combinations'] = $combinations;
 
+        $options = [];
+        $countOptions = count($values->option_key);
+        for ($i=0; $i < $countOptions; $i++) { 
+            $options[$values->option_key[$i]]['value'] = $values->option_value[$i];
+        }
+        $json['options'] = $options;
+
 
         $json['images']['image0']['url'] = $values->get('featured_image');
         $json['images']['image0']['alt'] = str_slug($values->get('slug'), '-');
@@ -743,7 +750,7 @@ class ProductRepository
         return $this->combinationForSKU($product, $sku)['price']['vat']['amount'];
     }
 
-    public function getOptions(Repeater $product, $sku)
+    public function getOptions(Repeater $product, $sku, $given_options)
     {
         if($product->json['code']['sku'] == $sku) {
             return array();
@@ -765,10 +772,28 @@ class ProductRepository
 
         }
 
+        if ( array_key_exists('options', $product->json)) {
+            if (is_array($given_options)) {
+                foreach($given_options as $given_option) {
+                    $optionKey = explode('%|%', $given_option)[0];
+                    $optionValue = explode('%|%', $given_option)[1];
+                    if ( array_key_exists($optionKey, $product->json['options'])) {
+                        $options[Str::slug($optionKey, '_')] = $optionValue;
+                    }
+                }
+            } elseif (is_a($given_options, 'Illuminate\Support\Collection')) {
+                foreach($given_options as $optionKey => $optionValue) {
+                    if ( array_key_exists($optionKey, $product->json['options'])) {
+                        $options[Str::slug($optionKey, '_')] = $optionValue;
+                    }
+                }
+            }
+        }
+
         return $options;
     }
 
-    public function getOptionsText(Repeater $product, $sku)
+    public function getOptionsText(Repeater $product, $sku, $given_options = [])
     {
         if($product->json['code']['sku'] == $sku) {
             return null;
@@ -788,6 +813,18 @@ class ProductRepository
                 }
             }
 
+        }
+
+        if ( array_key_exists('options', $product->json)) {
+            if (is_a($given_options, 'Illuminate\Support\Collection')) {
+                foreach($given_options as $optionKey => $optionValue) {
+                    foreach($product->json['options'] as $poKey => $poValue) {
+                        if ($optionKey == Str::slug($poKey, '_')) {
+                            $options[] = $poKey.': '.$optionValue;
+                        }
+                    }
+                }
+            }
         }
 
         return implode(', ', $options);
