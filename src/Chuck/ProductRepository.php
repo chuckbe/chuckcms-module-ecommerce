@@ -368,9 +368,11 @@ class ProductRepository
         $json['combinations'] = $combinations;
 
         $options = [];
-        $countOptions = count($values->option_key);
-        for ($i=0; $i < $countOptions; $i++) { 
-            $options[$values->option_key[$i]]['value'] = $values->option_value[$i];
+        if(is_array($values->option_key)) {
+            $countOptions = count($values->option_key);
+            for ($i=0; $i < $countOptions; $i++) { 
+                $options[$values->option_key[$i]]['value'] = $values->option_value[$i];
+            }
         }
         $json['options'] = $options;
 
