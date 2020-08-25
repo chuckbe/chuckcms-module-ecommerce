@@ -87,14 +87,14 @@ class ProductRepository
 
     public function sku($sku)
     {
+        $query = $this->repeater->where('slug', config('chuckcms-module-ecommerce.products.slug'));
         if(is_array($sku)) {
-            $query = $this->repeater->where('slug', config('chuckcms-module-ecommerce.products.slug'));
             foreach($sku as $sku_single) {
                 $query->orWhereJsonContains('json', $sku_single);
             }
             return $query->get(); 
         }
-        return $this->repeater->whereRaw('json LIKE "%'.$sku.'%"', [20000])->first();
+        return $query->whereRaw('json LIKE "%'.$sku.'%"', [20000])->first();
     }
 
     public function save(Request $values)
