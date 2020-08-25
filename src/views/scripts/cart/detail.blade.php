@@ -26,7 +26,7 @@
             method: 'POST',
             url: remove_from_cart_url,
             data: { 
-            	product_sku: product_sku,
+            	sku: product_sku,
             	row_id: row_id, 
             	_token: a_token
             }
