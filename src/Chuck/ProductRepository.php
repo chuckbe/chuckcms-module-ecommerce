@@ -285,7 +285,7 @@ class ProductRepository
 
         $attributes = [];
         $langs = ChuckSite::getSupportedLocales();
-        if( count($values->get('attributes')) > 0) {
+        if( is_array($values->get('attributes')) {
             foreach ($values->get('attributes') as $attributeId) {
             	$attribute = $this->attributeRepository->getById($attributeId);
             	$selectedOptions = $values->get('attribute')[$attribute->id];
