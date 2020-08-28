@@ -79,6 +79,11 @@ class Product
         return $this->productRepository->sku($sku);
     }
 
+    public function search(string $search)
+    {
+        return $this->productRepository->search($search);
+    }
+
     public function collection(ProductModel $product)
     {
         return $this->productRepository->getCollection($product);

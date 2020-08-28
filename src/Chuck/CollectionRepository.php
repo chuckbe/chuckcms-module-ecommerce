@@ -29,9 +29,12 @@ class CollectionRepository
      *
      * @var string
      **/
-    public function getById(int $id)
+    public function getById($id)
     {
-        return $this->repeater->where('slug', 'collections')->where('id', $id)->first();
+        if(!is_array($id)) {
+            $id = [$id];
+        }
+        return $this->repeater->where('slug', 'collections')->whereIn('id', $id)->first();
     }
 
     /**

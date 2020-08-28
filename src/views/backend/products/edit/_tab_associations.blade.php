@@ -2,10 +2,10 @@
   <div class="col-sm-6">
     <div class="form-group form-group-default form-group-default-select2 required">
       <label>Collectie *</label>
-      <select class="custom-select" name="collection" data-init-plugin="select2" data-minimum-results-for-search="5" data-placeholder="Selecteer een collectie" required>
+      <select class="custom-select" name="collection[]" data-init-plugin="select2" data-minimum-results-for-search="5" data-placeholder="Selecteer een collectie" multiple="multiple" required>
         <option disabled>Selecteer een collectie</option>
         @foreach($collections as $collection)
-          <option value="{{ $collection->id }}" @if($product->json['collection'] == $collection->id) selected @endif>{{ $collection->json['name'] }} {{ $collections->where('id', $collection->json['parent'])->first() ? '('.$collections->where('id', $collection->json['parent'])->first()->json['name'].')' : '' }}</option>
+          <option value="{{ $collection->id }}" @if( (is_array($product->json['collection']) && in_array($collection->id, $product->json['collection'])) || $product->json['collection'] == $collection->id ) selected @endif>{{ $collection->json['name'] }} {{ $collections->where('id', $collection->json['parent'])->first() ? '('.$collections->where('id', $collection->json['parent'])->first()->json['name'].')' : '' }}</option>
         @endforeach
       </select>
     </div>

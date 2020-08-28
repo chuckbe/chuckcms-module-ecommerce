@@ -50,6 +50,27 @@ class ProductRepository
         return $this->product->get();
     }
 
+    /**
+     * Search all the products
+     *
+     * @var string $string
+     **/
+    public function search(string $string)
+    {
+        return $this->product
+                    ->where('json->is_displayed', true)
+                    ->where(function ($query) use ($string) {
+                        $query->where('json->cody->sku', $string)
+                            ->orWhere('json->cody->upc', $string)
+                            ->orWhere('json->cody->ean', $string)
+                            ->orWhere('json->title->'.(string)app()->getLocale(), 'LIKE', '%'.$string.'%')
+                            ->orWhere('json->page_title->'.(string)app()->getLocale(), 'LIKE', '%'.$string.'%')
+                            ->orWhere('json->description->short->'.(string)app()->getLocale(), 'LIKE', '%'.$string.'%')
+                            ->orWhere('json->description->long->'.(string)app()->getLocale(), 'LIKE', '%'.$string.'%');
+                    })
+                    ->get();
+    }
+
     public function getFeatured()
     {
         return $this->product->get();
@@ -69,7 +90,10 @@ class ProductRepository
             return array();
         }
 
-        return $this->product->where('json->collection', ''.$collection->id.'')->get();
+        return $this->product
+                    ->where('json->collection', ''.$collection->id.'')
+                    ->orWhereJsonContains('json->collection', $collection->id)
+                    ->get();
     }
 
     public function forBrand($brand)
@@ -285,7 +309,7 @@ class ProductRepository
 
         $attributes = [];
         $langs = ChuckSite::getSupportedLocales();
-        if( is_array($values->get('attributes')) {
+        if( is_array($values->get('attributes')) ) {
             foreach ($values->get('attributes') as $attributeId) {
             	$attribute = $this->attributeRepository->getById($attributeId);
             	$selectedOptions = $values->get('attribute')[$attribute->id];
