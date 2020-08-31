@@ -10,7 +10,7 @@
     </div>
 </div>
 <div class="options_input_container _input_container" id="options_input_container">
-    @if(array_key_exists('options', $product->json))
+    @if(array_key_exists('options', $product->json) && count($product->json['options']) > 0)
     @foreach($product->json['options'] as $optionKey => $optionValue)
     <div class="form-group row required option_input_line _input_line">
         <div class="col-6 col-sm-3 order-1">
