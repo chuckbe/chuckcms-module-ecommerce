@@ -47,6 +47,7 @@ class ChuckcmsModuleEcommerceServiceProvider extends ServiceProvider
     {   
         $this->loadViewsFrom(__DIR__.'/views', 'chuckcms-module-ecommerce');
 
+        $this->app->register('Chuckbe\ChuckcmsModuleEcommerce\Providers\ChuckCollectionServiceProvider');
         $this->app->register('Chuckbe\ChuckcmsModuleEcommerce\Providers\ChuckEcommerceServiceProvider');
         $this->app->register('Chuckbe\ChuckcmsModuleEcommerce\Providers\ChuckCustomerServiceProvider');
         $this->app->register('Chuckbe\ChuckcmsModuleEcommerce\Providers\ChuckProductServiceProvider');
@@ -55,6 +56,7 @@ class ChuckcmsModuleEcommerceServiceProvider extends ServiceProvider
         $loader = \Illuminate\Foundation\AliasLoader::getInstance();
 
         $loader->alias('ChuckEcommerce', 'Chuckbe\ChuckcmsModuleEcommerce\Facades\Ecommerce');
+        $loader->alias('ChuckCollection', 'Chuckbe\ChuckcmsModuleEcommerce\Facades\Collection');
         $loader->alias('ChuckCustomer', 'Chuckbe\ChuckcmsModuleEcommerce\Facades\Customer');
         $loader->alias('ChuckProduct', 'Chuckbe\ChuckcmsModuleEcommerce\Facades\Product');
 

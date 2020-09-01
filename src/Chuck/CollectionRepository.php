@@ -15,13 +15,42 @@ class CollectionRepository
     }
 
     /**
-     * Get all the products
+     * Get all the collections
      *
-     * @var string
      **/
     public function get()
     {
         return $this->repeater->where('slug', 'collections')->get();
+    }
+
+    /**
+     * Get all the parent collections
+     *
+     **/
+    public function parents()
+    {
+        return $this->repeater->where('slug', 'collections')->whereJsonContains('json->parent', null)->get();
+    }
+
+    /**
+     * Get all the children of a collection
+     *
+     * @var string
+     **/
+    public function children(Repeater $collection)
+    {
+        
+        return $this->repeater->where('slug', 'collections')->whereJsonContains('json->parent', ''.$collection->id.'')->get();
+    }
+
+    /**
+     * Does the collection have children
+     *
+     * @var string
+     **/
+    public function hasChildren(Repeater $collection)
+    {
+        return $this->repeater->where('slug', 'collections')->whereJsonContains('json->parent', ''.$collection->id.'')->count() > 0;
     }
 
     /**
