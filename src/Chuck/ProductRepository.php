@@ -63,10 +63,10 @@ class ProductRepository
                         $query->where('json->cody->sku', $string)
                             ->orWhere('json->cody->upc', $string)
                             ->orWhere('json->cody->ean', $string)
-                            ->orWhere('json->title->'.(string)app()->getLocale(), 'LIKE', '%'.$string.'%')
-                            ->orWhere('json->page_title->'.(string)app()->getLocale(), 'LIKE', '%'.$string.'%')
-                            ->orWhere('json->description->short->'.(string)app()->getLocale(), 'LIKE', '%'.$string.'%')
-                            ->orWhere('json->description->long->'.(string)app()->getLocale(), 'LIKE', '%'.$string.'%');
+                            ->orWhereRaw('LOWER(json_unquote(json_extract(`json`, '.'\'$."title"."'.(string)app()->getLocale().'"'.'\'))) LIKE "%'.strtolower($string).'%"')
+                            ->orWhereRaw('LOWER(json_unquote(json_extract(`json`, '.'\'$."page_title"."'.(string)app()->getLocale().'"'.'\'))) LIKE "%'.strtolower($string).'%"')
+                            ->orWhereRaw('LOWER(json_unquote(json_extract(`json`, '.'\'$."description"."short"."'.(string)app()->getLocale().'"'.'\'))) LIKE "%'.strtolower($string).'%"')
+                            ->orWhereRaw('LOWER(json_unquote(json_extract(`json`, '.'\'$."description"."long"."'.(string)app()->getLocale().'"'.'\'))) LIKE "%'.strtolower($string).'%"');
                     })
                     ->get();
     }
