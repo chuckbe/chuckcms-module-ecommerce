@@ -92,7 +92,7 @@ class ProductRepository
 
         return $this->product
                     ->where('json->collection', ''.$collection->id.'')
-                    ->orWhereJsonContains('json->collection', $collection->id)
+                    ->orWhereJsonContains('json->collection', ''.$collection->id.'')
                     ->get();
     }
 
