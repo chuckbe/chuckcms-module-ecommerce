@@ -36,20 +36,26 @@ return [
 	'attributes' => [
 		'slug' 	=> 'attributes',
 		'url' => 'attribute/',
-		'page' => 'chuckcms-template-antwerp::templates.chuckcms-template-antwerp.default'
+		'page' => 'chuckcms-template-starter::templates.chuckcms-template-starter.default'
 	],
 
 	'brands' => [
 		'slug' 	=> 'brands',
 		'url' => 'brands/',
-		'page' => 'chuckcms-template-antwerp::templates.chuckcms-template-antwerp.default'
+		'page' => 'chuckcms-template-starter::templates.chuckcms-template-starter.default'
 	],
 
 	'collections' => [
 		'slug' 	=> 'collections',
 		'url' => 'collections/',
-		'page' => 'chuckcms-template-antwerp::templates.chuckcms-template-antwerp.default'
+		'page' => 'chuckcms-template-starter::templates.chuckcms-template-starter.default'
 	],
+
+    'discounts' => [
+        'slug'  => 'discounts',
+        'url' => 'discounts/',
+        'page' => 'chuckcms-template-starter::templates.chuckcms-template-starter.default'
+    ],
 
 	'products' => [
 		'slug' 	=> 'products',
@@ -66,7 +72,7 @@ return [
 		],
 
 		'template' => [
-			'hintpath' => 'chuckcms-template-london'
+			'hintpath' => 'chuckcms-template-starter'
 		],
 	],
 
@@ -161,8 +167,6 @@ return [
             ]
         ]
     ],
-
-
 
     'currencies' => [
         'ALL' => 'Albania Lek',

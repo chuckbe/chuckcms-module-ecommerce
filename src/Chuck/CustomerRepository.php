@@ -173,6 +173,11 @@ class CustomerRepository
         }
     }
 
+    public function allGroups()
+    {
+        return ChuckEcommerce::getSetting('customer.groups');
+    }
+
     public function guestGroup()
     {
         $groups = ChuckEcommerce::getSetting('customer.groups');

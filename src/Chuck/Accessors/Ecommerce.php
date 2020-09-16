@@ -207,6 +207,11 @@ class Ecommerce
         return $this->customerRepository->defaultGroup();
     }
 
+    public function allGroups()
+    {
+        return $this->customerRepository->allGroups();
+    }
+
     public function totalSales()
     {
         return $this->orderRepository->totalSales();

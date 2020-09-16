@@ -54,7 +54,7 @@ class InstallModuleEcommerce extends Command
         $hintpath = 'chuckcms-module-ecommerce';
         $path = 'chuckbe/chuckcms-module-ecommerce';
         $type = 'module';
-        $version = '0.1.1';
+        $version = '0.1.10';
         $author = 'Karel Brijs (karel@chuck.be)';
 
         $json = [];
@@ -214,26 +214,69 @@ class InstallModuleEcommerce extends Command
                 'short' => ['nl' => 'Geannuleerd', 'en' => 'Canceled'],
                 'send_email' => true,
                 'email' => [
-                    'template' => 'chuckcms-template-london::templates.chuckcms-template-london.ecommerce.mails.canceled',
-                    'data' => [
-                        'intro' => [
-                            'type' => 'text',
-                            'value' => [
-                                'nl' => 'Uw bestelling werd zonet geannuleerd',
-                                'en' => 'Your order just got canceled'
+                    'customer' => [
+                        'to' => '[%ORDER_EMAIL%]',
+                        'to_name' => '[%ORDER_SURNAME%] [%ORDER_NAME%]',
+                        'cc' => null,
+                        'bcc' => null,
+                        'template' => 'chuckcms-module-ecommerce::emails.default',
+                        'logo' => true,
+                        'data' => [
+                            'subject' => [
+                                'type' => 'text',
+                                'value' => [
+                                    'nl' => 'Uw bestelling #[%ORDER_NUMBER%] is verzonden',
+                                    'en' => 'Your order #[%ORDER_NUMBER%] was shipped'
+                                ],
+                                'required' => true,
+                                'validation' => 'required'
                             ],
-                            'required' => true,
-                            'validation' => 'required|max:255'
-                        ],
-                        'body' => [
-                            'type' => 'textarea',
-                            'value' => [
-                                'nl' => 'Helaas werd je bestelling zonet geannuleerd. \n\n Als wij dit voor je hebben gedaan en je moet nog geld terugkrijgen dan is dit reeds onderweg naar de rekening waarmee je hebt betaald, is dit met Paypal dan krijg je een bijgeschreven krediet. \n\n ',
-                                'en' => 'Unfortunately your order just got canceled. \n\n If we did this for you and you are eligible for a refund than your money is already on it\'s way to you.'
+                            'hidden_preheader' => [
+                                'type' => 'text',
+                                'value' => [
+                                    'nl' => 'Uw bestelling met bestelnummer #[%ORDER_NUMBER%] is onderweg. In deze mail vindt u meer informatie over uw bestelling terug.',
+                                    'en' => 'Your order #[%ORDER_NUMBER%] was shipped'
+                                ],
+                                'required' => true,
+                                'validation' => 'required'
                             ],
-                            'required' => true,
-                            'validation' => 'required'
-                        ],
+                            'intro' => [
+                                'type' => 'textarea',
+                                'value' => [
+                                    'nl' => 'Beste [%ORDER_SURNAME%] [%ORDER_NAME%]<br><br>Uw bestelling is onderweg. Uw bestelling wordt volgende werkdag geleverd tussen 9:00u en 19:00u. Is er niemand thuis? Dan proberen we het de dag erna nog eens, maak u geen zorgen. Heeft u nog vragen? Neem gerust contact met ons op.',
+                                    'en' => 'Order is shipped'
+                                ],
+                                'required' => true,
+                                'validation' => 'required'
+                            ],
+                            'body_title' => [
+                                'type' => 'text',
+                                'value' => [
+                                    'nl' => 'Uw Bestelling',
+                                    'en' => 'Your Order'
+                                ],
+                                'required' => true,
+                                'validation' => 'required'
+                            ],
+                            'body' => [
+                                'type' => 'textarea',
+                                'value' => [
+                                    'nl' => 'Hieronder vind je nogmaals een overzicht terug van jouw bestelling. <br><br> <b>Verzending:</b> [%ORDER_CARRIER_NAME%] <br> <b>Verzendtijd:</b> [%ORDER_CARRIER_TRANSIT_TIME%] <br><br> <b>Overzicht: </b> <br> [%ORDER_PRODUCTS%] <br> <b>Verzendkosten</b>: [%ORDER_SHIPPING_TOTAL%] <br><br> <b>Totaal</b>: [%ORDER_FINAL%] <br><br> <b>Facturatie adres: </b> <br> Naam: [%ORDER_SURNAME%] [%ORDER_NAME%] <br> E-mail: [%ORDER_EMAIL%] <br> Tel: [%ORDER_TELEPHONE%] <br> Bedrijf: [%ORDER_COMPANY%] <br> BTW: [%ORDER_COMPANY_VAT%] <br> Adres: <br>[%ORDER_BILLING_STREET%] [%ORDER_BILLING_HOUSENUMBER%], <br>[%ORDER_BILLING_POSTALCODE%] [%ORDER_BILLING_CITY%], [%ORDER_BILLING_COUNTRY%] <br><br> <b>Verzendadres:</b><br>Naam: [%ORDER_SURNAME%] [%ORDER_NAME%] <br>Adres:<br>[%ORDER_SHIPPING_STREET%] [%ORDER_SHIPPING_HOUSENUMBER%], <br>[%ORDER_SHIPPING_POSTALCODE%] [%ORDER_SHIPPING_CITY%], [%ORDER_SHIPPING_COUNTRY%]',
+                                    'en' => 'Your order is shipped and on its way to you.'
+                                ],
+                                'required' => true,
+                                'validation' => 'required'
+                            ],
+                            'footer' => [
+                                'type' => 'textarea',
+                                'value' => [
+                                    'nl' => 'Heeft u vragen over uw bestelling? U kan ons steeds contacteren.<br><br><a href="mailto:'.config('chuckcms-module-ecommerce.company.email').'">'.config('chuckcms-module-ecommerce.company.email').'</a><br><br>'.config('chuckcms-module-ecommerce.company.name'),
+                                    'en' => 'Your order is shipped and on its way to you.'
+                                ],
+                                'required' => true,
+                                'validation' => 'required'
+                            ],
+                        ]
                     ]
                 ],
                 'invoice' => false,
@@ -245,26 +288,69 @@ class InstallModuleEcommerce extends Command
                 'short' => ['nl' => 'Betalingsfout', 'en' => 'Payment Error'],
                 'send_email' => true,
                 'email' => [
-                    'template' => 'chuckcms-template-london::templates.chuckcms-template-london.ecommerce.mails.canceled',
-                    'data' => [
-                        'intro' => [
-                            'type' => 'text',
-                            'value' => [
-                                'nl' => 'Er is iets misgegaan met uw betaling',
-                                'en' => 'Something went wrong with your payment'
+                    'customer' => [
+                        'to' => '[%ORDER_EMAIL%]',
+                        'to_name' => '[%ORDER_SURNAME%] [%ORDER_NAME%]',
+                        'cc' => null,
+                        'bcc' => null,
+                        'template' => 'chuckcms-module-ecommerce::emails.default',
+                        'logo' => true,
+                        'data' => [
+                            'subject' => [
+                                'type' => 'text',
+                                'value' => [
+                                    'nl' => 'Uw bestelling #[%ORDER_NUMBER%] is verzonden',
+                                    'en' => 'Your order #[%ORDER_NUMBER%] was shipped'
+                                ],
+                                'required' => true,
+                                'validation' => 'required'
                             ],
-                            'required' => true,
-                            'validation' => 'required|max:255'
-                        ],
-                        'body' => [
-                            'type' => 'textarea',
-                            'value' => [
-                                'nl' => 'Helaas is er zonet iets misgegaan met uw betaling. \n\n Maak je geen zorgen, wij hebben je bestelling alsnog opgeslagen. Als je je bestelling wilt afwerken druk dan op de betaalknop hieronder. \n\n ',
-                                'en' => 'Unfortunately something went wrong with your payment. \n\n No worries though, we saved your order just in case. If you would like to continue your order press the payment button just below. \n\n '
+                            'hidden_preheader' => [
+                                'type' => 'text',
+                                'value' => [
+                                    'nl' => 'Uw bestelling met bestelnummer #[%ORDER_NUMBER%] is onderweg. In deze mail vindt u meer informatie over uw bestelling terug.',
+                                    'en' => 'Your order #[%ORDER_NUMBER%] was shipped'
+                                ],
+                                'required' => true,
+                                'validation' => 'required'
                             ],
-                            'required' => true,
-                            'validation' => 'required'
-                        ],
+                            'intro' => [
+                                'type' => 'textarea',
+                                'value' => [
+                                    'nl' => 'Beste [%ORDER_SURNAME%] [%ORDER_NAME%]<br><br>Uw bestelling is onderweg. Uw bestelling wordt volgende werkdag geleverd tussen 9:00u en 19:00u. Is er niemand thuis? Dan proberen we het de dag erna nog eens, maak u geen zorgen. Heeft u nog vragen? Neem gerust contact met ons op.',
+                                    'en' => 'Order is shipped'
+                                ],
+                                'required' => true,
+                                'validation' => 'required'
+                            ],
+                            'body_title' => [
+                                'type' => 'text',
+                                'value' => [
+                                    'nl' => 'Uw Bestelling',
+                                    'en' => 'Your Order'
+                                ],
+                                'required' => true,
+                                'validation' => 'required'
+                            ],
+                            'body' => [
+                                'type' => 'textarea',
+                                'value' => [
+                                    'nl' => 'Hieronder vind je nogmaals een overzicht terug van jouw bestelling. <br><br> <b>Verzending:</b> [%ORDER_CARRIER_NAME%] <br> <b>Verzendtijd:</b> [%ORDER_CARRIER_TRANSIT_TIME%] <br><br> <b>Overzicht: </b> <br> [%ORDER_PRODUCTS%] <br> <b>Verzendkosten</b>: [%ORDER_SHIPPING_TOTAL%] <br><br> <b>Totaal</b>: [%ORDER_FINAL%] <br><br> <b>Facturatie adres: </b> <br> Naam: [%ORDER_SURNAME%] [%ORDER_NAME%] <br> E-mail: [%ORDER_EMAIL%] <br> Tel: [%ORDER_TELEPHONE%] <br> Bedrijf: [%ORDER_COMPANY%] <br> BTW: [%ORDER_COMPANY_VAT%] <br> Adres: <br>[%ORDER_BILLING_STREET%] [%ORDER_BILLING_HOUSENUMBER%], <br>[%ORDER_BILLING_POSTALCODE%] [%ORDER_BILLING_CITY%], [%ORDER_BILLING_COUNTRY%] <br><br> <b>Verzendadres:</b><br>Naam: [%ORDER_SURNAME%] [%ORDER_NAME%] <br>Adres:<br>[%ORDER_SHIPPING_STREET%] [%ORDER_SHIPPING_HOUSENUMBER%], <br>[%ORDER_SHIPPING_POSTALCODE%] [%ORDER_SHIPPING_CITY%], [%ORDER_SHIPPING_COUNTRY%]',
+                                    'en' => 'Your order is shipped and on its way to you.'
+                                ],
+                                'required' => true,
+                                'validation' => 'required'
+                            ],
+                            'footer' => [
+                                'type' => 'textarea',
+                                'value' => [
+                                    'nl' => 'Heeft u vragen over uw bestelling? U kan ons steeds contacteren.<br><br><a href="mailto:'.config('chuckcms-module-ecommerce.company.email').'">'.config('chuckcms-module-ecommerce.company.email').'</a><br><br>'.config('chuckcms-module-ecommerce.company.name'),
+                                    'en' => 'Your order is shipped and on its way to you.'
+                                ],
+                                'required' => true,
+                                'validation' => 'required'
+                            ],
+                        ]
                     ]
                 ],
                 'invoice' => false,
@@ -276,26 +362,69 @@ class InstallModuleEcommerce extends Command
                 'short' => ['nl' => 'Betaald', 'en' => 'Paid'],
                 'send_email' => true,
                 'email' => [
-                    'template' => 'chuckcms-template-london::templates.chuckcms-template-london.ecommerce.mails.canceled',
-                    'data' => [
-                        'intro' => [
-                            'type' => 'text',
-                            'value' => [
-                                'nl' => 'Bedankt voor uw bestelling',
-                                'en' => 'Thank you for your order'
+                    'customer' => [
+                        'to' => '[%ORDER_EMAIL%]',
+                        'to_name' => '[%ORDER_SURNAME%] [%ORDER_NAME%]',
+                        'cc' => null,
+                        'bcc' => null,
+                        'template' => 'chuckcms-module-ecommerce::emails.default',
+                        'logo' => true,
+                        'data' => [
+                            'subject' => [
+                                'type' => 'text',
+                                'value' => [
+                                    'nl' => 'Uw bestelling #[%ORDER_NUMBER%] is verzonden',
+                                    'en' => 'Your order #[%ORDER_NUMBER%] was shipped'
+                                ],
+                                'required' => true,
+                                'validation' => 'required'
                             ],
-                            'required' => true,
-                            'validation' => 'required|max:255'
-                        ],
-                        'body' => [
-                            'type' => 'textarea',
-                            'value' => [
-                                'nl' => 'Hieronder vind je nog eens een overzicht van wat je hebt besteld. \n\n Heb je gekozen voor levering? Dan beginnen wij alvast met je bestelling voor te bereiden. Je krijgt nog een bevestiginsmail wanneer je pakketje onderweg is.',
-                                'en' => 'Below you will find a summary of what you just ordered. \n\n Did you choose for delivery? Then we are already preparing your order. You will receive another confirmation email when your package is on its way.'
+                            'hidden_preheader' => [
+                                'type' => 'text',
+                                'value' => [
+                                    'nl' => 'Uw bestelling met bestelnummer #[%ORDER_NUMBER%] is onderweg. In deze mail vindt u meer informatie over uw bestelling terug.',
+                                    'en' => 'Your order #[%ORDER_NUMBER%] was shipped'
+                                ],
+                                'required' => true,
+                                'validation' => 'required'
                             ],
-                            'required' => true,
-                            'validation' => 'required'
-                        ],
+                            'intro' => [
+                                'type' => 'textarea',
+                                'value' => [
+                                    'nl' => 'Beste [%ORDER_SURNAME%] [%ORDER_NAME%]<br><br>Uw bestelling is onderweg. Uw bestelling wordt volgende werkdag geleverd tussen 9:00u en 19:00u. Is er niemand thuis? Dan proberen we het de dag erna nog eens, maak u geen zorgen. Heeft u nog vragen? Neem gerust contact met ons op.',
+                                    'en' => 'Order is shipped'
+                                ],
+                                'required' => true,
+                                'validation' => 'required'
+                            ],
+                            'body_title' => [
+                                'type' => 'text',
+                                'value' => [
+                                    'nl' => 'Uw Bestelling',
+                                    'en' => 'Your Order'
+                                ],
+                                'required' => true,
+                                'validation' => 'required'
+                            ],
+                            'body' => [
+                                'type' => 'textarea',
+                                'value' => [
+                                    'nl' => 'Hieronder vind je nogmaals een overzicht terug van jouw bestelling. <br><br> <b>Verzending:</b> [%ORDER_CARRIER_NAME%] <br> <b>Verzendtijd:</b> [%ORDER_CARRIER_TRANSIT_TIME%] <br><br> <b>Overzicht: </b> <br> [%ORDER_PRODUCTS%] <br> <b>Verzendkosten</b>: [%ORDER_SHIPPING_TOTAL%] <br><br> <b>Totaal</b>: [%ORDER_FINAL%] <br><br> <b>Facturatie adres: </b> <br> Naam: [%ORDER_SURNAME%] [%ORDER_NAME%] <br> E-mail: [%ORDER_EMAIL%] <br> Tel: [%ORDER_TELEPHONE%] <br> Bedrijf: [%ORDER_COMPANY%] <br> BTW: [%ORDER_COMPANY_VAT%] <br> Adres: <br>[%ORDER_BILLING_STREET%] [%ORDER_BILLING_HOUSENUMBER%], <br>[%ORDER_BILLING_POSTALCODE%] [%ORDER_BILLING_CITY%], [%ORDER_BILLING_COUNTRY%] <br><br> <b>Verzendadres:</b><br>Naam: [%ORDER_SURNAME%] [%ORDER_NAME%] <br>Adres:<br>[%ORDER_SHIPPING_STREET%] [%ORDER_SHIPPING_HOUSENUMBER%], <br>[%ORDER_SHIPPING_POSTALCODE%] [%ORDER_SHIPPING_CITY%], [%ORDER_SHIPPING_COUNTRY%]',
+                                    'en' => 'Your order is shipped and on its way to you.'
+                                ],
+                                'required' => true,
+                                'validation' => 'required'
+                            ],
+                            'footer' => [
+                                'type' => 'textarea',
+                                'value' => [
+                                    'nl' => 'Heeft u vragen over uw bestelling? U kan ons steeds contacteren.<br><br><a href="mailto:'.config('chuckcms-module-ecommerce.company.email').'">'.config('chuckcms-module-ecommerce.company.email').'</a><br><br>'.config('chuckcms-module-ecommerce.company.name'),
+                                    'en' => 'Your order is shipped and on its way to you.'
+                                ],
+                                'required' => true,
+                                'validation' => 'required'
+                            ],
+                        ]
                     ]
                 ],
                 'invoice' => true,
@@ -316,26 +445,69 @@ class InstallModuleEcommerce extends Command
                 'short' => ['nl' => 'Verzonden', 'en' => 'Shipped'],
                 'send_email' => true,
                 'email' => [
-                    'template' => 'chuckcms-template-london::templates.chuckcms-template-london.ecommerce.mails.canceled',
-                    'data' => [
-                        'intro' => [
-                            'type' => 'text',
-                            'value' => [
-                                'nl' => 'Bestelling is verzonden',
-                                'en' => 'Order is shipped'
+                    'customer' => [
+                        'to' => '[%ORDER_EMAIL%]',
+                        'to_name' => '[%ORDER_SURNAME%] [%ORDER_NAME%]',
+                        'cc' => null,
+                        'bcc' => null,
+                        'template' => 'chuckcms-module-ecommerce::emails.default',
+                        'logo' => true,
+                        'data' => [
+                            'subject' => [
+                                'type' => 'text',
+                                'value' => [
+                                    'nl' => 'Uw bestelling #[%ORDER_NUMBER%] is verzonden',
+                                    'en' => 'Your order #[%ORDER_NUMBER%] was shipped'
+                                ],
+                                'required' => true,
+                                'validation' => 'required'
                             ],
-                            'required' => true,
-                            'validation' => 'required|max:255'
-                        ],
-                        'body' => [
-                            'type' => 'textarea',
-                            'value' => [
-                                'nl' => 'Je bestelling is verzonden en onderweg naar jou.',
-                                'en' => 'Your order is shipped and on its way to you.'
+                            'hidden_preheader' => [
+                                'type' => 'text',
+                                'value' => [
+                                    'nl' => 'Uw bestelling met bestelnummer #[%ORDER_NUMBER%] is onderweg. In deze mail vindt u meer informatie over uw bestelling terug.',
+                                    'en' => 'Your order #[%ORDER_NUMBER%] was shipped'
+                                ],
+                                'required' => true,
+                                'validation' => 'required'
                             ],
-                            'required' => true,
-                            'validation' => 'required'
-                        ],
+                            'intro' => [
+                                'type' => 'textarea',
+                                'value' => [
+                                    'nl' => 'Beste [%ORDER_SURNAME%] [%ORDER_NAME%]<br><br>Uw bestelling is onderweg. Uw bestelling wordt volgende werkdag geleverd tussen 9:00u en 19:00u. Is er niemand thuis? Dan proberen we het de dag erna nog eens, maak u geen zorgen. Heeft u nog vragen? Neem gerust contact met ons op.',
+                                    'en' => 'Order is shipped'
+                                ],
+                                'required' => true,
+                                'validation' => 'required'
+                            ],
+                            'body_title' => [
+                                'type' => 'text',
+                                'value' => [
+                                    'nl' => 'Uw Bestelling',
+                                    'en' => 'Your Order'
+                                ],
+                                'required' => true,
+                                'validation' => 'required'
+                            ],
+                            'body' => [
+                                'type' => 'textarea',
+                                'value' => [
+                                    'nl' => 'Hieronder vind je nogmaals een overzicht terug van jouw bestelling. <br><br> <b>Verzending:</b> [%ORDER_CARRIER_NAME%] <br> <b>Verzendtijd:</b> [%ORDER_CARRIER_TRANSIT_TIME%] <br><br> <b>Overzicht: </b> <br> [%ORDER_PRODUCTS%] <br> <b>Verzendkosten</b>: [%ORDER_SHIPPING_TOTAL%] <br><br> <b>Totaal</b>: [%ORDER_FINAL%] <br><br> <b>Facturatie adres: </b> <br> Naam: [%ORDER_SURNAME%] [%ORDER_NAME%] <br> E-mail: [%ORDER_EMAIL%] <br> Tel: [%ORDER_TELEPHONE%] <br> Bedrijf: [%ORDER_COMPANY%] <br> BTW: [%ORDER_COMPANY_VAT%] <br> Adres: <br>[%ORDER_BILLING_STREET%] [%ORDER_BILLING_HOUSENUMBER%], <br>[%ORDER_BILLING_POSTALCODE%] [%ORDER_BILLING_CITY%], [%ORDER_BILLING_COUNTRY%] <br><br> <b>Verzendadres:</b><br>Naam: [%ORDER_SURNAME%] [%ORDER_NAME%] <br>Adres:<br>[%ORDER_SHIPPING_STREET%] [%ORDER_SHIPPING_HOUSENUMBER%], <br>[%ORDER_SHIPPING_POSTALCODE%] [%ORDER_SHIPPING_CITY%], [%ORDER_SHIPPING_COUNTRY%]',
+                                    'en' => 'Your order is shipped and on its way to you.'
+                                ],
+                                'required' => true,
+                                'validation' => 'required'
+                            ],
+                            'footer' => [
+                                'type' => 'textarea',
+                                'value' => [
+                                    'nl' => 'Heeft u vragen over uw bestelling? U kan ons steeds contacteren.<br><br><a href="mailto:'.config('chuckcms-module-ecommerce.company.email').'">'.config('chuckcms-module-ecommerce.company.email').'</a><br><br>'.config('chuckcms-module-ecommerce.company.name'),
+                                    'en' => 'Your order is shipped and on its way to you.'
+                                ],
+                                'required' => true,
+                                'validation' => 'required'
+                            ],
+                        ]
                     ]
                 ],
                 'invoice' => true,

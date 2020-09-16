@@ -1,7 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Een nieuwe bestelling #{{ $order->json['order_number'] }}</title>
+@if(array_key_exists('hidden_preheader', $data))
+<title>{!! $data['subject'] !!}</title>
+@else
+<title></title>
+@endif
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -99,15 +103,16 @@
 </style>
 </head>
 <body style="margin: 0 !important; padding: 0 !important;">
-
+@if(array_key_exists('hidden_preheader', $data))
 <!-- HIDDEN PREHEADER TEXT -->
 <div style="display: none; font-size: 1px; color: #fefefe; line-height: 1px; font-family: Helvetica, Arial, sans-serif; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden;">
-    Bevestiging van een nieuwe bestelling #{{ $order->json['order_number'] }} van {{ URL::to('/') }}
+    {!! $data['hidden_preheader'] !!}
 </div>
+@endif
 
 <!-- HEADER -->
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
-    @if(ChuckSite::getSetting('logo.href') !== null)    
+    @if(ChuckSite::getSetting('logo.href') !== null && $email['logo'])    
     <tr>
         <td bgcolor="#ffffff" align="center">
             <!--[if (gte mso 9)|(IE)]>
@@ -119,7 +124,7 @@
                 <tr>
                     <td align="center" valign="top" style="padding: 15px 0;" class="logo">
                         <a href="{{ URL::to('/') }}" target="_blank">
-                            <img alt="Logo" src="{{ URL::to('/') }}{{ ChuckSite::getSetting('logo.href') }}" height="30" width="200" style="display: block; font-family: Helvetica, Arial, sans-serif; color: #ffffff; font-size: 16px;" border="0">
+                            <img src="{{ URL::to('/') }}{{ ChuckSite::getSetting('logo.href') }}" height="30" width="200" style="display: block; font-family: Helvetica, Arial, sans-serif; color: #ffffff; font-size: 16px;" border="0">
                         </a>
                     </td>
                 </tr>
@@ -144,76 +149,57 @@
                     <td>
                         <!-- HERO IMAGE -->
                         <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                            @if(array_key_exists('intro', $data))
                             <tr>
                                 <td>
                                     <!-- COPY -->
                                     <table width="100%" border="0" cellspacing="0" cellpadding="0">
                                         <tr>
                                             <td style="padding: 20px 0 0 0; font-size: 16px; line-height: 25px; font-family: Helvetica, Arial, sans-serif; color: #666666;" class="padding">
-                                                Proficiat!<br><br>
-
-                                                Een nieuwe bestelling op uw website {{ URL::to('/') }}. Hieronder de gegevens van de bestelling waar u direct mee aan de slag kan.
+                                                {!! $data['intro'] !!}
                                             </td>
                                         </tr>
                                     </table>
                                 </td>
                             </tr>
+                            @endif
 
+                            @if(array_key_exists('body_title', $data) || array_key_exists('body', $data))
+                            <tr>
+                                <td>
+                                    <!-- COPY -->
+                                    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                        @if(array_key_exists('body_title', $data))
+                                        <tr>
+                                            <td style="font-size: 22px; font-family: Helvetica, Arial, sans-serif; color: #333333; padding-top: 30px;" class="padding">{!! $data['body_title'] !!}</td>
+                                        </tr>
+                                        @endif
+                                        @if(array_key_exists('body', $data))
+                                        <tr>
+                                            <td style="padding: 20px 0 0 0; font-size: 16px; line-height: 25px; font-family: Helvetica, Arial, sans-serif; color: #666666;" class="padding">
+                                                {!! $data['body'] !!}
+                                            </td>
+                                        </tr>
+                                        @endif
+                                    </table>
+                                </td>
+                            </tr>
+                            @endif
+
+                            @if(array_key_exists('footer', $data))
                             <tr>
                                 <td>
                                     <!-- COPY -->
                                     <table width="100%" border="0" cellspacing="0" cellpadding="0">
                                         <tr>
-                                            <td style="font-size: 22px; font-family: Helvetica, Arial, sans-serif; color: #333333; padding-top: 30px;" class="padding">Overzicht van de bestelling</td>
-                                        </tr>
-                                        <tr>
                                             <td style="padding: 20px 0 0 0; font-size: 16px; line-height: 25px; font-family: Helvetica, Arial, sans-serif; color: #666666;" class="padding">
-                                                <b>Verzending:</b> {{ $order->json['shipping']['name'] }} <br>
-                                                <b>Verzendtijd:</b> {{ $order->json['shipping']['transit_time'] }} 
-                                                <br><br>
-
-                                                <b>Overzicht: </b> <br>
-                                                @foreach($order->json['products'] as $sku => $product)
-                                                    <p>{{ $product['quantity'] }}x "{{ $product['title'] . ' ' . $product['options_text'] }}" ({{ ChuckEcommerce::formatPrice((float)$product['price_tax']) }}) => {{ ChuckEcommerce::formatPrice((float)$product['total']) }}</p>
-                                                    <hr>
-                                                @endforeach
-
-                                                <br>
-
-                                                <b>Verzendkosten</b>: {{ $order->shipping > 0 ? ChuckEcommerce::formatPrice($order->shipping + $order->shipping_tax) : 'gratis' }} <br>
-                                                <b>Totaal</b>: {{ ChuckEcommerce::formatPrice($order->final) }}
-                                               
-                                                <br><br>
-
-                                                @if($order->json['address']['shipping_equal_to_billing'])
-                                                <b>Facturatie & Verzendadres: </b>
-                                                @else 
-                                                <b>Facturatie adres: </b>
-                                                @endif  
-                                                <br>
-
-                                                Naam: {{ $order->surname . ' ' . $order->name }} <br>
-                                                E-mail: {{ $order->email }} 
-                                                @if(!is_null($order->tel)) 
-                                                <br>
-                                                Tel: {{ $order->tel }} 
-                                                @endif
-                                                <br>
-                                                @if(!is_null($order->customer->json['company']['name']))
-                                                Bedrijfsnaam: {{ $order->customer->json['company']['name'] }} <br>
-                                                BTW-nummer: {{ $order->customer->json['company']['vat'] }} <br>
-                                                @endif
-                                                Adres: <br> {{ $order->json['address']['billing']['street'] . ' ' . $order->json['address']['billing']['housenumber'] }}, <br> {{ $order->json['address']['billing']['postalcode'] . ' ' . $order->json['address']['billing']['city'] .', '. config('chuckcms-module-ecommerce.countries_data.'.$order->json['address']['billing']['country'].'.native') }} <br>
-                                                @if(!$order->json['address']['shipping_equal_to_billing'])
-                                                <br>
-                                                <b>Verzend adres: </b><br> 
-                                                {{ $order->json['address']['shipping']['street'] . ' ' . $order->json['address']['shipping']['housenumber'] }}, <br> {{ $order->json['address']['shipping']['postalcode'] . ' ' . $order->json['address']['shipping']['city'] .', '. config('chuckcms-module-ecommerce.countries_data.'.$order->json['address']['shipping']['country'].'.native') }} <br>
-                                                @endif
+                                                {!! $data['footer'] !!}
                                             </td>
                                         </tr>
                                     </table>
                                 </td>
                             </tr>
+                            @endif
                         </table>
                     </td>
                 </tr>

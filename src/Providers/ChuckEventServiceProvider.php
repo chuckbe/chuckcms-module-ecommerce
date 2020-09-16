@@ -13,6 +13,9 @@ class ChuckEventServiceProvider extends ServiceProvider
     protected $listen = [
         'Chuckbe\ChuckcmsModuleEcommerce\Events\OrderWasPaid' => [
             'Chuckbe\ChuckcmsModuleEcommerce\Listeners\UpdateStatusToPaid'
+        ],
+        'Chuckbe\ChuckcmsModuleEcommerce\Events\OrderStatusWasUpdated' => [
+            'Chuckbe\ChuckcmsModuleEcommerce\Listeners\UpdateOrderStatus'
         ]
     ];
 

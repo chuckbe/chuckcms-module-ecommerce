@@ -10,6 +10,7 @@ use Mollie;
 use App\Http\Controllers\Controller;
 use Chuckbe\ChuckcmsModuleEcommerce\Models\Order;
 use Chuckbe\ChuckcmsModuleEcommerce\Events\OrderWasPaid;
+use Chuckbe\ChuckcmsModuleEcommerce\Events\OrderStatusWasUpdated;
 
 class OrderController extends Controller
 {
@@ -34,6 +35,19 @@ class OrderController extends Controller
     public function detail(Order $order)
     {
         return view('chuckcms-module-ecommerce::backend.orders.detail', ['order' => $order]);
+    }
+
+    public function status(Request $request)
+    {
+        $this->validate($request, [
+            'order_id' => 'required',
+            'order_status' => 'required|in:'.implode(',', array_keys(ChuckEcommerce::getSetting('order.statuses'))) 
+        ]);
+
+        $order = Order::where('id', $request->order_id)->first();
+        event(new OrderStatusWasUpdated($order, $request->order_status));
+
+        return redirect()->route('dashboard.module.ecommerce.orders.detail', ['order' => $order]);
     }
 
     public function invoice(Order $order)
@@ -62,7 +76,7 @@ class OrderController extends Controller
         if ($payment->isPaid()) { 
             event(new OrderWasPaid($order));
         } else {
-            if($order->json['status'] !== Order::STATUS_PAYMENT) {
+            if($order->json['status'] !== Order::STATUS_PAYMENT) { // fix this for incoming refund webhooks 
                 $json = $order->json;
                 $json['status'] = $payment->status;
                 $order->json = $json;

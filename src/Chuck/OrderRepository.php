@@ -76,7 +76,7 @@ class OrderRepository
 
         $order->subtotal = $cart->total() - $cart->tax();
         $order->subtotal_tax = $cart->tax();
-        $order->shipping = ChuckEcommerce::getCarrierSubtotal($request->get('shipping_method'), 21);
+        $order->shipping = ChuckEcommerce::getCarrierSubtotal($request->get('shipping_method'), 21); // get shipping vat according to shop address and customer address
         $order->shipping_tax = ChuckEcommerce::getCarrierTax($request->get('shipping_method'), 21);
         $order->total = $order->subtotal + $order->shipping;
         $order->total_tax = $order->subtotal_tax + $order->shipping_tax;
@@ -110,9 +110,183 @@ class OrderRepository
                 $pdf = null;
             }
 
-            $this->sendConfirmation($order, $status_object['invoice'], $pdf);
-            $this->sendNotification($order, $status_object['invoice'], $pdf);
+            if(array_key_exists('template', $status_object['email']) && !is_array($status_object['email']['template'])) {
+                $this->sendConfirmation($order, $status_object['invoice'], $pdf);
+                $this->sendNotification($order, $status_object['invoice'], $pdf);
+            } else {
+                foreach($status_object['email'] as $emailKey => $email) {
+                    $this->sendMail($order, $status_object, $emailKey, $email, $pdf);
+                    sleep(1);
+                }
+            }
         }
+    }
+
+    private function sendMail(Order $order, array $status, string $emailKey, array $email, $pdf = null)
+    {
+        $invoice = $status['invoice'];
+        $template = $email['template'];
+        $to = $this->replaceEmailVariables($order, is_null($email['to']) ? '' : $email['to']);
+        $to_name = $this->replaceEmailVariables($order, is_null($email['to_name']) ? '' : $email['to_name']);
+        $cc = $this->replaceEmailVariables($order, is_null($email['cc']) ? '' : $email['cc']);
+        $bcc = $this->replaceEmailVariables($order, is_null($email['bcc']) ? '' : $email['bcc']);
+
+        $data = $this->prepareEmailData($order, $email);
+
+        Mail::send($template, ['order' => $order, 'email' => $email, 'data' => $data], function ($m) use ($order, $status, $email, $to, $to_name, $cc, $bcc, $data, $invoice, $pdf) {
+            $m->from(config('chuckcms-module-ecommerce.emails.from_email'), config('chuckcms-module-ecommerce.emails.from_name'));
+            
+            $m->to($to, $to_name)->subject($data['subject']);
+
+            if( $cc !== false && $cc !== null && $cc !== ''){
+                $m->cc($cc);
+            }
+
+            if( $bcc !== false && $bcc !== null && $bcc !== ''){
+                $m->bcc($bcc);
+            }
+
+            if ($invoice) {
+                $m->attachData($pdf, $order->invoiceFileName, ['mime' => 'application/pdf']);
+            }
+        });    
+    }
+
+    private function prepareEmailData(Order $order, array $email)
+    {
+        $data = [];
+        $locale = app()->getLocale();
+
+        foreach($email['data'] as $emailDataKey => $emailData) {
+            $data[$emailDataKey] = $this->replaceEmailVariables($order, $emailData['value'][$locale]);
+        }
+
+        return $data;
+    }
+
+    private function replaceEmailVariables(Order $order, string $value)
+    {
+        $foundVariables = $this->getRawVariables($value, '[%', '%]');
+        if (count($foundVariables) > 0) {
+            foreach ($foundVariables as $foundVariable) {
+                if (strpos($foundVariable, 'ORDER_NUMBER') !== false) {
+                    $value = str_replace('[%ORDER_NUMBER%]', $order->json['order_number'], $value);
+                }
+                if (strpos($foundVariable, 'ORDER_SUBTOTAL') !== false) {
+                    $value = str_replace('[%ORDER_SUBTOTAL%]', ChuckEcommerce::formatPrice($order->subtotal), $value);
+                }
+                if (strpos($foundVariable, 'ORDER_SUBTOTAL_TAX') !== false) {
+                    $value = str_replace('[%ORDER_SUBTOTAL_TAX%]', ChuckEcommerce::formatPrice($order->subtotal_tax), $value);
+                }
+                if (strpos($foundVariable, 'ORDER_SHIPPING') !== false) {
+                    $value = str_replace('[%ORDER_SHIPPING%]', ChuckEcommerce::formatPrice($order->shipping), $value);
+                }
+                if (strpos($foundVariable, 'ORDER_SHIPPING_TAX') !== false) {
+                    $value = str_replace('[%ORDER_SHIPPING_TAX%]', ChuckEcommerce::formatPrice($order->shipping_tax), $value);
+                }
+                if (strpos($foundVariable, 'ORDER_SHIPPING_TOTAL') !== false) {
+                    $value = str_replace('[%ORDER_SHIPPING_TOTAL%]', $order->shipping > 0 ? ChuckEcommerce::formatPrice($order->shipping + $order->shipping_tax) : 'gratis', $value);
+                }
+                if (strpos($foundVariable, 'ORDER_TOTAL') !== false) {
+                    $value = str_replace('[%ORDER_TOTAL%]', ChuckEcommerce::formatPrice($order->total), $value);
+                }
+                if (strpos($foundVariable, 'ORDER_TOTAL_TAX') !== false) {
+                    $value = str_replace('[%ORDER_TOTAL_TAX%]', ChuckEcommerce::formatPrice($order->total_tax), $value);
+                }
+                if (strpos($foundVariable, 'ORDER_FINAL') !== false) {
+                    $value = str_replace('[%ORDER_FINAL%]', ChuckEcommerce::formatPrice($order->final), $value);
+                }
+                if (strpos($foundVariable, 'ORDER_PAYMENT_METHOD') !== false) {
+                    $value = str_replace('[%ORDER_PAYMENT_METHOD%]', $order->json['payment_method'], $value);
+                }
+                if (strpos($foundVariable, 'ORDER_SURNAME') !== false) {
+                    $value = str_replace('[%ORDER_SURNAME%]', $order->surname, $value);
+                }
+                if (strpos($foundVariable, 'ORDER_NAME') !== false) {
+                    $value = str_replace('[%ORDER_NAME%]', $order->name, $value);
+                }
+                if (strpos($foundVariable, 'ORDER_EMAIL') !== false) {
+                    $value = str_replace('[%ORDER_EMAIL%]', $order->email, $value);
+                }
+                if (strpos($foundVariable, 'ORDER_TELEPHONE') !== false) {
+                    $value = str_replace('[%ORDER_TELEPHONE%]', !is_null($order->tel) ? $order->tel : '', $value);
+                }
+                if (strpos($foundVariable, 'ORDER_COMPANY') !== false) {
+                    $value = str_replace('[%ORDER_COMPANY%]', !is_null($order->customer->json['company']['name']) ? $order->json['company']['name'] : '', $value);
+                }
+                if (strpos($foundVariable, 'ORDER_COMPANY_VAT') !== false) {
+                    $value = str_replace('[%ORDER_COMPANY_VAT%]', !is_null($order->customer->json['company']['name']) ? $order->json['company']['vat'] : '', $value);
+                }
+                if (strpos($foundVariable, 'ORDER_BILLING_STREET') !== false) {
+                    $value = str_replace('[%ORDER_BILLING_STREET%]', $order->json['address']['billing']['street'], $value);
+                }
+                if (strpos($foundVariable, 'ORDER_BILLING_HOUSENUMBER') !== false) {
+                    $value = str_replace('[%ORDER_BILLING_HOUSENUMBER%]', $order->json['address']['billing']['housenumber'], $value);
+                }
+                if (strpos($foundVariable, 'ORDER_BILLING_POSTALCODE') !== false) {
+                    $value = str_replace('[%ORDER_BILLING_POSTALCODE%]', $order->json['address']['billing']['postalcode'], $value);
+                }
+                if (strpos($foundVariable, 'ORDER_BILLING_CITY') !== false) {
+                    $value = str_replace('[%ORDER_BILLING_CITY%]', $order->json['address']['billing']['city'], $value);
+                }
+                if (strpos($foundVariable, 'ORDER_BILLING_COUNTRY') !== false) {
+                    $value = str_replace('[%ORDER_BILLING_COUNTRY%]', config('chuckcms-module-ecommerce.countries_data.'.$order->json['address']['billing']['country'].'.native'), $value);
+                }
+                if (strpos($foundVariable, 'ORDER_SHIPPING_STREET') !== false) {
+                    $value = str_replace('[%ORDER_SHIPPING_STREET%]', $order->json['address']['shipping_equal_to_billing'] ? $order->json['address']['billing']['street'] : $order->json['address']['shipping']['street'], $value);
+                }
+                if (strpos($foundVariable, 'ORDER_SHIPPING_HOUSENUMBER') !== false) {
+                    $value = str_replace('[%ORDER_SHIPPING_HOUSENUMBER%]', $order->json['address']['shipping_equal_to_billing'] ? $order->json['address']['billing']['housenumber'] : $order->json['address']['shipping']['housenumber'], $value);
+                }
+                if (strpos($foundVariable, 'ORDER_SHIPPING_POSTALCODE') !== false) {
+                    $value = str_replace('[%ORDER_SHIPPING_POSTALCODE%]', $order->json['address']['shipping_equal_to_billing'] ? $order->json['address']['billing']['postalcode'] : $order->json['address']['shipping']['postalcode'], $value);
+                }
+                if (strpos($foundVariable, 'ORDER_SHIPPING_CITY') !== false) {
+                    $value = str_replace('[%ORDER_SHIPPING_CITY%]', $order->json['address']['shipping_equal_to_billing'] ? $order->json['address']['billing']['city'] : $order->json['address']['shipping']['city'], $value);
+                }
+                if (strpos($foundVariable, 'ORDER_SHIPPING_COUNTRY') !== false) {
+                    $value = str_replace('[%ORDER_SHIPPING_COUNTRY%]', $order->json['address']['shipping_equal_to_billing'] ? config('chuckcms-module-ecommerce.countries_data.'.$order->json['address']['billing']['country'].'.native') : config('chuckcms-module-ecommerce.countries_data.'.$order->json['address']['shipping']['country'].'.native'), $value);
+                }
+                if (strpos($foundVariable, 'ORDER_PRODUCTS') !== false) {
+                    $value = str_replace('[%ORDER_PRODUCTS%]', $this->formatProducts($order), $value);
+                }
+                if (strpos($foundVariable, 'ORDER_CARRIER_NAME') !== false) {
+                    $value = str_replace('[%ORDER_CARRIER_NAME%]', $order->json['shipping']['name'], $value);
+                }
+                if (strpos($foundVariable, 'ORDER_CARRIER_TRANSIT_TIME') !== false) {
+                    $value = str_replace('[%ORDER_CARRIER_TRANSIT_TIME%]', $order->json['shipping']['transit_time'], $value);
+                }
+            }
+        }
+        return $value;
+    }
+
+    private function formatProducts(Order $order) {
+        $string = '';
+        foreach($order->json['products'] as $sku => $product) {
+            $string = $string.'<p>'.$product['quantity'].'x "'.$product['title'].' <small>'.$product['options_text'].'</small>" ('.ChuckEcommerce::formatPrice((float)$product['price_tax']).') => '.ChuckEcommerce::formatPrice((float)$product['total']).'</p><hr>';
+        }
+
+        return $string;
+    }
+
+    private function getRawVariables($str, $startDelimiter, $endDelimiter) 
+    {
+        $contents = array();
+        $startDelimiterLength = strlen($startDelimiter);
+        $endDelimiterLength = strlen($endDelimiter);
+        $startFrom = 0;
+        while (false !== ($contentStart = strpos($str, $startDelimiter, $startFrom))) {
+            $contentStart += $startDelimiterLength;
+            $contentEnd = strpos($str, $endDelimiter, $contentStart);
+            if (false === $contentEnd) {
+                break;
+            }
+            $contents[] = substr($str, $contentStart, $contentEnd - $contentStart);
+            $startFrom = $contentEnd + $endDelimiterLength;
+        }
+
+        return $contents;
     }
 
     private function sendConfirmation(Order $order, $invoice = false, $pdf = null)

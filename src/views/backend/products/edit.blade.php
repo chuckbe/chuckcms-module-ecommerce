@@ -1,35 +1,5 @@
 @extends('chuckcms::backend.layouts.base')
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 @section('content')
 <div class="container">
     <div class="row">

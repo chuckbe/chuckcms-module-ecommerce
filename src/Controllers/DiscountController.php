@@ -22,4 +22,9 @@ class DiscountController extends Controller
     {
         return view('chuckcms-module-ecommerce::backend.discounts.index');
     }
+
+    public function create()
+    {
+        return view('chuckcms-module-ecommerce::backend.discounts.create');
+    }
 }

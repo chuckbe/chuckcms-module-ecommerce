@@ -57,7 +57,9 @@ class Order extends Eloquent
     {
         $taxes = [];
         foreach ($this->json['products'] as $sku => $item) {
-            $taxes[] = $item['tax_total'];
+            if($rate == $item['tax_rate']) {
+                $taxes[] = $item['tax_total'];
+            }
         }
         return array_sum($taxes);
     }

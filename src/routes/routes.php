@@ -8,6 +8,7 @@ Route::group(['middleware' => ['web']], function() {
 			//START OF: ORDERS ROUTES
 			Route::get('/dashboard/ecommerce/orders', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\OrderController@index')->name('dashboard.module.ecommerce.orders.index');
 			Route::get('/dashboard/ecommerce/orders/{order}/detail', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\OrderController@detail')->name('dashboard.module.ecommerce.orders.detail');
+			Route::post('/dashboard/ecommerce/orders/status/update', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\OrderController@status')->name('dashboard.module.ecommerce.orders.status.update');
 			Route::get('/dashboard/ecommerce/orders/{order}/invoice', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\OrderController@invoice')->name('dashboard.module.ecommerce.orders.invoice');
 			//END OF: ORDERS ROUTES
 			
@@ -45,11 +46,26 @@ Route::group(['middleware' => ['web']], function() {
 			
 			//START OF: DISCOUNTS ROUTES
 			Route::get('/dashboard/ecommerce/discounts', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\DiscountController@index')->name('dashboard.module.ecommerce.discounts.index');
+			Route::get('/dashboard/ecommerce/discounts/create', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\DiscountController@create')->name('dashboard.module.ecommerce.discounts.create');
+			Route::post('/dashboard/ecommerce/discounts/save', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\DiscountController@save')->name('dashboard.module.ecommerce.discounts.save');
 			//END OF: DISCOUNTS ROUTES
 			
 			//START OF: SETTINGS ROUTES
 			Route::get('/dashboard/ecommerce/settings', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\SettingController@index')->name('dashboard.module.ecommerce.settings.index');
+			
+			Route::get('/dashboard/ecommerce/settings/layout', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\SettingController@layout')->name('dashboard.module.ecommerce.settings.index.layout');
+			
+			Route::get('/dashboard/ecommerce/settings/orders', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\SettingController@orders')->name('dashboard.module.ecommerce.settings.index.orders');
+			Route::get('/dashboard/ecommerce/settings/orders/statuses/edit/{status}', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\SettingController@statusEdit')->name('dashboard.module.ecommerce.settings.index.orders.statuses.edit');
+			Route::get('/dashboard/ecommerce/settings/orders/statuses/{status}/emails/new', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\SettingController@statusEmail')->name('dashboard.module.ecommerce.settings.index.orders.statuses.email.new');
+			Route::post('/dashboard/ecommerce/settings/orders/statuses/update', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\SettingController@statusUpdate')->name('dashboard.module.ecommerce.settings.index.orders.statuses.update');
+			Route::post('/dashboard/ecommerce/settings/orders/statuses/emails/save', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\SettingController@statusEmailSave')->name('dashboard.module.ecommerce.settings.index.orders.statuses.email.save');
+			Route::post('/dashboard/ecommerce/settings/orders/statuses/emails/delete', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\SettingController@statusEmailDelete')->name('dashboard.module.ecommerce.settings.index.orders.statuses.email.delete');
+			
+			Route::get('/dashboard/ecommerce/settings/shipping', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\SettingController@shipping')->name('dashboard.module.ecommerce.settings.index.shipping');
 			Route::post('/dashboard/ecommerce/settings/shipping/carrier/save', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\SettingController@shippingCarrierSave')->name('dashboard.module.ecommerce.settings.shipping.carrier.save');
+
+			Route::get('/dashboard/ecommerce/settings/integrations', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\SettingController@integrations')->name('dashboard.module.ecommerce.settings.index.integrations');
 			//END OF: SETTINGS ROUTES
 		});
 		

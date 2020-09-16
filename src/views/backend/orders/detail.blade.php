@@ -37,7 +37,9 @@
 				</div>
 
 				<div class="card-block">
-					<h4>Gegevens <span class="label {{ ChuckEcommerce::getSetting('order.statuses.'.$order->status.'.paid') ? 'label-inverse' : '' }}">{{ ChuckEcommerce::getSetting('order.statuses.'.$order->status.'.short.'.app()->getLocale()) }}</span></h4>
+					<h4>Gegevens 
+						<a href="#" type="button" data-target="#updateStatusModal" data-toggle="modal" class="label {{ ChuckEcommerce::getSetting('order.statuses.'.$order->status.'.paid') ? 'label-inverse' : '' }}">{{ ChuckEcommerce::getSetting('order.statuses.'.$order->status.'.short.'.app()->getLocale()) }}</a>
+					</h4>
 					<b>Verzending:</b> {{ $order->json['shipping']['name'] }} <br>
                     <b>Verzendtijd:</b> {{ $order->json['shipping']['transit_time'] }} 
                     <br><br>
@@ -114,4 +116,6 @@
 		</div>
     </div>
 </div>
+
+@include('chuckcms-module-ecommerce::backend.orders._update_status_modal')
 @endsection

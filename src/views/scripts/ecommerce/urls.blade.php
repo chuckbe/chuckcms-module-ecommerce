@@ -5,5 +5,5 @@
 	var remove_from_cart_url = "{{ route('module.ecommerce.cart.remove.product') }}";
 	var update_cart_detail_url = "{{ route('module.ecommerce.cart.html.detail') }}";
 	var update_cart_overview_url = "{{ route('module.ecommerce.cart.html.overview') }}";
-	var a_token = "{{ Session::token() }}"
+	var a_token = "{{ Session::token() }}";
 </script>
