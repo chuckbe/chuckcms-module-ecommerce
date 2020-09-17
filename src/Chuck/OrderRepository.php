@@ -212,10 +212,10 @@ class OrderRepository
                     $value = str_replace('[%ORDER_TELEPHONE%]', !is_null($order->tel) ? $order->tel : '', $value);
                 }
                 if (strpos($foundVariable, 'ORDER_COMPANY') !== false) {
-                    $value = str_replace('[%ORDER_COMPANY%]', !is_null($order->customer->json['company']['name']) ? $order->json['company']['name'] : '', $value);
+                    $value = str_replace('[%ORDER_COMPANY%]', !is_null($order->json['company']['name']) ? $order->json['company']['name'] : '', $value);
                 }
                 if (strpos($foundVariable, 'ORDER_COMPANY_VAT') !== false) {
-                    $value = str_replace('[%ORDER_COMPANY_VAT%]', !is_null($order->customer->json['company']['name']) ? $order->json['company']['vat'] : '', $value);
+                    $value = str_replace('[%ORDER_COMPANY_VAT%]', !is_null($order->json['company']['name']) ? $order->json['company']['vat'] : '', $value);
                 }
                 if (strpos($foundVariable, 'ORDER_BILLING_STREET') !== false) {
                     $value = str_replace('[%ORDER_BILLING_STREET%]', $order->json['address']['billing']['street'], $value);

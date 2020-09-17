@@ -148,6 +148,9 @@ class SettingController extends Controller
         }
 
         $json['settings']['order']['statuses'][$statusKey]['email'] = $object;
+        if(count($object) == 0) {
+            $json['settings']['order']['statuses'][$statusKey]['send_email'] = false;
+        }
 
         $ecommerce->json = $json;
         $ecommerce->update();

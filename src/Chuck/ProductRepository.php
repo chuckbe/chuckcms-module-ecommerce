@@ -184,7 +184,7 @@ class ProductRepository
         $combinations = [];
         $totalQuantity = 0;
 
-        if( count($values['combination_slugs']) > 0 && $values['combination_slugs'][0] !== null && count($values->get('attributes')) > 0 ) {
+        if( $values['combination_slugs'][0] !== null && count($values['combination_slugs']) > 0 && count($values->get('attributes')) > 0 ) {
             if ( $values->get('attribute') !== null && count(array_values($values->get('attribute'))[0]) > 0 ) {
                 $q = 0;
                 foreach ($values->get('combination_slugs') as $combinationKey) {
@@ -244,7 +244,7 @@ class ProductRepository
         	$i++;
         }
 
-        if( count($values['combination_slugs']) > 0 && $values['combination_slugs'][0] !== null && count($values->get('attributes')) > 0) {
+        if( $values['combination_slugs'][0] !== null && count($values['combination_slugs']) > 0 && count($values->get('attributes')) > 0) {
         	$json['quantity'] = $values->get('attribute') !== null ? $totalQuantity : (int)$values->get('quantity');
         } else {
         	$json['quantity'] = (int)$values->get('quantity');
@@ -340,7 +340,7 @@ class ProductRepository
         $combinations = [];
         $totalQuantity = 0;
 
-        if( count($values['combination_slugs']) > 0 && $values['combination_slugs'][0] !== null && count($values->get('attributes')) > 0 ) {
+        if( $values['combination_slugs'][0] !== null && count($values['combination_slugs']) > 0 && count($values->get('attributes')) > 0 ) {
             if ( $values->get('attribute') !== null && count(array_values($values->get('attribute'))[0]) > 0 ) {
                 $q = 0;
                 foreach ($values->get('combination_slugs') as $combinationKey) {
@@ -416,7 +416,7 @@ class ProductRepository
         	$i++;
         }
 
-        if( count($values['combination_slugs']) > 0 && $values['combination_slugs'][0] !== null && count($values->get('attributes')) > 0) {
+        if( $values['combination_slugs'][0] !== null && count($values['combination_slugs']) > 0 && count($values->get('attributes')) > 0) {
             $json['quantity'] = $values->get('attribute') !== null ? $totalQuantity : (int)$values->get('quantity');
         } else {
             $json['quantity'] = (int)$values->get('quantity');

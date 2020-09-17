@@ -6,7 +6,7 @@
 
 @section('breadcrumbs')
 	<ol class="breadcrumb">
-		<li class="breadcrumb-item active"><a href="{{ route('dashboard.module.order_form.index') }}">Overzicht</a></li>
+		<li class="breadcrumb-item active"><a href="{{ route('dashboard.module.ecommerce.index') }}">Overzicht</a></li>
 	</ol>
 @endsection
 
