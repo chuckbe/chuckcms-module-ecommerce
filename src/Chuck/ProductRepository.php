@@ -776,6 +776,17 @@ class ProductRepository
         return $this->combinationForSKU($product, $sku)['price']['vat']['amount'];
     }
 
+    public function weightForSKU($sku)
+    {
+        $product = $this->sku($sku);
+        if($this->isCombination($product, $sku)) {
+            $combination = $this->combinationForSKU($product, $sku);
+            return array_key_exists('dimensions', $combination) ? (float)$combination['dimensions']['weight'] : 0.00;
+        } 
+
+        return array_key_exists('dimensions', $product->json) ? (float)$product->json['dimensions']['weight'] : 0.00;
+    }
+
     public function getOptions(Repeater $product, $sku, $given_options)
     {
         if($product->json['code']['sku'] == $sku) {

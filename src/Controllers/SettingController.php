@@ -243,46 +243,63 @@ class SettingController extends Controller
             'transit_time' => 'required',
             'image' => 'nullable',
             'cost' => 'required',
+            'max_weight' => 'required',
             'countries' => 'array',
             'default' => 'required|in:true,false',
             'slug' => 'required_with:update'
         ]);
         $ecommerce = $this->module->where('slug', 'chuckcms-module-ecommerce')->first();
+        $json = $ecommerce->json;
 
         if($request->has('slug') && $request->has('update')) {
-            //$collection = $this->collectionRepository->update($request);
-            //@TODO: add create carrier functionality - easy to combine just
+            $slug = $request->get('slug');
+            $carrier = $json['settings']['shipping']['carriers'][$slug];
         } elseif($request->has('create')) {
-            $carrier = [];
-            $carrier['name'] = $request->get('name');
-            $carrier['transit_time'] = $request->get('transit_time');
-            $carrier['image'] = $request->get('image');
-            $carrier['cost'] = $request->get('cost');
-            $carrier['countries'] = $request->get('countries');
-            $carrier['default'] = $request->get('default') == 'true' ? true : false;
-
             $slug = Str::slug($request->get('name'), '_');
-
-            $json = $ecommerce->json;
-            $json['settings']['shipping']['carriers'][$slug] = $carrier;
-            $ecommerce->json = $json;
+            $carrier = [];
         }
 
+        $carrier['name'] = $request->get('name');
+        $carrier['transit_time'] = $request->get('transit_time');
+        $carrier['image'] = $request->get('image');
+        $carrier['cost'] = $request->get('cost');
+        $carrier['max_weight'] = $request->get('max_weight');
+        $carrier['countries'] = $request->get('countries');
+        $carrier['default'] = $request->get('default') == 'true' ? true : false;
+
+        $json['settings']['shipping']['carriers'][$slug] = $carrier;
+        $ecommerce->json = $json;
+
         if($ecommerce->save()){
-            return redirect()->route('dashboard.module.ecommerce.settings.index')->with('notification', 'Instellingen opgeslagen!');
+            return redirect()->route('dashboard.module.ecommerce.settings.index.shipping')->with('notification', 'Instellingen opgeslagen!');
         } else {
-            return redirect()->route('dashboard.module.ecommerce.settings.index')->with('notification', 'Er is iets misgegaan, probeer het later nog eens!');
+            return redirect()->route('dashboard.module.ecommerce.settings.index.shipping')->with('notification', 'Er is iets misgegaan, probeer het later nog eens!');
         }
     }
 
     public function shippingCarrierDelete(Request $request)
     {
-        $this->validate($request, ['id' => 'required']);
+        $this->validate($request, ['key' => 'required']);
+        $carrierKey = $request->get('key');
 
-        //$delete = $this->collectionRepository->delete($request->get('id'));
+        $ecommerce = $this->module->where('slug', 'chuckcms-module-ecommerce')->first();
+        $json = $ecommerce->json;
 
-        if($delete){
-            return redirect()->route('dashboard.module.ecommerce.settings.index');
+        $carrier_object = $json['settings']['shipping']['carriers'];
+
+        $object = [];
+
+        foreach ($carrier_object as $key => $carrier) {
+            if($key !== $carrierKey) {
+                $object[$key] = $json['settings']['shipping']['carriers'][$key];
+            }
         }
+
+        $json['settings']['shipping']['carriers'] = $object;
+
+        $ecommerce->json = $json;
+        $ecommerce->update();
+
+        return redirect()->route('dashboard.module.ecommerce.settings.index.shipping');    
     }
 }

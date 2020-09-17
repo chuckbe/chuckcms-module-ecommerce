@@ -1,32 +1,30 @@
 <!-- Modal -->
 <div class="modal fade stick-up disable-scroll" id="createCollectionModal" tabindex="-1" role="dialog" aria-hidden="false">
-<div class="modal-dialog ">
-  <div class="modal-content-wrapper">
+<div class="modal-dialog modal-lg">
     <div class="modal-content">
-      <div class="modal-header clearfix text-left">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="pg-close fs-14"></i>
+      <div class="modal-header">
+        <h5 class="modal-title">Voeg een nieuwe <span class="semi-bold">verzendmethode</span> toe</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
         </button>
-        <h5>Voeg een nieuwe <span class="semi-bold">verzendmethode</span> toe</h5>
-        <p class="p-b-10">Vul de volgende velden aan om de verzendmethode toe te voegen.</p>
-        @if($errors->any())
-          @foreach ($errors->all() as $error)
-            <p class="text-danger">{{ $error }}</p>
-          @endforeach
-        @endif
       </div>
       <div class="modal-body">
+        <p class="pb-sm">Vul de volgende velden aan om de verzendmethode toe te voegen.</p>
+        @if($errors->any())
+        @foreach ($errors->all() as $error)
+          <p class="text-danger">{{ $error }}</p>
+        @endforeach
+        @endif
         <form role="form" method="POST" action="{{ route('dashboard.module.ecommerce.settings.shipping.carrier.save') }}">
           <div class="form-group-attached">
             <div class="row">
-              <div class="col-md-12">
+              <div class="col-sm-6">
                 <div class="form-group form-group-default required">
                   <label>Naam</label>
                   <input type="text" id="create_collection_name" name="name" class="form-control" required>
                 </div>
               </div>
-            </div>
-            <div class="row">
-              <div class="col-md-12">
+              <div class="col-sm-6">
                 <div class="form-group form-group-default required">
                   <label>Verzendtijd </label>
                   <input type="text" id="carrier_transit_time" name="transit_time" class="form-control" required>
@@ -45,7 +43,7 @@
                     </span>
                     <input id="main_img_input" name="image" class="img_lfm_input form-control" accept="image/x-png" type="text">
                   </div>
-                  <img id="mainimgholder" src="" style="margin-top:15px;max-height:100px;">
+                  <img id="mainimgholder" src="" style="max-height:100px;">
                 </div>
               </div>
             </div>
@@ -59,10 +57,17 @@
             </div>
             <div class="row">
               <div class="col-md-12">
+                <div class="form-group form-group-default required">
+                  <label>Max Gewicht </label>
+                  <input type="text" data-a-dec="." data-a-sep="" data-m-dec="3" data-a-pad=true class="autonumeric form-control" name="max_weight" value="0.000" placeholder="Gewicht">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
                 <div class="form-group form-group-default form-group-default-select2">
                   <label>Actief in volgende landen </label>
-                  <select class="full-width" name="countries[]" data-init-plugin="select2" data-minimum-results-for-search="5" multiple data-placeholder="Selecteer landen" data-allow-clear="true">
-                    <option></option>
+                  <select class="form-control" name="countries[]" multiple>
                     @foreach(ChuckEcommerce::getSupportedCountries() as $country)
                       <option value="{{ $country }}">{{ config('chuckcms-module-ecommerce.countries')[$country] }}</option>
                     @endforeach
@@ -74,8 +79,8 @@
               <div class="col-md-12">
                 <div class="form-group form-group-default form-group-default-select2">
                   <label>Standaard verzendmethode </label>
-                  <select class="full-width" name="default" data-init-plugin="select2" data-minimum-results-for-search="Infinity" data-placeholder="Kies" data-allow-clear="true">
-                    <option></option>
+                  <select class="form-control" name="default" required>
+                    <option selected disabled>-- Kies --</option>
                     <option value="true">Ja</option>
                     <option value="false">Nee</option>
                   </select>
@@ -94,7 +99,6 @@
         </form>
       </div>
     </div>
-  </div>
   <!-- /.modal-content -->
 </div>
 </div>

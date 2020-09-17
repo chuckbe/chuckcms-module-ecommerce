@@ -582,10 +582,12 @@ $(document).ready(function() {
 
         <div class="d-block my-3">
             @foreach(ChuckEcommerce::getCarriers() as $carrierKey => $carrier)
+            @if(ChuckEcommerce::getCartTotalWeight('shopping') <= (!array_key_exists('max_weight', $carrier) ? 0.000 : (float)$carrier['max_weight']))
             <div class="custom-control custom-radio">
-                <input id="{{ $carrierKey }}" name="shippingMethod" value="{{ $carrierKey }}" type="radio" class="custom-control-input" data-carrier-key="{{ $carrierKey }}" data-carrier-cost="{{ $carrier['cost'] }}" data-carrier-countries="{{ implode('|',$carrier['countries']) }}" data-carrier-cost-tax="{{ ChuckEcommerce::taxFromPrice($carrier['cost'], 21) }}" {{ $carrier['default'] ? 'checked' : '' }} required>
+                <input id="{{ $carrierKey }}" name="shippingMethod" value="{{ $carrierKey }}" type="radio" class="custom-control-input" data-carrier-key="{{ $carrierKey }}" data-carrier-cost="{{ $carrier['cost'] }}" data-carrier-max-weight="{{ array_key_exists('max_weight', $carrier) ? $carrier['max_weight'] : '0.000' }}" data-carrier-countries="{{ implode('|',$carrier['countries']) }}" data-carrier-cost-tax="{{ ChuckEcommerce::taxFromPrice($carrier['cost'], 21) }}" {{ $carrier['default'] ? 'checked' : '' }} required>
                 <label class="custom-control-label" for="{{ $carrierKey }}">{{ $carrier['name'] }} ({{ $carrier['transit_time'] }}) — {{ (float)$carrier['cost'] > 0 ? ChuckEcommerce::formatPrice($carrier['cost']) : 'free'  }}</label>
             </div>
+            @endif
             @endforeach
           
         </div>

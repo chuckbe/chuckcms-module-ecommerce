@@ -43,7 +43,7 @@ $lang = \LaravelLocalization::getCurrentLocale();
                         <a class="nav-link{{ $tab == 'orders' ? ' active' : '' }}" id="s_orders-tab" href="{{ route('dashboard.module.ecommerce.settings.index.orders') }}">Bestellingen</a>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <a class="nav-link{{ $tab == 'shipping' ? ' active' : '' }}" id="s_shipping-tab" data-toggle="tab" href="{{ route('dashboard.module.ecommerce.settings.index.shipping') }}" role="tab" aria-controls="s_shipping" aria-selected="false">Verzending</a>
+                        <a class="nav-link{{ $tab == 'shipping' ? ' active' : '' }}" id="s_shipping-tab" href="{{ route('dashboard.module.ecommerce.settings.index.shipping') }}">Verzending</a>
                     </li>
                     <li class="nav-item" role="presentation">
                         <a class="nav-link{{ $tab == 'products' ? ' active' : '' }}" id="s_products-tab" data-toggle="tab" href="#s_products" role="tab" aria-controls="s_products" aria-selected="false">Producten</a>
@@ -96,8 +96,6 @@ $lang = \LaravelLocalization::getCurrentLocale();
         </div>
     </form>
 
-    @include('chuckcms-module-ecommerce::backend.settings._create_shipping_method_modal')
-
 </div>
 @endsection
 
@@ -120,6 +118,19 @@ $( document ).ready(function() {
   }
 });
 </script>
+<script type="text/javascript">
+function editCarrierModal(id){
+    $('#editCarrierModal_'+id).modal('show');
+}
+
+function deleteCarrierModal(id, name){
+    $('#delete_carrier_key').val(id);
+    $('#delete_carrier_name').text(name);
+    $('#deleteCarrierModal').modal('show');
+}
+</script>
+
+
   @if (session('notification'))
       @include('chuckcms::backend.includes.notification')
   @endif

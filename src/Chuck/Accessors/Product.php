@@ -179,6 +179,11 @@ class Product
         return $this->productRepository->getOptions($product, $sku, $options);
     }
 
+    public function weightBySKU($sku)
+    {
+        return $this->productRepository->weightForSKU($sku);
+    }
+
     public function isBuyable(ProductModel $product)
     {
         return array_key_exists('is_buyable', $product->json) ? $product->json['is_buyable'] : false;

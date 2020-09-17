@@ -64,6 +64,7 @@ Route::group(['middleware' => ['web']], function() {
 			
 			Route::get('/dashboard/ecommerce/settings/shipping', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\SettingController@shipping')->name('dashboard.module.ecommerce.settings.index.shipping');
 			Route::post('/dashboard/ecommerce/settings/shipping/carrier/save', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\SettingController@shippingCarrierSave')->name('dashboard.module.ecommerce.settings.shipping.carrier.save');
+			Route::post('/dashboard/ecommerce/settings/shipping/carrier/delete', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\SettingController@shippingCarrierDelete')->name('dashboard.module.ecommerce.settings.shipping.carrier.delete');
 
 			Route::get('/dashboard/ecommerce/settings/integrations', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\SettingController@integrations')->name('dashboard.module.ecommerce.settings.index.integrations');
 			//END OF: SETTINGS ROUTES

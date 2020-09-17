@@ -55,7 +55,7 @@ $lang = \LaravelLocalization::getCurrentLocale();
                     <div class="w-100 d-block mb-lg-1"></div>
                     <input type="hidden" class="boolean_checkbox_input_hidden" value="0" name="is_paid" @if($status['paid'] == true) disabled @endif>
                     <label for="is_paid">
-                        <input type="checkbox" class="boolean_checkbox_input" id="is_paid" value="{{ $status['paid'] == true ? 1 : 0 }}" name="is_paid" @if($status['paid'] == true) checked @endif /> Wordt weergegeven?
+                        <input type="checkbox" class="boolean_checkbox_input" id="is_paid" value="{{ $status['paid'] == true ? 1 : 0 }}" name="is_paid" @if($status['paid'] == true) checked @endif /> Betaald?
                     </label>
                   </div>
                   <div class="col-sm-4">

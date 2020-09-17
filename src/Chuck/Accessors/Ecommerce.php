@@ -7,7 +7,9 @@ use Chuckbe\ChuckcmsModuleEcommerce\Chuck\OrderRepository;
 use Chuckbe\ChuckcmsModuleEcommerce\Chuck\CustomerRepository;
 use Chuckbe\Chuckcms\Models\Module;
 use Chuckbe\Chuckcms\Models\Template;
+use ChuckProduct;
 use Exception;
+use Cart;
 use Illuminate\Support\Facades\Schema;
 
 use App\Http\Requests;
@@ -108,6 +110,16 @@ class Ecommerce
             }
         }
         return $price;
+    }
+
+    public function getCartTotalWeight(string $identifier)
+    {
+        $totalWeight = 0;
+        foreach(Cart::instance($identifier)->content() as $rowKey => $item) {
+            $totalWeight += ($item->qty * ChuckProduct::weightBySKU($item->id));
+        }
+
+        return $totalWeight;
     }
 
     public function getCarrier($key)
