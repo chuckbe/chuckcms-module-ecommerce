@@ -69,12 +69,20 @@ $lang = \LaravelLocalization::getCurrentLocale();
                         <label for="email_template">Template</label>
                         <input type="text" class="form-control" id="email_template" name="template" value="{{ old('template') }}" required>
                     </div>
-                    <div class="col-sm-6">
+                    <div class="col-sm-3 pt-3">
                         <label class="sr-only" for="">Logo?</label>
                         <div class="w-100 d-block mb-lg-1"></div>
                         <input type="hidden" class="boolean_checkbox_input_hidden" value="0" name="logo" disabled>
                         <label for="email_logo">
                             <input type="checkbox" class="boolean_checkbox_input" id="email_logo" value="1" name="logo" checked /> Logo?
+                        </label>
+                    </div>
+                    <div class="col-sm-3 pt-3">
+                        <label class="sr-only" for="">Pakbon?</label>
+                        <div class="w-100 d-block mb-lg-1"></div>
+                        <input type="hidden" class="boolean_checkbox_input_hidden" value="0" name="send_delivery_note" disabled>
+                        <label for="send_delivery_note">
+                            <input type="checkbox" class="boolean_checkbox_input" id="send_delivery_note" value="1" name="send_delivery_note" checked /> Pakbon?
                         </label>
                     </div>
                 </div>

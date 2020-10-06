@@ -146,12 +146,20 @@ $lang = \LaravelLocalization::getCurrentLocale();
                         <label for="email_template">Template</label>
                         <input type="text" class="form-control" id="email_template" name="template[{{ $emailKey }}]" value="{{ $email['template'] }}">
                     </div>
-                    <div class="col-sm-6">
+                    <div class="col-sm-3 pt-3">
                         <label class="sr-only" for="">Logo?</label>
                         <div class="w-100 d-block mb-lg-1"></div>
                         <input type="hidden" class="boolean_checkbox_input_hidden" value="0" name="logo[{{ $emailKey }}]" @if($email['logo'] == true) disabled @endif>
                         <label for="email_logo">
                             <input type="checkbox" class="boolean_checkbox_input" id="email_logo" value="{{ $email['logo'] == true ? 1 : 0 }}" name="logo[{{ $emailKey }}]" @if($email['logo'] == true) checked @endif /> Logo?
+                        </label>
+                    </div>
+                    <div class="col-sm-3 pt-3">
+                        <label class="sr-only" for="">Pakbon?</label>
+                        <div class="w-100 d-block mb-lg-1"></div>
+                        <input type="hidden" class="boolean_checkbox_input_hidden" value="0" name="send_delivery_note[{{ $emailKey }}]" @if(array_key_exists('send_delivery_note', $email) && $email['send_delivery_note'] == true) disabled @endif>
+                        <label for="send_delivery_note{{ $emailKey }}">
+                            <input type="checkbox" class="boolean_checkbox_input" id="send_delivery_note{{ $emailKey }}" value="{{ array_key_exists('send_delivery_note', $email) && $email['send_delivery_note'] == true ? 1 : 0 }}" name="send_delivery_note[{{ $emailKey }}]" @if(array_key_exists('send_delivery_note', $email) && $email['send_delivery_note'] == true) checked @endif /> Pakbon?
                         </label>
                     </div>
                 </div>

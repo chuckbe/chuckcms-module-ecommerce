@@ -55,6 +55,11 @@ class OrderController extends Controller
         return $this->orderRepository->downloadInvoice($order);
     }
 
+    public function delivery(Order $order)
+    {
+        return $this->orderRepository->downloadDeliveryNote($order);
+    }
+
     public function webhookMollie(Request $request)
     {
         if (! $request->has('id')) {

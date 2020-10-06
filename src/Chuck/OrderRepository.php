@@ -131,9 +131,15 @@ class OrderRepository
         $cc = $this->replaceEmailVariables($order, is_null($email['cc']) ? '' : $email['cc']);
         $bcc = $this->replaceEmailVariables($order, is_null($email['bcc']) ? '' : $email['bcc']);
 
+        if(array_key_exists('send_delivery_note', $email) && $email['send_delivery_note']) {
+            $delivery = $this->generateDeliveryPDF($order);
+        } else {
+            $delivery = null;
+        }
+
         $data = $this->prepareEmailData($order, $email);
 
-        Mail::send($template, ['order' => $order, 'email' => $email, 'data' => $data], function ($m) use ($order, $status, $email, $to, $to_name, $cc, $bcc, $data, $invoice, $pdf) {
+        Mail::send($template, ['order' => $order, 'email' => $email, 'data' => $data], function ($m) use ($order, $status, $email, $to, $to_name, $cc, $bcc, $data, $invoice, $pdf, $delivery) {
             $m->from(config('chuckcms-module-ecommerce.emails.from_email'), config('chuckcms-module-ecommerce.emails.from_name'));
             
             $m->to($to, $to_name)->subject($data['subject']);
@@ -148,6 +154,10 @@ class OrderRepository
 
             if ($invoice) {
                 $m->attachData($pdf, $order->invoiceFileName, ['mime' => 'application/pdf']);
+            }
+
+            if ($delivery !== null) {
+                $m->attachData($delivery, $order->deliveryFileName, ['mime' => 'application/pdf']);
             }
         });    
     }
@@ -330,6 +340,18 @@ class OrderRepository
     {
         $pdf = PDF::loadView('chuckcms-module-ecommerce::pdf.invoice', compact('order'));
         return $pdf->download($order->invoiceFileName);
+    }
+
+    private function generateDeliveryPDF(Order $order)
+    {
+        $pdf = PDF::loadView('chuckcms-module-ecommerce::pdf.delivery', compact('order'));
+        return $pdf->output();
+    }
+
+    public function downloadDeliveryNote(Order $order)
+    {
+        $pdf = PDF::loadView('chuckcms-module-ecommerce::pdf.delivery', compact('order'));
+        return $pdf->download($order->deliveryFileName);
     }
 
     private function generateInvoiceNumber()

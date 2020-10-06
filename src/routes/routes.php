@@ -10,6 +10,7 @@ Route::group(['middleware' => ['web']], function() {
 			Route::get('/dashboard/ecommerce/orders/{order}/detail', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\OrderController@detail')->name('dashboard.module.ecommerce.orders.detail');
 			Route::post('/dashboard/ecommerce/orders/status/update', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\OrderController@status')->name('dashboard.module.ecommerce.orders.status.update');
 			Route::get('/dashboard/ecommerce/orders/{order}/invoice', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\OrderController@invoice')->name('dashboard.module.ecommerce.orders.invoice');
+			Route::get('/dashboard/ecommerce/orders/{order}/delivery', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\OrderController@delivery')->name('dashboard.module.ecommerce.orders.delivery');
 			//END OF: ORDERS ROUTES
 			
 			//START OF: PRODUCTS ROUTES

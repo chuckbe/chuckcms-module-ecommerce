@@ -221,6 +221,7 @@ class InstallModuleEcommerce extends Command
                         'bcc' => null,
                         'template' => 'chuckcms-module-ecommerce::emails.default',
                         'logo' => true,
+                        'send_delivery_note' => false,
                         'data' => [
                             'subject' => [
                                 'type' => 'text',
@@ -295,12 +296,13 @@ class InstallModuleEcommerce extends Command
                         'bcc' => null,
                         'template' => 'chuckcms-module-ecommerce::emails.default',
                         'logo' => true,
+                        'send_delivery_note' => false,
                         'data' => [
                             'subject' => [
                                 'type' => 'text',
                                 'value' => [
-                                    'nl' => 'Uw bestelling #[%ORDER_NUMBER%] is verzonden',
-                                    'en' => 'Your order #[%ORDER_NUMBER%] was shipped'
+                                    'nl' => 'Uw bestelling #[%ORDER_NUMBER%] is mislukt',
+                                    'en' => 'Your order #[%ORDER_NUMBER%] has failed'
                                 ],
                                 'required' => true,
                                 'validation' => 'required'
@@ -308,8 +310,8 @@ class InstallModuleEcommerce extends Command
                             'hidden_preheader' => [
                                 'type' => 'text',
                                 'value' => [
-                                    'nl' => 'Uw bestelling met bestelnummer #[%ORDER_NUMBER%] is onderweg. In deze mail vindt u meer informatie over uw bestelling terug.',
-                                    'en' => 'Your order #[%ORDER_NUMBER%] was shipped'
+                                    'nl' => 'Uw bestelling met bestelnummer #[%ORDER_NUMBER%] is mislukt. In deze mail vindt u meer informatie over uw bestelling terug.',
+                                    'en' => 'Your order #[%ORDER_NUMBER%] has failed. In this e-mail you will find more information on your order.'
                                 ],
                                 'required' => true,
                                 'validation' => 'required'
@@ -317,8 +319,8 @@ class InstallModuleEcommerce extends Command
                             'intro' => [
                                 'type' => 'textarea',
                                 'value' => [
-                                    'nl' => 'Beste [%ORDER_SURNAME%] [%ORDER_NAME%]<br><br>Uw bestelling is onderweg. Uw bestelling wordt volgende werkdag geleverd tussen 9:00u en 19:00u. Is er niemand thuis? Dan proberen we het de dag erna nog eens, maak u geen zorgen. Heeft u nog vragen? Neem gerust contact met ons op.',
-                                    'en' => 'Order is shipped'
+                                    'nl' => 'Beste [%ORDER_SURNAME%] [%ORDER_NAME%]<br><br>Uw bestelling is mislukt. Helaas is er iets misgegaan met de betaling. Heeft u nog vragen? Neem gerust contact met ons op.',
+                                    'en' => 'Dear [%ORDER_SURNAME%] [%ORDER_NAME%]<br><br>Your order has failed. Unfortunately something went wrong with your payment. Do you have any other questions? Please don\'t hesitate to contact us.'
                                 ],
                                 'required' => true,
                                 'validation' => 'required'
@@ -335,8 +337,8 @@ class InstallModuleEcommerce extends Command
                             'body' => [
                                 'type' => 'textarea',
                                 'value' => [
-                                    'nl' => 'Hieronder vind je nogmaals een overzicht terug van jouw bestelling. <br><br> <b>Verzending:</b> [%ORDER_CARRIER_NAME%] <br> <b>Verzendtijd:</b> [%ORDER_CARRIER_TRANSIT_TIME%] <br><br> <b>Overzicht: </b> <br> [%ORDER_PRODUCTS%] <br> <b>Verzendkosten</b>: [%ORDER_SHIPPING_TOTAL%] <br><br> <b>Totaal</b>: [%ORDER_FINAL%] <br><br> <b>Facturatie adres: </b> <br> Naam: [%ORDER_SURNAME%] [%ORDER_NAME%] <br> E-mail: [%ORDER_EMAIL%] <br> Tel: [%ORDER_TELEPHONE%] <br> Bedrijf: [%ORDER_COMPANY%] <br> BTW: [%ORDER_COMPANY_VAT%] <br> Adres: <br>[%ORDER_BILLING_STREET%] [%ORDER_BILLING_HOUSENUMBER%], <br>[%ORDER_BILLING_POSTALCODE%] [%ORDER_BILLING_CITY%], [%ORDER_BILLING_COUNTRY%] <br><br> <b>Verzendadres:</b><br>Naam: [%ORDER_SURNAME%] [%ORDER_NAME%] <br>Adres:<br>[%ORDER_SHIPPING_STREET%] [%ORDER_SHIPPING_HOUSENUMBER%], <br>[%ORDER_SHIPPING_POSTALCODE%] [%ORDER_SHIPPING_CITY%], [%ORDER_SHIPPING_COUNTRY%]',
-                                    'en' => 'Your order is shipped and on its way to you.'
+                                    'nl' => 'Hieronder vind je nogmaals een overzicht terug van jouw bestelling. <br><br> [%ORDER_PRODUCTS%] <br> <b>Verzendkosten</b>: [%ORDER_SHIPPING_TOTAL%] <br><br> <b>Totaal</b>: [%ORDER_FINAL%] <br><br> <b>Facturatie adres: </b> <br> Naam: [%ORDER_SURNAME%] [%ORDER_NAME%] <br> E-mail: [%ORDER_EMAIL%] <br> Tel: [%ORDER_TELEPHONE%] <br> Bedrijf: [%ORDER_COMPANY%] <br> BTW: [%ORDER_COMPANY_VAT%] <br> Adres: <br>[%ORDER_BILLING_STREET%] [%ORDER_BILLING_HOUSENUMBER%], <br>[%ORDER_BILLING_POSTALCODE%] [%ORDER_BILLING_CITY%], [%ORDER_BILLING_COUNTRY%] <br><br> <b>Verzendadres:</b><br>Naam: [%ORDER_SURNAME%] [%ORDER_NAME%] <br>Adres:<br>[%ORDER_SHIPPING_STREET%] [%ORDER_SHIPPING_HOUSENUMBER%], <br>[%ORDER_SHIPPING_POSTALCODE%] [%ORDER_SHIPPING_CITY%], [%ORDER_SHIPPING_COUNTRY%]',
+                                    'en' => 'Below you will find an overview of your order. <br><br> [%ORDER_PRODUCTS%] <br> <b>Shipping costs</b>: [%ORDER_SHIPPING_TOTAL%] <br><br> <b>Total</b>: [%ORDER_FINAL%] <br><br> <b>Invoice address: </b> <br> Name: [%ORDER_SURNAME%] [%ORDER_NAME%] <br> E-mail: [%ORDER_EMAIL%] <br> Tel: [%ORDER_TELEPHONE%] <br> Company: [%ORDER_COMPANY%] <br> VAT: [%ORDER_COMPANY_VAT%] <br> Address: <br>[%ORDER_BILLING_STREET%] [%ORDER_BILLING_HOUSENUMBER%], <br>[%ORDER_BILLING_POSTALCODE%] [%ORDER_BILLING_CITY%], [%ORDER_BILLING_COUNTRY%] <br><br> <b>Shipping address:</b><br>Name: [%ORDER_SURNAME%] [%ORDER_NAME%] <br>Address:<br>[%ORDER_SHIPPING_STREET%] [%ORDER_SHIPPING_HOUSENUMBER%], <br>[%ORDER_SHIPPING_POSTALCODE%] [%ORDER_SHIPPING_CITY%], [%ORDER_SHIPPING_COUNTRY%]'
                                 ],
                                 'required' => true,
                                 'validation' => 'required'
@@ -369,6 +371,7 @@ class InstallModuleEcommerce extends Command
                         'bcc' => null,
                         'template' => 'chuckcms-module-ecommerce::emails.default',
                         'logo' => true,
+                        'send_delivery_note' => false,
                         'data' => [
                             'subject' => [
                                 'type' => 'text',
@@ -452,6 +455,7 @@ class InstallModuleEcommerce extends Command
                         'bcc' => null,
                         'template' => 'chuckcms-module-ecommerce::emails.default',
                         'logo' => true,
+                        'send_delivery_note' => false,
                         'data' => [
                             'subject' => [
                                 'type' => 'text',

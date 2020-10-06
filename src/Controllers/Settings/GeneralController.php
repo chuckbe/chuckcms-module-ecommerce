@@ -31,8 +31,9 @@ class GeneralController extends Controller
     public function update(Request $request)
     {
         $this->validate($request, [
-            'general.currency_main' => 'required|array', 
-
+            // 'general.supported_currencies' => 'required|array',
+            // 'general.featured_currencies' => 'required',
+ 
             'is_paid' => 'required|in:0,1',
             'is_delivered' => 'required|in:0,1',
             'has_invoice' => 'required|in:0,1',

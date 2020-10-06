@@ -68,4 +68,9 @@ class Order extends Eloquent
     {
         return 'factuur_' . ChuckEcommerce::getSetting('invoice.prefix') . str_pad($this->json['invoice_number'], 4, '0', STR_PAD_LEFT) . '.pdf';
     }
+
+    public function getDeliveryFileNameAttribute()
+    {
+        return 'levering_' . $this->json['order_number'] . '.pdf';
+    }
 }

@@ -52,6 +52,7 @@ class StatusController extends Controller
             'bcc' => 'nullable',
             'template' => 'required|array',
             'logo' => 'required|array',
+            'send_delivery_note' => 'required|array',
             'email.*' => 'required|array',
             'email_key' => 'required|array',
             'status_key' => 'required',
@@ -78,6 +79,7 @@ class StatusController extends Controller
                 $json['settings']['order']['statuses'][$statusKey]['email'][$emailKey]['bcc'] = $request->get('bcc')[$emailKey];
                 $json['settings']['order']['statuses'][$statusKey]['email'][$emailKey]['template'] = $request->get('template')[$emailKey];
                 $json['settings']['order']['statuses'][$statusKey]['email'][$emailKey]['logo'] = $request->get('logo')[$emailKey] == '1' ? true : false;
+                $json['settings']['order']['statuses'][$statusKey]['email'][$emailKey]['send_delivery_note'] = $request->get('send_delivery_note')[$emailKey] == '1' ? true : false;
 
                 foreach ($json['settings']['order']['statuses'][$statusKey]['email'][$emailKey]['data'] as $fieldKey => $field) {
                     foreach ($langs as $langKey => $langValue) {
@@ -127,6 +129,7 @@ class StatusController extends Controller
             'bcc' => 'nullable',
             'template' => 'required',
             'logo' => 'required|in:0,1',
+            'send_delivery_note' => 'required|in:0,1',
             'status_slug' => 'required|array',
             'status_required' => 'required|array',
             'status_textarea' => 'required|array',
@@ -140,6 +143,7 @@ class StatusController extends Controller
         $json['settings']['order']['statuses'][$statusKey]['email'][$emailKey]['bcc'] = $request->get('bcc');
         $json['settings']['order']['statuses'][$statusKey]['email'][$emailKey]['template'] = $request->get('template');
         $json['settings']['order']['statuses'][$statusKey]['email'][$emailKey]['logo'] = $request->get('logo') == '1' ? true : false;
+        $json['settings']['order']['statuses'][$statusKey]['email'][$emailKey]['send_delivery_note'] = $request->get('send_delivery_note') == '1' ? true : false;
 
         $loop = 0;
         foreach ($request->get('status_slug') as $slug) {

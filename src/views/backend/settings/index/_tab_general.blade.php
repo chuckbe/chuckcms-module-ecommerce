@@ -6,7 +6,7 @@
         <div class="col-lg-12">
             <div class="form-group">
                 <label>Actieve Valuta</label>
-                <select class="form-control" name="general[currency_main][]" multiple>
+                <select class="form-control" name="general[supported_currencies][]" multiple>
                 @foreach(config('chuckcms-module-ecommerce.currencies') as $currency => $currencyName)
                   <option value="{{$currency}}" @if( in_array($currency, $module->json['settings']['general']['supported_currencies']) ) selected @endif>{{ $currencyName }}</option>
                 @endforeach
@@ -15,7 +15,7 @@
 
             <div class="form-group">
               <label>Hoofdvaluta</label>
-              <select class="form-control" name="general[currencies]">
+              <select class="form-control" name="general[featured_currency]">
                 @foreach($module->json['settings']['general']['supported_currencies'] as $currency)
                   <option value="{{$currency}}" @if( $currency == $module->json['settings']['general']['featured_currency'] ) selected @endif>{{ config('chuckcms-module-ecommerce.currencies')[$currency] }}</option>
                 @endforeach

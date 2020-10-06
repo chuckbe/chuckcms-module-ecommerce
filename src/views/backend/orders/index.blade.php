@@ -38,7 +38,7 @@
 							<th scope="col">Naam & Adres</th>
 							<th scope="col" class="pr-5">Totaal</th>
 							<th scope="col">Status</th>
-							<th scope="col" style="min-width:170px">Actions</th>
+							<th scope="col" style="min-width:190px">Actions</th>
         				</tr>
         			</thead>
         			<tbody>
@@ -54,6 +54,9 @@
 					    	<td class="v-align-middle semi-bold">
 					    		<a href="{{ route('dashboard.module.ecommerce.orders.detail', ['order' => $order->id]) }}" class="btn btn-sm btn-outline-primary rounded d-inline-block">
 					    			bekijken
+					    		</a>
+					    		<a href="{{ route('dashboard.module.ecommerce.orders.delivery', ['order' => $order->id]) }}" class="btn btn-sm btn-outline-secondary rounded d-inline-block">
+					    			pakbon
 					    		</a>
 					    		@if($order->hasInvoice())
 					    		<a href="{{ route('dashboard.module.ecommerce.orders.invoice', ['order' => $order->id]) }}" class="btn btn-sm btn-outline-secondary rounded d-inline-block">
