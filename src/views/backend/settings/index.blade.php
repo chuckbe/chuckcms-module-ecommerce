@@ -58,44 +58,44 @@ $lang = \LaravelLocalization::getCurrentLocale();
             </div>
         </div>
     </div>
-    <form action="{{ route('dashboard.settings.save') }}" method="POST">
-        <div class="row tab-content bg-light shadow-sm rounded p-3 mb-3 mx-1" id="pageTabContent">
-            <div class="col-sm-12 tab-pane fade show active" id="s_{{ $tab }}" role="tabpanel" aria-labelledby="s_{{ $tab }}-tab">
-                @yield('tab')
-            </div>
-
-            {{-- <div class="col-sm-12 tab-pane fade" id="s_layout" role="tabpanel" aria-labelledby="s_layout-tab">
-              @include('chuckcms-module-ecommerce::backend.settings.index._tab_layout')
-            </div>
-
-            <div class="col-sm-12 tab-pane fade" id="s_orders" role="tabpanel" aria-labelledby="s_orders-tab">
-              @include('chuckcms-module-ecommerce::backend.settings.index._tab_orders')
-            </div>
-
-            <div class="col-sm-12 tab-pane fade" id="s_shipping" role="tabpanel" aria-labelledby="s_shipping-tab">
-              @include('chuckcms-module-ecommerce::backend.settings.index._tab_shipping')
-            </div> --}}
-
-            {{-- <div class="col-sm-12 tab-pane fade" id="s_products" role="tabpanel" aria-labelledby="s_products-tab">
-              @include('chuckcms-module-ecommerce::backend.settings.index._tab_products')
-            </div> --}}
-
-            {{-- <div class="col-sm-12 tab-pane fade" id="s_customers" role="tabpanel" aria-labelledby="s_customers-tab">
-              @include('chuckcms-module-ecommerce::backend.settings.index._tab_customers')
-            </div> --}}
-
-            {{-- <div class="col-sm-12 tab-pane fade" id="s_integrations" role="tabpanel" aria-labelledby="s_integrations-tab">
-              @include('chuckcms-module-ecommerce::backend.settings.index._tab_integrations')
-            </div> --}}
+    <div class="row tab-content bg-light shadow-sm rounded p-3 mb-5 mx-1" id="pageTabContent">
+        <div class="col-sm-12 tab-pane fade show active" id="s_{{ $tab }}" role="tabpanel" aria-labelledby="s_{{ $tab }}-tab">
+            @yield('tab')
         </div>
-        <div class="row">
-            <div class="col-sm-12 text-right">
-                <input type="hidden" name="_token" value="{{ Session::token() }}">
-                <button class="btn btn-outline-success" type="submit">Opslaan</button>
-            </div>
-        </div>
-    </form>
 
+        {{-- <div class="col-sm-12 tab-pane fade" id="s_layout" role="tabpanel" aria-labelledby="s_layout-tab">
+          @include('chuckcms-module-ecommerce::backend.settings.index._tab_layout')
+        </div>
+
+        <div class="col-sm-12 tab-pane fade" id="s_orders" role="tabpanel" aria-labelledby="s_orders-tab">
+          @include('chuckcms-module-ecommerce::backend.settings.index._tab_orders')
+        </div>
+
+        <div class="col-sm-12 tab-pane fade" id="s_shipping" role="tabpanel" aria-labelledby="s_shipping-tab">
+          @include('chuckcms-module-ecommerce::backend.settings.index._tab_shipping')
+        </div> --}}
+
+        {{-- <div class="col-sm-12 tab-pane fade" id="s_products" role="tabpanel" aria-labelledby="s_products-tab">
+          @include('chuckcms-module-ecommerce::backend.settings.index._tab_products')
+        </div> --}}
+
+        {{-- <div class="col-sm-12 tab-pane fade" id="s_customers" role="tabpanel" aria-labelledby="s_customers-tab">
+          @include('chuckcms-module-ecommerce::backend.settings.index._tab_customers')
+        </div> --}}
+
+        {{-- <div class="col-sm-12 tab-pane fade" id="s_integrations" role="tabpanel" aria-labelledby="s_integrations-tab">
+          @include('chuckcms-module-ecommerce::backend.settings.index._tab_integrations')
+        </div> --}}
+    </div>
+    <div class="row">
+        <div class="col-sm-12 mb-3"></div>
+    </div>
+    {{-- <div class="row">
+        <div class="col-sm-12 text-right">
+            <input type="hidden" name="_token" value="{{ Session::token() }}">
+            <button class="btn btn-outline-success" type="submit">Opslaan</button>
+        </div>
+    </div> --}}
 </div>
 @endsection
 

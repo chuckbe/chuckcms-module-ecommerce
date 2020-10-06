@@ -44,7 +44,9 @@ class ChuckcmsModuleEcommerceServiceProvider extends ServiceProvider
      * @return void
      */
     public function register()
-    {   
+    {
+        $this->app['Chuckbe\Chuckcms\Models\User'] = $this->app['Chuckbe\ChuckcmsModuleEcommerce\Models\User'];
+        
         $this->loadViewsFrom(__DIR__.'/views', 'chuckcms-module-ecommerce');
 
         $this->app->register('Chuckbe\ChuckcmsModuleEcommerce\Providers\ChuckCollectionServiceProvider');

@@ -65,6 +65,14 @@
             </div>
             <div class="row">
               <div class="col-md-12">
+                <div class="form-group form-group-default required">
+                  <label>Gratis vanaf </label>
+                  <input type="text" data-a-dec="." data-a-sep="" data-m-dec="2" data-a-pad=true class="autonumeric form-control" name="free_from" value="0.00" placeholder="Gratis vanaf">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
                 <div class="form-group form-group-default form-group-default-select2">
                   <label>Actief in volgende landen </label>
                   <select class="form-control" name="countries[]" multiple>

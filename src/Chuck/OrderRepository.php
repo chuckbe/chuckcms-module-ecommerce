@@ -76,8 +76,8 @@ class OrderRepository
 
         $order->subtotal = $cart->total() - $cart->tax();
         $order->subtotal_tax = $cart->tax();
-        $order->shipping = ChuckEcommerce::getCarrierSubtotal($request->get('shipping_method'), 21); // get shipping vat according to shop address and customer address
-        $order->shipping_tax = ChuckEcommerce::getCarrierTax($request->get('shipping_method'), 21);
+        $order->shipping = ChuckEcommerce::getCarrierSubtotalForCart($request->get('shipping_method'), 'instance'); // get shipping vat according to shop address and customer address
+        $order->shipping_tax = ChuckEcommerce::getCarrierTaxForCart($request->get('shipping_method'), 'instance');
         $order->total = $order->subtotal + $order->shipping;
         $order->total_tax = $order->subtotal_tax + $order->shipping_tax;
         $order->final = $order->total + $order->total_tax;

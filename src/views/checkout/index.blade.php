@@ -401,12 +401,12 @@ $(document).ready(function() {
 
         <li class="list-group-item d-flex justify-content-between">
           <span>Verzending (EUR)</span>
-          <strong class="ce_checkoutShippingPrice" data-tax-shipping="{{ ChuckEcommerce::taxFromPrice(ChuckEcommerce::getDefaultShippingPrice(), 21) }}" data-shipping-price="{{ ChuckEcommerce::getDefaultShippingPrice() }}">{{ (float)ChuckEcommerce::getDefaultShippingPrice() > 0 ?ChuckEcommerce::formatPrice(ChuckEcommerce::getDefaultShippingPrice()) : 'gratis' }}</strong>
+          <strong class="ce_checkoutShippingPrice" data-tax-shipping="{{ ChuckEcommerce::taxFromPrice(ChuckEcommerce::getDefaultShippingPriceForCart('shopping'), 21) }}" data-shipping-price="{{ ChuckEcommerce::getDefaultShippingPriceForCart('shopping') }}">{{ (float)ChuckEcommerce::getDefaultShippingPriceForCart('shopping') > 0 ?ChuckEcommerce::formatPrice(ChuckEcommerce::getDefaultShippingPriceForCart('shopping')) : 'gratis' }}</strong>
         </li>
 
         <li class="list-group-item d-flex justify-content-between">
-          <span>Totaal (EUR) <br> <small><span class="ce_checkoutTaxPrice" data-tax-price="{{ Cart::instance('shopping')->tax() }}">{{ ChuckEcommerce::formatPrice(Cart::instance('shopping')->tax() + ChuckEcommerce::taxFromPrice(ChuckEcommerce::getDefaultShippingPrice(), 21)) }}</span> BTW inbegrepen. </small></span>
-          <strong class="ce_checkoutTotalPrice">{{ ChuckEcommerce::formatPrice(Cart::instance('shopping')->total() + ChuckEcommerce::getDefaultShippingPrice()) }}</strong>
+          <span>Totaal (EUR) <br> <small><span class="ce_checkoutTaxPrice" data-tax-price="{{ Cart::instance('shopping')->tax() }}">{{ ChuckEcommerce::formatPrice(Cart::instance('shopping')->tax() + ChuckEcommerce::taxFromPrice(ChuckEcommerce::getDefaultShippingPriceForCart('shopping'), 21)) }}</span> BTW inbegrepen. </small></span>
+          <strong class="ce_checkoutTotalPrice">{{ ChuckEcommerce::formatPrice(Cart::instance('shopping')->total() + ChuckEcommerce::getDefaultShippingPriceForCart('shopping')) }}</strong>
         </li>
       </ul>
 
@@ -581,13 +581,11 @@ $(document).ready(function() {
         <h4 class="mb-3">Verzendmethode</h4>
 
         <div class="d-block my-3">
-            @foreach(ChuckEcommerce::getCarriers() as $carrierKey => $carrier)
-            @if(ChuckEcommerce::getCartTotalWeight('shopping') <= (!array_key_exists('max_weight', $carrier) ? 0.000 : (float)$carrier['max_weight']))
+            @foreach(ChuckEcommerce::getCarriersForCart('shopping') as $carrierKey => $carrier)
             <div class="custom-control custom-radio">
-                <input id="{{ $carrierKey }}" name="shippingMethod" value="{{ $carrierKey }}" type="radio" class="custom-control-input" data-carrier-key="{{ $carrierKey }}" data-carrier-cost="{{ $carrier['cost'] }}" data-carrier-max-weight="{{ array_key_exists('max_weight', $carrier) ? $carrier['max_weight'] : '0.000' }}" data-carrier-countries="{{ implode('|',$carrier['countries']) }}" data-carrier-cost-tax="{{ ChuckEcommerce::taxFromPrice($carrier['cost'], 21) }}" {{ $carrier['default'] ? 'checked' : '' }} required>
-                <label class="custom-control-label" for="{{ $carrierKey }}">{{ $carrier['name'] }} ({{ $carrier['transit_time'] }}) — {{ (float)$carrier['cost'] > 0 ? ChuckEcommerce::formatPrice($carrier['cost']) : 'free'  }}</label>
+                <input id="{{ $carrierKey }}" name="shippingMethod" value="{{ $carrierKey }}" type="radio" class="custom-control-input" data-carrier-key="{{ $carrierKey }}" data-carrier-cost="{{ ChuckEcommerce::getCarrierTotalForCart($carrierKey, 'shopping') }}" data-carrier-max-weight="{{ array_key_exists('max_weight', $carrier) ? $carrier['max_weight'] : '0.000' }}" data-carrier-countries="{{ implode('|',$carrier['countries']) }}" data-carrier-cost-tax="{{ ChuckEcommerce::taxFromPrice(ChuckEcommerce::getCarrierTotalForCart($carrierKey, 'shopping'), 21) }}" {{ $carrier['default'] || $loop->count == 1 ? 'checked' : '' }} required>
+                <label class="custom-control-label" for="{{ $carrierKey }}">{{ $carrier['name'] }} ({{ $carrier['transit_time'] }}) — {{ (float)ChuckEcommerce::getCarrierTotalForCart($carrierKey, 'shopping') > 0 ? ChuckEcommerce::formatPrice(ChuckEcommerce::getCarrierTotalForCart($carrierKey, 'shopping')) : 'free' }}</label>
             </div>
-            @endif
             @endforeach
           
         </div>

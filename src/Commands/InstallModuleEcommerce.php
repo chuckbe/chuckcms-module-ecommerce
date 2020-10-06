@@ -540,6 +540,8 @@ class InstallModuleEcommerce extends Command
             'transit_time' => 'levering binnen 48u',
             'image' => null,
             'cost' => "0.000000",
+            'max_weight' => "0.000",
+            'free_from' => null,
             'countries' => ['BE', 'LU'],
             'default' => true
         ];

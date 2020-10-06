@@ -112,6 +112,22 @@ class Ecommerce
         return $price;
     }
 
+    public function getDefaultShippingPriceForCart($instance)
+    {
+        foreach ($this->moduleSettings['shipping']['carriers'] as $carrierKey => $carrier) {
+            if($this->getCartTotalWeight($instance) <= (!array_key_exists('max_weight', $carrier) ? 0.000 : (float)$carrier['max_weight'])) {
+                if($carrier['default']) {
+                    $price = (float)$this->getCarrierTotalForCart($carrierKey, $instance); 
+                    break;
+                } else {
+                    $price = (float)$this->getCarrierTotalForCart($carrierKey, $instance); 
+                    break;
+                }
+            }
+        }
+        return $price;
+    }
+
     public function getCartTotalWeight(string $identifier)
     {
         $totalWeight = 0;
@@ -132,9 +148,19 @@ class Ecommerce
         return array_key_exists($key, $this->moduleSettings['shipping']['carriers']) ? $this->priceWithoutTax((float)$this->moduleSettings['shipping']['carriers'][$key]['cost'], 21) : 0.00;
     }
 
+    public function getCarrierSubtotalForCart($key, $instance, $vat = null)
+    {
+        return array_key_exists($key, $this->moduleSettings['shipping']['carriers']) ? $this->priceWithoutTax((float)$this->getCarrierTotalForCart($key, $instance), 21) : 0.00;
+    }
+
     public function getCarrierTax($key)
     {
         return array_key_exists($key, $this->moduleSettings['shipping']['carriers']) ? $this->taxFromPrice((float)$this->moduleSettings['shipping']['carriers'][$key]['cost'], 21) : 0.00;
+    }
+
+    public function getCarrierTaxForCart($key, $instance, $vat = null)
+    {
+        return array_key_exists($key, $this->moduleSettings['shipping']['carriers']) ? $this->taxFromPrice((float)$this->getCarrierTotalForCart($key, $instance), 21) : 0.00;
     }
 
     public function getCarrierTotal($key)
@@ -142,9 +168,44 @@ class Ecommerce
         return array_key_exists($key, $this->moduleSettings['shipping']['carriers']) ? (float)$this->moduleSettings['shipping']['carriers'][$key]['cost'] : 0.00;
     }
 
+    public function getCarrierTotalForCart($key, $instance)
+    {
+        if( array_key_exists($key, $this->moduleSettings['shipping']['carriers']) ) {
+            $carrier = $this->moduleSettings['shipping']['carriers'][$key];
+
+            if( !array_key_exists('free_from', $carrier) ) {
+                return $carrier['cost'];
+            }
+
+            if( is_null($carrier['free_from']) ) {
+                return $carrier['cost'];
+            }
+
+            if( (float)Cart::instance($instance)->total() <= (float)$carrier['free_from'] ) {
+                return $carrier['cost'];
+            }
+        } 
+
+        return 0.00;              
+    }
+
     public function getCarriers()
     {
         return $this->moduleSettings['shipping']['carriers'];
+    }
+
+    public function getCarriersForCart($instance)
+    {
+        $carriers = $this->moduleSettings['shipping']['carriers'];
+        $object = [];
+
+        foreach($carriers as $key => $carrier) {
+            if($this->getCartTotalWeight($instance) <= (!array_key_exists('max_weight', $carrier) ? 0.000 : (float)$carrier['max_weight'])) {
+                $object[$key] = $carrier;
+            }
+        }
+        
+        return $object;
     }
 
     public function isDefaultCarrier($key) :bool

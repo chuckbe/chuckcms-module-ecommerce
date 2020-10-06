@@ -52,19 +52,20 @@ Route::group(['middleware' => ['web']], function() {
 			
 			//START OF: SETTINGS ROUTES
 			Route::get('/dashboard/ecommerce/settings', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\SettingController@index')->name('dashboard.module.ecommerce.settings.index');
+			Route::get('/dashboard/ecommerce/settings/update', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\Settings\GeneralController@update')->name('dashboard.module.ecommerce.settings.index.general.update');
 			
 			Route::get('/dashboard/ecommerce/settings/layout', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\SettingController@layout')->name('dashboard.module.ecommerce.settings.index.layout');
 			
 			Route::get('/dashboard/ecommerce/settings/orders', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\SettingController@orders')->name('dashboard.module.ecommerce.settings.index.orders');
-			Route::get('/dashboard/ecommerce/settings/orders/statuses/edit/{status}', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\SettingController@statusEdit')->name('dashboard.module.ecommerce.settings.index.orders.statuses.edit');
-			Route::get('/dashboard/ecommerce/settings/orders/statuses/{status}/emails/new', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\SettingController@statusEmail')->name('dashboard.module.ecommerce.settings.index.orders.statuses.email.new');
-			Route::post('/dashboard/ecommerce/settings/orders/statuses/update', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\SettingController@statusUpdate')->name('dashboard.module.ecommerce.settings.index.orders.statuses.update');
-			Route::post('/dashboard/ecommerce/settings/orders/statuses/emails/save', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\SettingController@statusEmailSave')->name('dashboard.module.ecommerce.settings.index.orders.statuses.email.save');
-			Route::post('/dashboard/ecommerce/settings/orders/statuses/emails/delete', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\SettingController@statusEmailDelete')->name('dashboard.module.ecommerce.settings.index.orders.statuses.email.delete');
+			Route::get('/dashboard/ecommerce/settings/orders/statuses/edit/{status}', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\Settings\StatusController@edit')->name('dashboard.module.ecommerce.settings.index.orders.statuses.edit');
+			Route::get('/dashboard/ecommerce/settings/orders/statuses/{status}/emails/new', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\Settings\StatusController@email')->name('dashboard.module.ecommerce.settings.index.orders.statuses.email.new');
+			Route::post('/dashboard/ecommerce/settings/orders/statuses/update', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\Settings\StatusController@update')->name('dashboard.module.ecommerce.settings.index.orders.statuses.update');
+			Route::post('/dashboard/ecommerce/settings/orders/statuses/emails/save', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\Settings\StatusController@emailSave')->name('dashboard.module.ecommerce.settings.index.orders.statuses.email.save');
+			Route::post('/dashboard/ecommerce/settings/orders/statuses/emails/delete', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\Settings\StatusController@emailDelete')->name('dashboard.module.ecommerce.settings.index.orders.statuses.email.delete');
 			
 			Route::get('/dashboard/ecommerce/settings/shipping', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\SettingController@shipping')->name('dashboard.module.ecommerce.settings.index.shipping');
-			Route::post('/dashboard/ecommerce/settings/shipping/carrier/save', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\SettingController@shippingCarrierSave')->name('dashboard.module.ecommerce.settings.shipping.carrier.save');
-			Route::post('/dashboard/ecommerce/settings/shipping/carrier/delete', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\SettingController@shippingCarrierDelete')->name('dashboard.module.ecommerce.settings.shipping.carrier.delete');
+			Route::post('/dashboard/ecommerce/settings/shipping/carrier/save', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\Settings\CarrierController@save')->name('dashboard.module.ecommerce.settings.shipping.carrier.save');
+			Route::post('/dashboard/ecommerce/settings/shipping/carrier/delete', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\Settings\CarrierController@delete')->name('dashboard.module.ecommerce.settings.shipping.carrier.delete');
 
 			Route::get('/dashboard/ecommerce/settings/integrations', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\SettingController@integrations')->name('dashboard.module.ecommerce.settings.index.integrations');
 			//END OF: SETTINGS ROUTES
