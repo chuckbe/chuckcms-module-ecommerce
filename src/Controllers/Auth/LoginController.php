@@ -2,11 +2,11 @@
 
 namespace Chuckbe\ChuckcmsModuleEcommerce\Controllers\Auth;
 
-use App\Http\Controllers\Controller;
 use Auth;
-use Illuminate\Foundation\Auth\AuthenticatesUsers;
-use Chuckbe\Chuckcms\Models\Template;
 use Cart;
+use App\Http\Controllers\Controller;
+use Chuckbe\Chuckcms\Models\Template;
+use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
 class LoginController extends Controller
 {
@@ -30,36 +30,37 @@ class LoginController extends Controller
      */
     protected $redirectTo = '/dashboard';
 
-    public function redirectTo(){
+    public function redirectTo()
+    {
         $userId = Auth::user()->id;
 
-        Cart::instance('shopping')->restore('shopping_'.$userId);
+        Cart::instance('shopping')->restore('shopping_' . $userId);
         $cart = Cart::instance('shopping')->content();
-        Cart::instance('shopping')->store('shopping_'.$userId);
+        Cart::instance('shopping')->store('shopping_' . $userId);
 
-        Cart::instance('wishlist')->restore('wishlist_'.$userId);
+        Cart::instance('wishlist')->restore('wishlist_' . $userId);
         $wishlist = Cart::instance('wishlist')->content();
-        Cart::instance('wishlist')->store('wishlist_'.$userId);
-        
-        if(Auth::user()->hasRole('customer')){
+        Cart::instance('wishlist')->store('wishlist_' . $userId);
+
+        if (Auth::user()->hasRole('customer')) {
             return config('chuckcms-module-ecommerce.auth.redirect.customer');
-        } 
+        }
 
-        if(Auth::user()->hasRole('user')){
+        if (Auth::user()->hasRole('user')) {
             return config('chuckcms-module-ecommerce.auth.redirect.user');
-        } 
+        }
 
-        if(Auth::user()->hasRole('moderator')){
+        if (Auth::user()->hasRole('moderator')) {
             return config('chuckcms-module-ecommerce.auth.redirect.moderator');
-        } 
+        }
 
-        if(Auth::user()->hasRole('administrator')){
+        if (Auth::user()->hasRole('administrator')) {
             return config('chuckcms-module-ecommerce.auth.redirect.administrator');
-        } 
+        }
 
-        if(Auth::user()->hasRole('super-admin')){
+        if (Auth::user()->hasRole('super-admin')) {
             return config('chuckcms-module-ecommerce.auth.redirect.super-admin');
-        } 
+        }
     }
 
     /**
@@ -76,7 +77,13 @@ class LoginController extends Controller
     {
         $templateHintpath = config('chuckcms-module-ecommerce.auth.template.hintpath');
         $template = Template::where('type', 'ecommerce')->where('active', 1)->where('hintpath', $templateHintpath)->first();
-        return view('chuckcms-template-london::templates.chuckcms-template-london.account.auth', compact('errors', 'template')); // TODO: make view from config
+        $blade = $templateHintpath . '::templates.' . $template->slug . '.account.auth';
+
+        if (view()->exists($blade)) {
+            return view($blade, compact('template'));
+        }
+
+        return view('chuckcms::auth.login');
     }
 
     protected function validateLogin(\Illuminate\Http\Request $request)
