@@ -54,7 +54,7 @@ class InstallModuleEcommerce extends Command
         $hintpath = 'chuckcms-module-ecommerce';
         $path = 'chuckbe/chuckcms-module-ecommerce';
         $type = 'module';
-        $version = '0.1.10';
+        $version = '0.1.16';
         $author = 'Karel Brijs (karel@chuck.be)';
 
         $json = [];
@@ -97,32 +97,40 @@ class InstallModuleEcommerce extends Command
                             'submenu' => null
                         ),
                         'second' => array(
-                            'name' => 'Collecties',
-                            'icon' => false,
-                            'icon_data' => 'Co',
-                            'route' => 'dashboard.module.ecommerce.collections.index',
-                            'has_submenu' => false,
-                            'submenu' => null
-                        ),
-                        'third' => array(
-                            'name' => 'Merken',
-                            'icon' => false,
-                            'icon_data' => 'Br',
-                            'route' => 'dashboard.module.ecommerce.brands.index',
-                            'has_submenu' => false,
-                            'submenu' => null
-                        ),
-                        'fourth' => array(
                             'name' => 'Attributen',
                             'icon' => false,
                             'icon_data' => 'At',
                             'route' => 'dashboard.module.ecommerce.attributes.index',
                             'has_submenu' => false,
                             'submenu' => null
+                        ),
+                        'third' => array(
+                            'name' => 'Kortingen',
+                            'icon' => true,
+                            'icon_data' => 'gift',
+                            'route' => 'dashboard.module.ecommerce.discounts.index',
+                            'has_submenu' => false,
+                            'submenu' => null
                         )
                     )
                 ),
                 'fourth' => array(
+                    'name' => 'Collecties',
+                    'icon' => false,
+                    'icon_data' => 'Co',
+                    'route' => 'dashboard.module.ecommerce.collections.index',
+                    'has_submenu' => false,
+                    'submenu' => null
+                ),
+                'fifth' => array(
+                    'name' => 'Merken',
+                    'icon' => false,
+                    'icon_data' => 'Br',
+                    'route' => 'dashboard.module.ecommerce.brands.index',
+                    'has_submenu' => false,
+                    'submenu' => null
+                ),
+                'sixth' => array(
                     'name' => 'Klanten',
                     'icon' => true,
                     'icon_data' => 'user',
@@ -130,15 +138,7 @@ class InstallModuleEcommerce extends Command
                     'has_submenu' => false,
                     'submenu' => null
                 ),
-                'fifth' => array(
-                    'name' => 'Kortingen',
-                    'icon' => true,
-                    'icon_data' => 'gift',
-                    'route' => 'dashboard.module.ecommerce.discounts.index',
-                    'has_submenu' => false,
-                    'submenu' => null
-                ),
-                'sixth' => array(
+                'seventh' => array(
                     'name' => 'Instellingen',
                     'icon' => true,
                     'icon_data' => 'cpu',
@@ -188,7 +188,7 @@ class InstallModuleEcommerce extends Command
         $json['settings']['invoice']['number'] = 0;
 
         $json['settings']['order']['minimum'] = 0;
-        $json['settings']['order']['countries'] = ['BE','NL','LU'];
+        $json['settings']['order']['countries'] = ['BE', 'NL', 'LU'];
 
         $json['settings']['order']['statuses'] = [
             'new' => [
@@ -226,8 +226,8 @@ class InstallModuleEcommerce extends Command
                             'subject' => [
                                 'type' => 'text',
                                 'value' => [
-                                    'nl' => 'Uw bestelling #[%ORDER_NUMBER%] is verzonden',
-                                    'en' => 'Your order #[%ORDER_NUMBER%] was shipped'
+                                    'nl' => 'Uw bestelling #[%ORDER_NUMBER%] werd geannuleerd',
+                                    'en' => 'Your order #[%ORDER_NUMBER%] was canceled'
                                 ],
                                 'required' => true,
                                 'validation' => 'required'
@@ -235,8 +235,8 @@ class InstallModuleEcommerce extends Command
                             'hidden_preheader' => [
                                 'type' => 'text',
                                 'value' => [
-                                    'nl' => 'Uw bestelling met bestelnummer #[%ORDER_NUMBER%] is onderweg. In deze mail vindt u meer informatie over uw bestelling terug.',
-                                    'en' => 'Your order #[%ORDER_NUMBER%] was shipped'
+                                    'nl' => 'Uw bestelling met bestelnummer #[%ORDER_NUMBER%] werd geannuleerd. In deze mail vindt u meer informatie terug.',
+                                    'en' => 'Your order #[%ORDER_NUMBER%] was canceled. You can find more information in this email.'
                                 ],
                                 'required' => true,
                                 'validation' => 'required'
@@ -244,8 +244,8 @@ class InstallModuleEcommerce extends Command
                             'intro' => [
                                 'type' => 'textarea',
                                 'value' => [
-                                    'nl' => 'Beste [%ORDER_SURNAME%] [%ORDER_NAME%]<br><br>Uw bestelling is onderweg. Uw bestelling wordt volgende werkdag geleverd tussen 9:00u en 19:00u. Is er niemand thuis? Dan proberen we het de dag erna nog eens, maak u geen zorgen. Heeft u nog vragen? Neem gerust contact met ons op.',
-                                    'en' => 'Order is shipped'
+                                    'nl' => 'Beste [%ORDER_SURNAME%] [%ORDER_NAME%]<br><br>Uw bestelling werd geannuleerd. Indien u reeds heeft betaald wordt dit bedrag automatisch teruggestort op het rekeningnummer dat gelinkt is aan de kaart waarmee u de betaling heeft uitgevoerd. <br><br> Denkt u dat het niet de bedoeling dat deze bestelling geannuleerd werd? Geen zorgen, neem dan contact op met de klantendienst.',
+                                    'en' => 'Dear [%ORDER_SURNAME%] [%ORDER_NAME%]<br><br>Your order was canceled. If you have already paid then we will automatically debit the account linked to the card that has been used to pay this order. <br><br>Do you think this order was not supposed to be canceled? No worries, contact our customer support.'
                                 ],
                                 'required' => true,
                                 'validation' => 'required'
@@ -263,7 +263,7 @@ class InstallModuleEcommerce extends Command
                                 'type' => 'textarea',
                                 'value' => [
                                     'nl' => 'Hieronder vind je nogmaals een overzicht terug van jouw bestelling. <br><br> <b>Verzending:</b> [%ORDER_CARRIER_NAME%] <br> <b>Verzendtijd:</b> [%ORDER_CARRIER_TRANSIT_TIME%] <br><br> <b>Overzicht: </b> <br> [%ORDER_PRODUCTS%] <br> <b>Verzendkosten</b>: [%ORDER_SHIPPING_TOTAL%] <br><br> <b>Totaal</b>: [%ORDER_FINAL%] <br><br> <b>Facturatie adres: </b> <br> Naam: [%ORDER_SURNAME%] [%ORDER_NAME%] <br> E-mail: [%ORDER_EMAIL%] <br> Tel: [%ORDER_TELEPHONE%] <br> Bedrijf: [%ORDER_COMPANY%] <br> BTW: [%ORDER_COMPANY_VAT%] <br> Adres: <br>[%ORDER_BILLING_STREET%] [%ORDER_BILLING_HOUSENUMBER%], <br>[%ORDER_BILLING_POSTALCODE%] [%ORDER_BILLING_CITY%], [%ORDER_BILLING_COUNTRY%] <br><br> <b>Verzendadres:</b><br>Naam: [%ORDER_SURNAME%] [%ORDER_NAME%] <br>Adres:<br>[%ORDER_SHIPPING_STREET%] [%ORDER_SHIPPING_HOUSENUMBER%], <br>[%ORDER_SHIPPING_POSTALCODE%] [%ORDER_SHIPPING_CITY%], [%ORDER_SHIPPING_COUNTRY%]',
-                                    'en' => 'Your order is shipped and on its way to you.'
+                                    'en' => 'Below you will find another summary of your order. <br><br> <b>Shipping:</b> [%ORDER_CARRIER_NAME%] <br> <b>Transit time:</b> [%ORDER_CARRIER_TRANSIT_TIME%] <br><br> <b>Order: </b> <br> [%ORDER_PRODUCTS%] <br> <b>Shipping fees</b>: [%ORDER_SHIPPING_TOTAL%] <br><br> <b>Total</b>: [%ORDER_FINAL%] <br><br> <b>Invoice address: </b> <br> Name: [%ORDER_SURNAME%] [%ORDER_NAME%] <br> E-mail: [%ORDER_EMAIL%] <br> Tel: [%ORDER_TELEPHONE%] <br> Company: [%ORDER_COMPANY%] <br> VAT: [%ORDER_COMPANY_VAT%] <br> Address: <br>[%ORDER_BILLING_STREET%] [%ORDER_BILLING_HOUSENUMBER%], <br>[%ORDER_BILLING_POSTALCODE%] [%ORDER_BILLING_CITY%], [%ORDER_BILLING_COUNTRY%] <br><br> <b>Shipping address:</b><br>Name: [%ORDER_SURNAME%] [%ORDER_NAME%] <br>Address:<br>[%ORDER_SHIPPING_STREET%] [%ORDER_SHIPPING_HOUSENUMBER%], <br>[%ORDER_SHIPPING_POSTALCODE%] [%ORDER_SHIPPING_CITY%], [%ORDER_SHIPPING_COUNTRY%]'
                                 ],
                                 'required' => true,
                                 'validation' => 'required'
@@ -271,8 +271,8 @@ class InstallModuleEcommerce extends Command
                             'footer' => [
                                 'type' => 'textarea',
                                 'value' => [
-                                    'nl' => 'Heeft u vragen over uw bestelling? U kan ons steeds contacteren.<br><br><a href="mailto:'.config('chuckcms-module-ecommerce.company.email').'">'.config('chuckcms-module-ecommerce.company.email').'</a><br><br>'.config('chuckcms-module-ecommerce.company.name'),
-                                    'en' => 'Your order is shipped and on its way to you.'
+                                    'nl' => 'Heeft u vragen over uw bestelling? U kan ons steeds contacteren.<br><br><a href="mailto:' . config('chuckcms-module-ecommerce.company.email') . '">' . config('chuckcms-module-ecommerce.company.email') . '</a><br><br>' . config('chuckcms-module-ecommerce.company.name'),
+                                    'en' => 'Do you have any other questions about this order? You can always reach us.<br><br><a href="mailto:' . config('chuckcms-module-ecommerce.company.email') . '">' . config('chuckcms-module-ecommerce.company.email') . '</a><br><br>' . config('chuckcms-module-ecommerce.company.name')
                                 ],
                                 'required' => true,
                                 'validation' => 'required'
@@ -346,7 +346,7 @@ class InstallModuleEcommerce extends Command
                             'footer' => [
                                 'type' => 'textarea',
                                 'value' => [
-                                    'nl' => 'Heeft u vragen over uw bestelling? U kan ons steeds contacteren.<br><br><a href="mailto:'.config('chuckcms-module-ecommerce.company.email').'">'.config('chuckcms-module-ecommerce.company.email').'</a><br><br>'.config('chuckcms-module-ecommerce.company.name'),
+                                    'nl' => 'Heeft u vragen over uw bestelling? U kan ons steeds contacteren.<br><br><a href="mailto:' . config('chuckcms-module-ecommerce.company.email') . '">' . config('chuckcms-module-ecommerce.company.email') . '</a><br><br>' . config('chuckcms-module-ecommerce.company.name'),
                                     'en' => 'Your order is shipped and on its way to you.'
                                 ],
                                 'required' => true,
@@ -421,7 +421,7 @@ class InstallModuleEcommerce extends Command
                             'footer' => [
                                 'type' => 'textarea',
                                 'value' => [
-                                    'nl' => 'Heeft u vragen over uw bestelling? U kan ons steeds contacteren.<br><br><a href="mailto:'.config('chuckcms-module-ecommerce.company.email').'">'.config('chuckcms-module-ecommerce.company.email').'</a><br><br>'.config('chuckcms-module-ecommerce.company.name'),
+                                    'nl' => 'Heeft u vragen over uw bestelling? U kan ons steeds contacteren.<br><br><a href="mailto:' . config('chuckcms-module-ecommerce.company.email') . '">' . config('chuckcms-module-ecommerce.company.email') . '</a><br><br>' . config('chuckcms-module-ecommerce.company.name'),
                                     'en' => 'Your order is shipped and on its way to you.'
                                 ],
                                 'required' => true,
@@ -505,7 +505,7 @@ class InstallModuleEcommerce extends Command
                             'footer' => [
                                 'type' => 'textarea',
                                 'value' => [
-                                    'nl' => 'Heeft u vragen over uw bestelling? U kan ons steeds contacteren.<br><br><a href="mailto:'.config('chuckcms-module-ecommerce.company.email').'">'.config('chuckcms-module-ecommerce.company.email').'</a><br><br>'.config('chuckcms-module-ecommerce.company.name'),
+                                    'nl' => 'Heeft u vragen over uw bestelling? U kan ons steeds contacteren.<br><br><a href="mailto:' . config('chuckcms-module-ecommerce.company.email') . '">' . config('chuckcms-module-ecommerce.company.email') . '</a><br><br>' . config('chuckcms-module-ecommerce.company.name'),
                                     'en' => 'Your order is shipped and on its way to you.'
                                 ],
                                 'required' => true,
@@ -552,7 +552,7 @@ class InstallModuleEcommerce extends Command
 
         $json['settings']['integrations']['mollie'] = [];
         $json['settings']['integrations']['mollie']['key'] = null;
-        $json['settings']['integrations']['mollie']['methods'] = ['bancontact','belfius','creditcard','ideal','inghomepay','kbc','paypal'];
+        $json['settings']['integrations']['mollie']['methods'] = ['bancontact', 'belfius', 'creditcard', 'ideal', 'inghomepay', 'kbc', 'paypal'];
 
         // create the module
         $module = $this->moduleRepository->createFromArray([
@@ -595,7 +595,5 @@ class InstallModuleEcommerce extends Command
         $this->info(' ');
         $this->info('Module installed: ChuckCMS Ecommerce');
         $this->info(' ');
-
-        
     }
 }
