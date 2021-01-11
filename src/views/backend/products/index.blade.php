@@ -24,7 +24,7 @@
             </nav>
         </div>
     </div>
-    <div class="row bg-light shadow-sm rounded p-3 mb-3 mx-1">
+    <div class="row bg-light shadow-sm rounded py-3 mb-3 mx-1">
     	<div class="col-sm-12 text-right">
     		<a href="{{ route('dashboard.module.ecommerce.products.create') }}" class="btn btn-sm btn-outline-success">Product Toevoegen</a>
     	</div>
@@ -49,7 +49,11 @@
         					<td>{{ $product->json['title'][ChuckSite::getFeaturedLocale()] }}</td>
         					<td>{{ is_null(ChuckProduct::collection($product)) ? '' : ChuckProduct::collection($product)->json['name']}}</td>
         					<td>{{ChuckProduct::lowestPrice($product)}}</td>
-        					<td class="text-center">{!!ChuckProduct::isBuyable($product) ? '✓' : '✕'!!}</td>
+        					<td class="text-center">
+								<span class="badge badge-{{ ChuckProduct::isBuyable($product) ? 'success' : 'danger' }}">
+									{!!ChuckProduct::isBuyable($product) ? '✓' : '✕'!!}
+								</span>
+							</td>
         					<td>{{ChuckProduct::quantity($product, ChuckProduct::defaultSku($product)) }}</td>
         					<td>
         						@can('edit forms')
