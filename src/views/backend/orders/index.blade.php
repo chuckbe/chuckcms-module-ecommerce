@@ -24,7 +24,7 @@
             </nav>
         </div>
     </div>
-    <div class="row bg-light shadow-sm rounded p-3 mb-3 mx-1">
+    <div class="row bg-light shadow-sm rounded py-3 mb-3 mx-1">
     	<div class="col-sm-12 text-right">
     		<a href="{{ route('dashboard.module.ecommerce.products.create') }}" class="btn btn-sm btn-outline-success">Nieuwe Bestelling</a>
     	</div>
