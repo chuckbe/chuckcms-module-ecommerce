@@ -30,23 +30,23 @@
     	</div>
         <div class="col-sm-12 my-3">
         	<div class="table-responsive">
-        		<table class="table" data-datatable style="width:100%">
+        		<table class="table" data-datatable data-order="[[ 0, &quot;desc&quot; ]]" style="width:100%">
         			<thead>
         				<tr>
-        					<th scope="col">Order #</th>
+        					<th scope="col">#</th>
 							<th scope="col">Datum</th>
 							<th scope="col">Naam & Adres</th>
 							<th scope="col" class="pr-5">Totaal</th>
 							<th scope="col">Status</th>
-							<th scope="col" style="min-width:190px">Actions</th>
+							<th scope="col" style="min-width:220px">Actions</th>
         				</tr>
         			</thead>
         			<tbody>
         				@foreach($orders as $order)
 						<tr class="order_line" data-id="{{ $order->id }}">
-					    	<td class="v-align-middle semi-bold">{{ $order->json['order_number'] }}</td>
-					    	<td class="v-align-middle">{{ date('Y/m/d', strtotime($order->created_at)) }}</td>
-					    	<td class="v-align-middle">{{ $order->surname .' '. $order->name }} <br> <a href="mailto:{{ $order->email }}">{{ $order->email }}</a> <br> @if(!is_null($order->tel)) <a href="tel:{{ $order->tel }}">{{ $order->tel }}</a> <br> @endif </td>
+					    	<td class="v-align-middle semi-bold">{{ $order->id }}</td>
+					    	<td class="v-align-middle" data-order="{{ date('Ymd', strtotime($order->created_at)) }}">{{ date('d/m/Y', strtotime($order->created_at)) }}</td>
+					    	<td class="v-align-middle">{{ $order->surname .' '. $order->name }} <br> <small><a href="mailto:{{ $order->email }}">{{ $order->email }}</a></small> <br> @if(!is_null($order->tel)) <small><a href="tel:{{ $order->tel }}">{{ $order->tel }}</a></small> <br> @endif </td>
 					    	<td class="v-align-middle semi-bold">{{ ChuckEcommerce::formatPrice($order->final) }}</td>
 					    	<td class="v-align-middle">
 					    		<span class="label {{ ChuckEcommerce::getSetting('order.statuses.'.$order->status.'.paid') ? 'label-inverse' : '' }}">{{ ChuckEcommerce::getSetting('order.statuses.'.$order->status.'.short.'.app()->getLocale()) }}</span>
@@ -120,4 +120,6 @@ $( document ).ready(function (){
 	});
 });
 </script>
+
+
 @endsection

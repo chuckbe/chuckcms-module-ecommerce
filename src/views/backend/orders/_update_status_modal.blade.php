@@ -4,23 +4,27 @@
   <div class="modal-content-wrapper">
     <div class="modal-content">
       <div class="modal-header clearfix text-left">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="pg-close fs-14"></i>
+        <h5 class="modal-title">Update de <span class="semi-bold">status</span> van de bestelling</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
         </button>
-        <h5>Update de <span class="semi-bold">status</span> van de bestelling</h5>
-        <p class="p-b-10">Selecteer een status.</p>
-        @if($errors->any())
-          @foreach ($errors->all() as $error)
-            <p class="text-danger">{{ $error }}</p>
-          @endforeach
-        @endif
       </div>
       <div class="modal-body">
+        <div class="row">
+          <div class="col-sm-12">
+            <p class="p-b-10">Selecteer een status.</p>
+            @if($errors->any())
+              @foreach ($errors->all() as $error)
+                <p class="text-danger">{{ $error }}</p>
+              @endforeach
+            @endif
+          </div>
+        </div>
         <form role="form" method="POST" action="{{ route('dashboard.module.ecommerce.orders.status.update') }}">
           <div class="form-group-attached">
             <div class="row">
               <div class="col-md-12">
                 <div class="form-group form-group-default form-group-default-select2">
-                  <label>Status </label>
                   <select class="form-control" name="order_status" placeholder="Selecteer status" required>
                     @foreach(ChuckEcommerce::getSetting('order.statuses') as $statusKey => $status)
                       <option value="{{ $statusKey }}">{{ $status['display_name'][app()->getLocale()] }} {{ $status['send_email'] == true ? '(email verzenden)' : '' }}</option>
