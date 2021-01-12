@@ -4,12 +4,15 @@
   <div class="modal-content-wrapper">
     <div class="modal-content">
       <div class="modal-header clearfix text-left">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="pg-close fs-14"></i>
+        <h5 class="modal-title">Bewerk de volgende <span class="semi-bold">brand</span></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
         </button>
-        <h5>Bewerk de volgende <span class="semi-bold">brand</span></h5>
-        <p class="p-b-10">Bewerk de volgende velden om de brand te wijzigen.</p>
       </div>
       <div class="modal-body">
+        <div>
+          <p class="p-b-10">Bewerk de volgende velden om de brand te wijzigen.</p>
+        </div>
         <form role="form" method="POST" action="{{ route('dashboard.module.ecommerce.brands.save') }}">
           <div class="form-group-attached">
             <div class="row">
@@ -38,12 +41,12 @@
             </div>
           </div>
         <div class="row">
-          <div class="col-md-12 m-t-10 sm-m-t-10 pull-right">
+          <div class="col-md-12">
             <input type="hidden" id="edit_brand_id" name="id" value="">
             <input type="hidden" name="update">
             <input type="hidden" name="_token" value="{{ Session::token() }}">
             <button type="button" class="btn btn-default m-t-5" data-dismiss="modal" aria-hidden="true">Annuleren</button>
-            <button type="submit" class="btn btn-primary m-t-5">Bewerken</button>
+            <button type="submit" class="btn btn-primary float-right">Bewerken</button>
           </div>
         </div>
         </form>

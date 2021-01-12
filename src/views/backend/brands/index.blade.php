@@ -1,4 +1,4 @@
-@extends('chuckcms::backend.layouts.admin')
+@extends('chuckcms::backend.layouts.base')
 
 @section('title')
 	Merken
@@ -11,119 +11,102 @@
 @endsection
 
 @section('css')
-	<link href="https://cdn.chuck.be/assets/plugins/jquery-datatable/media/css/dataTables.bootstrap.min.css" rel="stylesheet" type="text/css" />
-    <link href="https://cdn.chuck.be/assets/plugins/jquery-datatable/extensions/FixedColumns/css/dataTables.fixedColumns.min.css" rel="stylesheet" type="text/css" />
-    <link href="https://cdn.chuck.be/assets/plugins/datatables-responsive/css/datatables.responsive.css" rel="stylesheet" type="text/css" media="screen" />
 @endsection
 
 @section('scripts')
-	<script src="https://cdn.chuck.be/assets/plugins/jquery-datatable/media/js/jquery.dataTables.min.js" type="text/javascript"></script>
-    <script src="https://cdn.chuck.be/assets/plugins/jquery-datatable/extensions/TableTools/js/dataTables.tableTools.min.js" type="text/javascript"></script>
-    <script src="https://cdn.chuck.be/assets/plugins/jquery-datatable/media/js/dataTables.bootstrap.js" type="text/javascript"></script>
-    <script src="https://cdn.chuck.be/assets/plugins/jquery-datatable/extensions/Bootstrap/jquery-datatable-bootstrap.js" type="text/javascript"></script>
-    <script type="text/javascript" src="https://cdn.chuck.be/assets/plugins/datatables-responsive/js/datatables.responsive.js"></script>
-    <script type="text/javascript" src="https://cdn.chuck.be/assets/plugins/datatables-responsive/js/lodash.min.js"></script>
-    <script src="https://cdn.chuck.be/assets/js/tables.js" type="text/javascript"></script>
-    <script src="{{ URL::to('vendor/laravel-filemanager/js/lfm.js') }}"></script>
-	<script>
-	$( document ).ready(function() { 
+<script src="{{ URL::to('vendor/laravel-filemanager/js/lfm.js') }}"></script>
+<script>
+$( document ).ready(function() { 
 
-		init();
+	init();
 
-		function init () {
-			//init media manager inputs 
-			var domain = "{{ URL::to('dashboard/media')}}";
-			$('.img_lfm_link').filemanager('image', {prefix: domain});
-		}
+	function init () {
+		//init media manager inputs 
+		var domain = "{{ URL::to('dashboard/media')}}";
+		$('.img_lfm_link').filemanager('image', {prefix: domain});
+	}
 
+});
+</script>
+<script type="text/javascript">
+$(document).ready(function() {
+
+	$("#create_redirect_slug").keyup(function(){
+		var text = $(this).val();
+		slug_text = text.toLowerCase().replace(/[^\w ]+/g,'').replace(/ +/g,'-');
+		$("#create_redirect_slug").val(slug_text);  
 	});
-	</script>
-    <script type="text/javascript">
-    $(document).ready(function() {
 
-    	$("#create_redirect_slug").keyup(function(){
-		    var text = $(this).val();
-		    slug_text = text.toLowerCase().replace(/[^\w ]+/g,'').replace(/ +/g,'-');
-		    $("#create_redirect_slug").val(slug_text);  
-		});
+});
 
-    });
+function editModal(id, name, logo){
+	$('#edit_brand_id').val(id);
+	$('#edit_brand_name').val(name);
+	$('#edit_brand_logo').val(logo);
+	$('#editlogoholder').attr('src', logo);
+	$('#editBrandModal').modal('show');
+}
 
-    function editModal(id, name, logo){
-    	$('#edit_brand_id').val(id);
-    	$('#edit_brand_name').val(name);
-    	$('#edit_brand_logo').val(logo);
-    	$('#editlogoholder').attr('src', logo);
-    	$('#editBrandModal').modal('show');
-    }
-
-    function deleteModal(id, name){
-    	$('#delete_brand_id').val(id);
-    	$('#delete_brand_name').text(name);
-    	$('#deleteBrandModal').modal('show');
-    }
-    </script>
+function deleteModal(id, name){
+	$('#delete_brand_id').val(id);
+	$('#delete_brand_name').text(name);
+	$('#deleteBrandModal').modal('show');
+}
+</script>
 @endsection
 
 @section('content')
-<div class=" container-fluid container-fixed-lg">
+<div class="container">
     <div class="row">
-		<div class="col-lg-12">
-		<!-- START card -->
-			<div class="card card-transparent">
-				<div class="card-header ">
-					<div class="card-title">Merken</div>
-					<div class="tools">
-						<a class="collapse" href="javascript:;"></a>
-						<a class="config" data-toggle="modal" href="#grid-config"></a>
-						<a class="reload" href="javascript:;"></a>
-						<a class="remove" href="javascript:;"></a>
-					</div>
-				</div>
-				<div class="card-block">
-					<div class="table-responsive">
-						<table class="table table-hover table-condensed" id="condensedTable" data-table-count="6">
-						<thead>
-							<tr>
-								<th style="width:5%">ID</th>
-								<th style="width:70%">Naam</th>
-								<th style="width:25%">Actions</th>
-							</tr>
-						</thead>
-							<tbody>
-								@foreach($brands as $brand)
-								<tr>
-									<td class="v-align-middle">{{ $brand->id }}</td>
-							    	<td class="v-align-middle">{{$brand->json['name'] }}</td>
-							    	<td class="v-align-middle semi-bold">
-							    		@can('edit redirects')
-							    		<a href="#" onclick="editModal({{ $brand->id }}, '{{ $brand->json['name'] }}', '{{ $brand->json['logo'] }}')" class="btn btn-default btn-sm btn-rounded m-r-20">
-							    			<i data-feather="edit-2"></i> edit
-							    		</a>
-							    		@endcan
+        <div class="col-sm-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mt-3">
+                    <li class="breadcrumb-item active" aria-current="page">Merken</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+    <div class="row bg-light shadow-sm rounded py-3 mb-3 mx-1">
+    	<div class="col-sm-12 text-right">
+    		<a href="#" data-target="#createBrandModal" data-toggle="modal" class="btn btn-sm btn-outline-success">Nieuw Merk</a>
+    	</div>
+        <div class="col-sm-12 my-3">
+        	<div class="table-responsive">
+        		<table class="table" data-datatable style="width:100%">
+        			<thead>
+        				<tr>
+        					<th scope="col">#</th>
+							<th scope="col">Naam</th>
+							<th scope="col" style="min-width:190px">Actions</th>
+        				</tr>
+        			</thead>
+        			<tbody>
+        				@foreach($brands as $brand)
+						<tr>
+							<td class="v-align-middle">{{ $brand->id }}</td>
+							<td class="v-align-middle">{{$brand->json['name'] }}</td>
+							<td class="v-align-middle semi-bold">
+								@can('edit redirects')
+								<a href="#" onclick="editModal({{ $brand->id }}, '{{ $brand->json['name'] }}', '{{ $brand->json['logo'] }}')" class="btn btn-default btn-sm btn-rounded m-r-20">
+									<i data-feather="edit-2"></i> edit
+								</a>
+								@endcan
 
-							    		@can('delete redirects')
-							    		<a href="#" onclick="deleteModal({{ $brand->id }}, '{{ $brand->json['name'] }}')" class="btn btn-danger btn-sm btn-rounded m-r-20">
-							    			<i data-feather="trash"></i> delete
-							    		</a>
-							    		@endcan
-							    	</td>
-							  	</tr>
-							  	@endforeach
-							</tbody>
-						</table>
-					</div>
-				</div>
-			</div>
-		<!-- END card -->
-		</div>
+								@can('delete redirects')
+								<a href="#" onclick="deleteModal({{ $brand->id }}, '{{ $brand->json['name'] }}')" class="btn btn-danger btn-sm btn-rounded m-r-20">
+									<i data-feather="trash"></i> delete
+								</a>
+								@endcan
+							</td>
+						</tr>
+						@endforeach
+        			</tbody>
+        		</table>
+        	</div>
+        </div>
     </div>
 </div>
-
 @include('chuckcms-module-ecommerce::backend.brands._create_modal')
-
 @include('chuckcms-module-ecommerce::backend.brands._edit_modal')
-
 @include('chuckcms-module-ecommerce::backend.brands._delete_modal')
-
 @endsection
