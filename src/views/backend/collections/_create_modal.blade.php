@@ -4,17 +4,20 @@
   <div class="modal-content-wrapper">
     <div class="modal-content">
       <div class="modal-header clearfix text-left">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="pg-close fs-14"></i>
+        <h5 class="modal-title">Maak een nieuwe <span class="semi-bold">collectie</span> aan</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
         </button>
-        <h5>Maak een nieuwe <span class="semi-bold">collectie</span> aan</h5>
-        <p class="p-b-10">Vul de volgende velden aan om de collectie aan te maken.</p>
-        @if($errors->any())
-          @foreach ($errors->all() as $error)
-            <p class="text-danger">{{ $error }}</p>
-          @endforeach
-        @endif
       </div>
       <div class="modal-body">
+        <div>
+          <p class="p-b-10">Vul de volgende velden aan om de collectie aan te maken.</p>
+          @if($errors->any())
+            @foreach ($errors->all() as $error)
+              <p class="text-danger">{{ $error }}</p>
+            @endforeach
+          @endif
+        </div>
         <form role="form" method="POST" action="{{ route('dashboard.module.ecommerce.collections.save') }}">
           <div class="form-group-attached">
             <div class="row">
@@ -29,7 +32,7 @@
               <div class="col-md-12">
                 <div class="form-group form-group-default form-group-default-select2">
                   <label>Hoofdcollectie </label>
-                  <select class="full-width" name="parent" data-init-plugin="select2" data-minimum-results-for-search="Infinity" data-placeholder="Selecteer een collectie" data-allow-clear="true">
+                  <select class="custom-select" name="parent" data-init-plugin="select2" data-minimum-results-for-search="Infinity" data-placeholder="Selecteer een collectie" data-allow-clear="true">
                     <option></option>
                     @foreach($collections as $collection)
                       <option value="{{ $collection->id }}">{{ $collection->json['name'] }}</option>
