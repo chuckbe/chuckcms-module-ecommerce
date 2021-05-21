@@ -326,7 +326,163 @@ return [
                 'regex' => '^(NL)?[0-9]{9}B[0-9]{2}$',
                 'format' => 'NL001234567B01'
             ]
-        ]
+        ],
+        "AT" => [
+            'name' => 'Austria',
+            'native' => 'Österreich',
+            "postalcode" => [
+                "max" => 4,
+                "regex" => '^[1-9]{1}[0-9]{3}$'
+            ],
+            'vat' => [
+                'max' => 11,
+                'regex' => '^(AT)?U[0-9]{8}$',
+                'format' => 'ATU12345678'
+            ]
+        ],
+        "BG" => [
+            'name' => 'Bulgaria',
+            'native' => 'българия',
+            "postalcode" => [
+                "max" => 4,
+                "regex" => '^[1-9]{1}[0-9]{3}$'
+            ],
+            'vat' => [
+                'max' => 11,
+                'regex' => '^(BG)?[0-9]{9,10}$',
+                'format' => 'BG12345678'
+            ]
+        ],
+        "HR" => [
+            'name' => 'Croatia',
+            'native' => 'Hrvatska',
+            "postalcode" => [
+                "max" => 5,
+                "regex" => '^(\d{5})$'
+            ],
+            'vat' => [
+                'max' => 11,
+                'regex' => '^(HR)?[0-9]{11}$',
+                'format' => 'HR12345678901'
+            ]
+        ],
+        "CY" => [
+            'name' => 'Cyprus',
+            'native' => 'Κύπρος',
+            "postalcode" => [
+                "max" => 4,
+                "regex" => '^(\d{4})$'
+            ],
+            'vat' => [
+                'max' => 11,
+                'regex' => '^(CY)?[0-9]{8}L$',
+                'format' => 'CY12345678X'
+            ]
+        ],
+        "CZ" => [
+            'name' => 'Czech Republic',
+            'native' => 'Česká republika',
+            "postalcode" => [
+                "max" => 6,
+                "regex" => '^(\d{3}[ ]\d{2})$'
+            ],
+            'vat' => [
+                'max' => 11,
+                'regex' => '^(CZ)(\d{8,10})?$',
+                'format' => 'CZ1234567890'
+            ]
+        ],
+        "DK" => [
+            'name' => 'Denmark',
+            'native' => 'Danmark',
+            "postalcode" => [
+                "max" => 4,
+                "regex" => '^(\d{4})$'
+            ],
+            'vat' => [
+                'max' => 10,
+                'regex' => '^(DK)(\d{8})?$',
+                'format' => 'DK12345678'
+            ]
+        ],
+        "EE" => [
+            'name' => 'Estonia',
+            'native' => 'Eesti',
+            "postalcode" => [
+                "max" => 5,
+                "regex" => '^(\d{5})$'
+            ],
+            'vat' => [
+                'max' => 10,
+                'regex' => '^(EE)?[0-9]{9}$',
+                'format' => 'EE123456789'
+            ]
+        ],
+        "FI" => [
+            'name' => 'Finland',
+            'native' => 'Suomi',
+            "postalcode" => [
+                "max" => 5,
+                "regex" => '^(\d{5})$'
+            ],
+            'vat' => [
+                'max' => 10,
+                'regex' => '^(FI)?[0-9]{8}$',
+                'format' => 'FI12345678'
+            ]
+        ],
+        "FI" => [
+            'name' => 'France',
+            'native' => 'La France',
+            "postalcode" => [
+                "max" => 5,
+                "regex" => '^(\d{5})$'
+            ],
+            'vat' => [
+                'max' => 13,
+                'regex' => '^(FR)([0-9A-Z]{2}[0-9]{9})$',
+                'format' => 'FRXX123456789'
+            ]
+        ],
+        "GR" => [
+            'name' => 'Greece',
+            'native' => 'Ελλάδα',
+            "postalcode" => [
+                "max" => 6,
+                "regex" => '^(\d{3}[ ]?\d{2})$'
+            ],
+            'vat' => [
+                'max' => 11,
+                'regex' => '^(EL|GR)?[0-9]{9}$',
+                'format' => 'EL123456789'
+            ]
+        ],
+        "ES" => [
+            'name' => 'Spain',
+            'native' => 'España',
+            "postalcode" => [
+                "max" => 5,
+                "regex" => '^(\d{5})$'
+            ],
+            'vat' => [
+                'max' => 11,
+                'regex' => '^(ES)?[0-9A-Z][0-9]{7}[0-9A-Z]$',
+                'format' => 'ESX1234567X'
+            ]
+        ],
+        "ES" => [
+            'name' => 'Spain',
+            'native' => 'España',
+            "postalcode" => [
+                "max" => 5,
+                "regex" => '^(\d{5})$'
+            ],
+            'vat' => [
+                'max' => 11,
+                'regex' => '^(ES)?[0-9A-Z][0-9]{7}[0-9A-Z]$',
+                'format' => 'ESX1234567X'
+            ]
+        ],
     ],
 
     'countries' => [
