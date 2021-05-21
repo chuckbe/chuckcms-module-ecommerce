@@ -353,6 +353,19 @@ return [
                 'format' => 'BG12345678'
             ]
         ],
+        "CH" => [
+            'name' => 'Switzerland',
+            'native' => 'die Schweiz',
+            "postalcode" => [
+                "max" => 4,
+                "regex" => '^(\d{4})$'
+            ],
+            'vat' => [
+                'max' => 11,
+                'regex' => '^(CY)?[0-9]{8}L$',
+                'format' => 'CHE123456789'
+            ]
+        ],
         "CY" => [
             'name' => 'Cyprus',
             'native' => 'Κύπρος',
@@ -604,13 +617,26 @@ return [
             'name' => 'Romania',
             'native' => 'România',
             "postalcode" => [
-                "max" => 6,
+                "max" => 4,
                 "regex" => '^(\d{4})$'
             ],
             'vat' => [
                 'max' => 12,
                 'regex' => '^(RO)?[\d]{2,10}$',
                 'format' => 'RO1234567890'
+            ]
+        ],
+        "SE" => [
+            'name' => 'Sweden',
+            'native' => 'Sverige',
+            "postalcode" => [
+                "max" => 6,
+                "regex" => '^(\d{3}[ ]?\d{2})$'
+            ],
+            'vat' => [
+                'max' => 14,
+                'regex' => '^(SE)?[0-9]{12}$',
+                'format' => 'SE123456789012'
             ]
         ],
         "SK" => [
@@ -624,6 +650,19 @@ return [
                 'max' => 12,
                 'regex' => '^(SK)?[0-9]{10}$',
                 'format' => 'SK1234567890'
+            ]
+        ],
+        "SI" => [
+            'name' => 'Slovenia',
+            'native' => 'Slovenija',
+            "postalcode" => [
+                "max" => 4,
+                "regex" => '^(\d{4})$'
+            ],
+            'vat' => [
+                'max' => 10,
+                'regex' => '^(SI)?[0-9]{8}$',
+                'format' => 'SI12345678'
             ]
         ],
     ],
