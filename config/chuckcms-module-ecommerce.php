@@ -574,6 +574,58 @@ return [
                 'format' => 'NO123456789'
             ]
         ],
+        "PL" => [
+            'name' => 'Poland',
+            'native' => 'Polska',
+            "postalcode" => [
+                "max" => 6,
+                "regex" => '^(\d{2}-\d{3})$'
+            ],
+            'vat' => [
+                'max' => 12,
+                'regex' => '^(PL)?[0-9]{10}$',
+                'format' => 'PL1234567890'
+            ]
+        ],
+        "PT" => [
+            'name' => 'Portugal',
+            'native' => 'Portugal',
+            "postalcode" => [
+                "max" => 8,
+                "regex" => '^(\d{4}([\-]\d{3}))$'
+            ],
+            'vat' => [
+                'max' => 12,
+                'regex' => '^(PT)?[0-9]{9}$',
+                'format' => 'PT123456789'
+            ]
+        ],
+        "RO" => [
+            'name' => 'Romania',
+            'native' => 'România',
+            "postalcode" => [
+                "max" => 6,
+                "regex" => '^(\d{4})$'
+            ],
+            'vat' => [
+                'max' => 12,
+                'regex' => '^(RO)?[\d]{2,10}$',
+                'format' => 'RO1234567890'
+            ]
+        ],
+        "SK" => [
+            'name' => 'Slovakia',
+            'native' => 'Slovensko',
+            "postalcode" => [
+                "max" => 6,
+                "regex" => '^(\d{3}[ ]?\d{2})$'
+            ],
+            'vat' => [
+                'max' => 12,
+                'regex' => '^(SK)?[0-9]{10}$',
+                'format' => 'SK1234567890'
+            ]
+        ],
     ],
 
     'countries' => [
