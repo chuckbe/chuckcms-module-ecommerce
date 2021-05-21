@@ -431,7 +431,7 @@ return [
                 'format' => 'FI12345678'
             ]
         ],
-        "FI" => [
+        "FR" => [
             'name' => 'France',
             'native' => 'La France',
             "postalcode" => [
@@ -442,6 +442,19 @@ return [
                 'max' => 13,
                 'regex' => '^(FR)([0-9A-Z]{2}[0-9]{9})$',
                 'format' => 'FRXX123456789'
+            ]
+        ],
+        "DE" => [
+            'name' => 'Germany',
+            'native' => 'Deutschland',
+            "postalcode" => [
+                "max" => 5,
+                "regex" => '^(\d{5})$'
+            ],
+            'vat' => [
+                'max' => 11,
+                'regex' => '^(DE)([1-9]\d{8})$',
+                'format' => 'DE123456789'
             ]
         ],
         "GR" => [
