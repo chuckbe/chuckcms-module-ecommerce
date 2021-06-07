@@ -6,6 +6,7 @@ use Chuckbe\ChuckcmsModuleEcommerce\Models\Order;
 use Chuckbe\ChuckcmsModuleEcommerce\Events\OrderWasPaid;
 use Chuckbe\ChuckcmsModuleEcommerce\Chuck\OrderRepository;
 use Illuminate\Http\Request;
+use ChuckSite;
 use Mollie;
 
 class PaymentRepository
@@ -24,6 +25,8 @@ class PaymentRepository
      **/
     public function initiate(Order $order)
     {
+        config(['mollie.key' => ChuckSite::module('chuckcms-module-ecommerce')->getSetting('integrations.mollie.key')]);
+
         $payment = Mollie::api()->payments()->create([
             'amount' => [
                 'currency' => 'EUR',
@@ -52,6 +55,8 @@ class PaymentRepository
 
     public function check(Order $order)
     {
+        config(['mollie.key' => ChuckSite::module('chuckcms-module-ecommerce')->getSetting('integrations.mollie.key')]);
+        
         if($order->isPaid()) {
             return;
         }
