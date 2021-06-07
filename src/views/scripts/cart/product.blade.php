@@ -17,6 +17,10 @@
 		}
 	});
 
+	$('body').on('change', '.ce_extraSelectInput', function (event) {
+		updatePrices();
+	});
+
 	$('body').on('change', '.ce_attributeSelectInput', function (event) {
 		//event.preventDefault();
 		
@@ -42,13 +46,10 @@
 			}
 
 			if(parseFloat(data.combination.price.discount) > 0) {
-				$('.ce_product_price_discount').removeClass('d-none').text(formatPrice(data.combination.price.final));
-				$('.ce_product_price_final').text(formatPrice(data.combination.price.discount));
+				updateDiscountPrice(data.combination.price.final, data.combination.price.discount);
 			} else {
-				$('.ce_product_price_discount').addClass('d-none').text(formatPrice(data.combination.price.discount));
-				$('.ce_product_price_final').text(formatPrice(data.combination.price.final));
+				updateFinalPrice(data.combination.price.discount, data.combination.price.final);
 			}
-			
 
 			$('.ce_attributeSelectInput').prop('disabled', false);
 		});
@@ -64,9 +65,15 @@
 		$('.ce_optionSelectInput').each(function() {
 			options.push($(this).children("option:selected").attr('data-option-key')+'%|%'+$(this).children("option:selected").val());
 		});
+
+		extras = [];
+		$('.ce_extraSelectInput').each(function() {
+			extras.push($(this).children("option:selected").attr('data-extra-key')+'%|%'+$(this).children("option:selected").val());
+		});
+
 		quantity = $('.ce_productQuantityInput[data-product-id='+product_id+']').val();
 
-		addToCart(product_id, sku, options, quantity).done(function(data) {
+		addToCart(product_id, sku, options, extras, quantity).done(function(data) {
 			if(data.status == 'success') {
 				console.log('graett jobb', data);
 
@@ -102,7 +109,7 @@
         });
 	}
 
-	function addToCart(product_id, sku, options, quantity) {
+	function addToCart(product_id, sku, options, extras, quantity) {
 		return $.ajax({
             method: 'POST',
             url: add_to_cart_url,
@@ -110,10 +117,49 @@
             	product_id: product_id, 
             	sku: sku,
             	options: options,
+            	extras: extras,
             	quantity: quantity,
             	_token: a_token
             }
         });
+	}
+
+	function updateDiscountPrice(discount, final) {
+		extras = getExtrasPrice();
+		
+		$('.ce_product_price_discount').removeClass('d-none').text(formatPrice(parseFloat(discount) + extras));
+		$('.ce_product_price_discount').attr('data-price', discount);
+		$('.ce_product_price_final').text(formatPrice(parseFloat(final) + extras));
+		$('.ce_product_price_final').attr('data-price', final);
+	}
+
+	function updateFinalPrice(discount, final) {
+		extras = getExtrasPrice();
+
+		$('.ce_product_price_discount').addClass('d-none').text(formatPrice(parseFloat(discount) + extras));
+		$('.ce_product_price_discount').attr('data-price', discount);
+		$('.ce_product_price_final').text(formatPrice(parseFloat(final) + extras));
+		$('.ce_product_price_final').attr('data-price', final);
+	}
+
+	function getExtrasPrice() {
+		extra_price = 0;
+		$('.ce_extraSelectInput').each(function() {
+			single_extra_price = parseFloat($(this).attr('data-extra-final'));
+			qty = parseInt($(this).find('option:selected').first().val());
+			extra_price = extra_price + (qty * single_extra_price);
+		});
+
+		return extra_price;
+	}
+
+	function updatePrices() {
+		extras = getExtrasPrice();
+		discount = parseFloat($('.ce_product_price_discount').attr('data-price'));
+		finalprice = parseFloat($('.ce_product_price_final').attr('data-price'));
+		
+		$('.ce_product_price_discount').addClass('d-none').text(formatPrice(discount + extras));
+		$('.ce_product_price_final').text(formatPrice(finalprice + extras));
 	}
 
 	function formatPrice(price) {
