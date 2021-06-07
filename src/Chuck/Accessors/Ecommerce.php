@@ -9,7 +9,7 @@ use Chuckbe\Chuckcms\Models\Module;
 use Chuckbe\Chuckcms\Models\Template;
 use ChuckProduct;
 use Exception;
-use Cart;
+use ChuckCart;
 use Illuminate\Support\Facades\Schema;
 
 use App\Http\Requests;
@@ -47,7 +47,7 @@ class Ecommerce
      **/
     private function getModuleSettings(Module $module)
     {
-        return $this->moduleRepository->getSettings($module);
+        return $module->settings ?? [];
     }
 
     public function getSetting($var)
@@ -114,15 +114,13 @@ class Ecommerce
 
     public function getDefaultShippingPriceForCart($instance)
     {
-        foreach ($this->moduleSettings['shipping']['carriers'] as $carrierKey => $carrier) {
-            if($this->getCartTotalWeight($instance) <= (!array_key_exists('max_weight', $carrier) ? 0.000 : (float)$carrier['max_weight'])) {
-                if($carrier['default']) {
-                    $price = (float)$this->getCarrierTotalForCart($carrierKey, $instance); 
-                    break;
-                } else {
-                    $price = (float)$this->getCarrierTotalForCart($carrierKey, $instance); 
-                    break;
-                }
+        foreach($this->getCarriersForCart($instance) as $carrierKey => $carrier) {
+            if($carrier['default']) {
+                $price = (float)$this->getCarrierTotalForCart($carrierKey, $instance); 
+                break;
+            } else {
+                $price = (float)$this->getCarrierTotalForCart($carrierKey, $instance); 
+                break;
             }
         }
         return $price;
@@ -131,11 +129,16 @@ class Ecommerce
     public function getCartTotalWeight(string $identifier)
     {
         $totalWeight = 0;
-        foreach(Cart::instance($identifier)->content() as $rowKey => $item) {
+        foreach(ChuckCart::instance($identifier)->content() as $rowKey => $item) {
             $totalWeight += ($item->qty * ChuckProduct::weightBySKU($item->id));
         }
 
         return $totalWeight;
+    }
+
+    public function getCartFinal(string $identifier)
+    {
+        return ChuckCart::instance($identifier)->final();
     }
 
     public function getCarrier($key)
@@ -156,6 +159,18 @@ class Ecommerce
     public function getCarrierTax($key)
     {
         return array_key_exists($key, $this->moduleSettings['shipping']['carriers']) ? $this->taxFromPrice((float)$this->moduleSettings['shipping']['carriers'][$key]['cost'], 21) : 0.00;
+    }
+
+    public function getCarrierTaxRate($key)
+    {
+        return array_key_exists($key, $this->moduleSettings['shipping']['carriers']) ? 
+                    (array_key_exists('tax_rate', $this->moduleSettings['shipping']['carriers']) ? (int)$this->moduleSettings['shipping']['carriers'][$key]['tax_rate'] : 21) : 21;
+    }
+
+    public function getCarrierTaxRateForCart($key, $instance)
+    {
+        return array_key_exists($key, $this->moduleSettings['shipping']['carriers']) ? 
+                    (array_key_exists('tax_rate', $this->moduleSettings['shipping']['carriers']) ? (int)$this->moduleSettings['shipping']['carriers'][$key]['tax_rate'] : 21) : 21;
     }
 
     public function getCarrierTaxForCart($key, $instance, $vat = null)
@@ -181,7 +196,7 @@ class Ecommerce
                 return $carrier['cost'];
             }
 
-            if( (float)Cart::instance($instance)->total() <= (float)$carrier['free_from'] ) {
+            if( (float)ChuckCart::instance($instance)->total() <= (float)$carrier['free_from'] ) {
                 return $carrier['cost'];
             }
         } 
@@ -200,6 +215,16 @@ class Ecommerce
         $object = [];
 
         foreach($carriers as $key => $carrier) {
+            if($this->getCartFinal($instance) <= (!array_key_exists('min_cart', $carrier) ? 0.000 : (float)$carrier['min_cart'])) {
+                continue;
+            }
+            
+            if(array_key_exists('max_cart', $carrier) && (float)$carrier['max_cart'] > 0) {
+                if($this->getCartFinal($instance) > (float)$carrier['max_cart']) {
+                    continue;
+                }
+            }
+            
             if($this->getCartTotalWeight($instance) <= (!array_key_exists('max_weight', $carrier) ? 0.000 : (float)$carrier['max_weight'])) {
                 $object[$key] = $carrier;
             }
@@ -239,7 +264,7 @@ class Ecommerce
 
     public function formatPrice($var)
     {
-        return '€ ' . number_format((float)$var, $this->getSetting('general.decimals'), $this->getSetting('general.decimals_separator'), $this->getSetting('general.thousands_separator'));
+        return '€ ' . number_format((float)$var, (int)$this->getSetting('general.decimals'), $this->getSetting('general.decimals_separator'), $this->getSetting('general.thousands_separator'));
     }
 
     public function priceWithoutTax($price, $tax)

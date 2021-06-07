@@ -20,6 +20,16 @@ class Product
     }
 
     /**
+     * Return all the products
+     *
+     * @return Illuminate\Support\Collection
+     **/
+    public function all()
+    {
+        return $this->productRepository->all();
+    }
+
+    /**
      * Return the product attributes array
      *
      * @var ProductModel $product
@@ -177,6 +187,11 @@ class Product
     public function getOptions(ProductModel $product, $sku, $options = [])
     {
         return $this->productRepository->getOptions($product, $sku, $options);
+    }
+
+    public function getExtras(ProductModel $product, $sku, $extras = [])
+    {
+        return $this->productRepository->getExtras($product, $sku, $extras);
     }
 
     public function weightBySKU($sku)
