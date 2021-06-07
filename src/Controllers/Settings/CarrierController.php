@@ -31,7 +31,9 @@ class CarrierController extends Controller
             'name' => 'max:185|required',
             'transit_time' => 'required',
             'image' => 'nullable',
+            'min_cart' => 'required',
             'cost' => 'required',
+            'max_cart' => 'required',
             'max_weight' => 'required',
             'free_from' => 'nullable',
             'countries' => 'array',
@@ -52,7 +54,9 @@ class CarrierController extends Controller
         $carrier['name'] = $request->get('name');
         $carrier['transit_time'] = $request->get('transit_time');
         $carrier['image'] = $request->get('image');
+        $carrier['min_cart'] = $request->get('min_cart');
         $carrier['cost'] = $request->get('cost');
+        $carrier['max_cart'] = $request->get('max_cart');
         $carrier['max_weight'] = $request->get('max_weight');
         $carrier['free_from'] = (float)$request->get('free_from') == 0 ? null : (string)$request->get('free_from');
         $carrier['countries'] = $request->get('countries');

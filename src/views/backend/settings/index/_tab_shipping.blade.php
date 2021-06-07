@@ -9,8 +9,15 @@
         <a href="#" onclick="deleteCarrierModal('{{ $carrierKey }}', '{{ $carrier['name'] }}')" class="btn btn-danger btn-sm btn-rounded float-right">delete</a>
         <a href="#" onclick="editCarrierModal('{{ $carrierKey }}')" class="btn btn-secondary btn-sm btn-rounded mr-2 float-right">edit</a>
       </h6>
-      <p class="mb-1">Kostprijs: {{ (float)$carrier['cost'] > 0 ? ChuckEcommerce::formatPrice($carrier['cost']) : 'Free shipping' }}</p><p class="mb-1">Gratis vanaf: {{ !array_key_exists('free_from', $carrier) ? '/' : (float)$carrier['free_from'] == 0 || is_null($carrier['free_from']) ? '/' : ChuckEcommerce::formatPrice($carrier['free_from']) }}</p>
-      <p>Max. Gewicht: {{ !array_key_exists('max_weight', $carrier) ? '∞' : (float)$carrier['max_weight'] == 0 ? '∞' : $carrier['max_weight'].' kg' }}</p>
+      <p class="mb-1">Kostprijs: {{ (float)$carrier['cost'] > 0 ? ChuckEcommerce::formatPrice($carrier['cost']) : 'Free shipping' }}</p>
+      <p class="mb-1">Gratis vanaf: {{ !array_key_exists('free_from', $carrier) ? '/' : ((float)$carrier['free_from'] == 0 || is_null($carrier['free_from']) ? '/' : ChuckEcommerce::formatPrice($carrier['free_from'])) }}</p>
+      <p>Max. Gewicht: {{ !array_key_exists('max_weight', $carrier) ? '∞' : ((float)$carrier['max_weight'] == 0 ? '∞' : $carrier['max_weight'].' kg') }}</p>
+
+      @if(array_key_exists('min_cart', $carrier))
+      <p>Min. Waarde in Winkelwagen: {{ !array_key_exists('min_cart', $carrier) ? '/' : ((float)$carrier['min_cart'] == 0 ? '/' : ChuckEcommerce::formatPrice($carrier['min_cart'])) }}
+      <br>Max. Waarde in Winkelwagen: {{ !array_key_exists('max_cart', $carrier) ? '∞' : ((float)$carrier['max_cart'] == 0 ? '∞' : ChuckEcommerce::formatPrice($carrier['max_cart'])) }}</p>
+      @endif
+
       <p>Beschikbaar in:</p>
       <ul>
         @foreach($carrier['countries'] as $country)

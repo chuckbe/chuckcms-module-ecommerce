@@ -49,8 +49,24 @@
             <div class="row">
               <div class="col-md-12">
                 <div class="form-group form-group-default required">
+                  <label>Min Prijs Winkelwagen </label>
+                  <input type="text" data-a-dec="." data-a-sep="" data-m-dec="6" data-a-pad=true class="autonumeric form-control" name="min_cart" value="{{ $carrier['min_cart'] ?? '0.000000' }}" placeholder="Minimum waarde in winkelwagen" required>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group form-group-default required">
                   <label>Kost </label>
                   <input type="text" data-a-dec="." data-a-sep="" data-m-dec="6" data-a-pad=true class="autonumeric form-control" name="cost" value="{{ $carrier['cost'] }}" placeholder="Kostprijs">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group form-group-default required">
+                  <label>Max Prijs Winkelwagen (Vul 0 in om te negeren)</label>
+                  <input type="text" data-a-dec="." data-a-sep="" data-m-dec="6" data-a-pad=true class="autonumeric form-control" name="max_cart" value="{{ $carrier['max_cart'] ?? '0.000000' }}" placeholder="Minimum waarde in winkelwagen" required>
                 </div>
               </div>
             </div>
@@ -65,7 +81,7 @@
             <div class="row">
               <div class="col-md-12">
                 <div class="form-group form-group-default required">
-                  <label>Gratis vanaf </label>
+                  <label>Gratis vanaf (Vul 0 in om te negeren)</label>
                   <input type="text" data-a-dec="." data-a-sep="" data-m-dec="2" data-a-pad=true class="autonumeric form-control" name="free_from" value="{{ !array_key_exists('free_from', $carrier) ? '0.00' : (is_null($carrier['free_from']) ? '0.00' : $carrier['free_from']) }}" placeholder="Gratis vanaf">
                 </div>
               </div>

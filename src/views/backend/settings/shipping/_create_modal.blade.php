@@ -50,8 +50,24 @@
             <div class="row">
               <div class="col-md-12">
                 <div class="form-group form-group-default required">
-                  <label>Kost </label>
-                  <input type="text" data-a-dec="." data-a-sep="" data-m-dec="6" data-a-pad=true class="autonumeric form-control" name="cost" value="0.000000" placeholder="Kostprijs">
+                  <label>Min Prijs Winkelwagen </label>
+                  <input type="text" data-a-dec="." data-a-sep="" data-m-dec="6" data-a-pad=true class="autonumeric form-control" name="min_cart" value="0.000000" placeholder="Minimum waarde winkelwagen">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group form-group-default required">
+                  <label>Kostprijs (BTW inbegrepen)</label>
+                  <input type="text" data-a-dec="." data-a-sep="" data-m-dec="6" data-a-pad=true class="autonumeric form-control" name="cost" value="0.000000" placeholder="Kostprijs" required>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group form-group-default required">
+                  <label>Max Prijs Winkelwagen (Vul 0 in om te negeren)</label>
+                  <input type="text" data-a-dec="." data-a-sep="" data-m-dec="6" data-a-pad=true class="autonumeric form-control" name="max_cart" value="0.000000" placeholder="Maximum waarde winkelwagen" required>
                 </div>
               </div>
             </div>
@@ -59,14 +75,14 @@
               <div class="col-md-12">
                 <div class="form-group form-group-default required">
                   <label>Max Gewicht </label>
-                  <input type="text" data-a-dec="." data-a-sep="" data-m-dec="3" data-a-pad=true class="autonumeric form-control" name="max_weight" value="0.000" placeholder="Gewicht">
+                  <input type="text" data-a-dec="." data-a-sep="" data-m-dec="3" data-a-pad=true class="autonumeric form-control" name="max_weight" value="0.000" placeholder="Gewicht" required>
                 </div>
               </div>
             </div>
             <div class="row">
               <div class="col-md-12">
                 <div class="form-group form-group-default required">
-                  <label>Gratis vanaf </label>
+                  <label>Gratis vanaf (Vul 0 in om te negeren)</label>
                   <input type="text" data-a-dec="." data-a-sep="" data-m-dec="2" data-a-pad=true class="autonumeric form-control" name="free_from" value="0.00" placeholder="Gratis vanaf">
                 </div>
               </div>
