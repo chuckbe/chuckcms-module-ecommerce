@@ -5,6 +5,7 @@ namespace Chuckbe\ChuckcmsModuleEcommerce\Controllers;
 use Chuckbe\ChuckcmsModuleEcommerce\Chuck\OrderRepository;
 use Illuminate\Http\Request;
 use App\Http\Requests;
+use ChuckSite;
 use ChuckEcommerce;
 use Mollie;
 use App\Http\Controllers\Controller;
@@ -30,6 +31,11 @@ class OrderController extends Controller
     {
         $orders = Order::where('status', '!=', 'new')->get();
         return view('chuckcms-module-ecommerce::backend.orders.index', ['orders' => $orders]);
+    }
+
+    public function create()
+    {
+        return view('chuckcms-module-ecommerce::backend.orders.create');
     }
 
     public function detail(Order $order)
@@ -62,6 +68,8 @@ class OrderController extends Controller
 
     public function webhookMollie(Request $request)
     {
+        config(['mollie.key' => ChuckSite::get('chuckcms-module-ecommerce')->getSetting('integrations.mollie.key')]);
+
         if (! $request->has('id')) {
             return;
         }

@@ -7,7 +7,7 @@ use Chuckbe\ChuckcmsModuleEcommerce\Chuck\CustomerRepository;
 use Chuckbe\ChuckcmsModuleEcommerce\Chuck\CartRepository;
 use Chuckbe\ChuckcmsModuleEcommerce\Models\Customer;
 use Chuckbe\ChuckcmsModuleEcommerce\Models\Order;
-use Gloudemans\Shoppingcart\Cart;
+use ChuckCart;
 use Illuminate\Http\Request;
 use ChuckEcommerce;
 use Carbon\Carbon;
@@ -71,16 +71,22 @@ class OrderRepository
         $json['payment_method'] = $request->get('payment_method');
         $json['products'] = $this->cartRepository->formatProducts($products, $cart);
         $json['shipping'] = ChuckEcommerce::getCarrier($request->get('shipping_method'));
+        $json['shipping_tax_rate'] = ChuckEcommerce::getCarrierTaxRateForCart($request->get('shipping_method'), 'shopping');
+        $json['discounts'] = $cart->discounts();
+        $json['is_taxed'] = $cart->isTaxed;
         $json = $this->customerRepository->mapAddress($request, $json); 
         $json = $this->customerRepository->mapCompany($request, $json); 
 
-        $order->subtotal = $cart->total() - $cart->tax();
+        $order->subtotal = $cart->total();
         $order->subtotal_tax = $cart->tax();
-        $order->shipping = ChuckEcommerce::getCarrierSubtotalForCart($request->get('shipping_method'), 'instance'); // get shipping vat according to shop address and customer address
-        $order->shipping_tax = ChuckEcommerce::getCarrierTaxForCart($request->get('shipping_method'), 'instance');
-        $order->total = $order->subtotal + $order->shipping;
-        $order->total_tax = $order->subtotal_tax + $order->shipping_tax;
-        $order->final = $order->total + $order->total_tax;
+        $order->discount = $cart->discount();
+        $order->shipping = ChuckEcommerce::getCarrierSubtotalForCart($request->get('shipping_method'), 'shopping'); // get shipping vat according to shop address and customer address
+        $order->shipping_tax = ChuckEcommerce::getCarrierTaxForCart($request->get('shipping_method'), 'shopping');
+        
+        $order->total = $cart->final() + $order->shipping + ($cart->isTaxed ? $order->shipping_tax : 0);
+        $order->total_tax = ($order->subtotal_tax) + $order->shipping_tax;
+        
+        $order->final = $order->total + ($cart->isTaxed ? 0 : $order->total_tax);
 
         $order->json = $json;
 
@@ -274,7 +280,21 @@ class OrderRepository
     private function formatProducts(Order $order) {
         $string = '';
         foreach($order->json['products'] as $sku => $product) {
-            $string = $string.'<p>'.$product['quantity'].'x "'.$product['title'].' <small>'.$product['options_text'].'</small>" ('.ChuckEcommerce::formatPrice((float)$product['price_tax']).') => '.ChuckEcommerce::formatPrice((float)$product['total']).'</p><hr>';
+            if(array_key_exists('_price', $product)) {
+                $string .= '<p>'.$product['quantity'].'x "'.$product['title'];
+                $string .= '" <small><b>('.ChuckEcommerce::formatPrice((float)$product['_price']['_unit']);
+                if($order->hasDiscount) {
+                    $string .= ') | '.ChuckEcommerce::formatPrice((float)$product['_price']['_total']);
+                    $string .= ' - '.ChuckEcommerce::formatPrice((float)$product['_price']['_discount']);
+                    $string .= ' => '.ChuckEcommerce::formatPrice((float)$product['_price']['_final']);
+                } else {
+                    $string .= ') => '.ChuckEcommerce::formatPrice((float)$product['_price']['_final']);
+                }
+                $string .= '</b></small><br><small>'.$product['options_text'].'</small>';
+                $string .= (count($product['extras']) > 0 ? '<br><small>'.$product['extras_text'].'</small>' : '').'</p><hr>';
+            } else {
+                $string .= '<p>'.$product['quantity'].'x "'.$product['title'].' <small>'.$product['options_text'].'</small>" ('.ChuckEcommerce::formatPrice((float)$product['price_tax']).') => '.ChuckEcommerce::formatPrice((float)$product['total']).'</p><hr>';
+            }
         }
 
         return $string;
