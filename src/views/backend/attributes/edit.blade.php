@@ -1,61 +1,50 @@
-@extends('chuckcms::backend.layouts.admin')
+@extends('chuckcms::backend.layouts.base')
 
 @section('title')
   Bewerk attribuut
 @endsection
 
 @section('content')
-<!-- START CONTAINER FLUID -->
-<div class=" container-fluid container-fixed-lg">
-
-<!-- START card -->
-<form action="{{ route('dashboard.module.ecommerce.attributes.save') }}" method="POST">
-<div class="card card-transparent">
-  <div class="card-header ">
-    <div class="card-title">Bewerk attribuut
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mt-3">
+                    <li class="breadcrumb-item active" aria-current="page">Bewerk attribuut</li>
+                </ol>
+            </nav>
+        </div>
     </div>
-  </div>
-
-<div class="card-block">
-  <div class="row">
-    <div class="col-lg-12">
-      <div class="card card-default">
-        <div class="card-block">
-          
+    <form action="{{ route('dashboard.module.ecommerce.attributes.save') }}" method="POST">
+      <div class="row bg-light shadow-sm rounded py-3 mb-3 mx-1">
+        <div class="col-sm-12">
           <div class="form-group form-group-default required">
             <label>Naam *</label>
             <input type="text" class="form-control attribute_name_input" placeholder="Naam" id="attribute_name" name="name" value="{{ $attribute->json['name'] }}" required>
           </div>
           <div class="form-group form-group-default form-group-default-select2 required">
             <label>Type </label>
-            <select class="full-width" name="type" data-init-plugin="select2" data-minimum-results-for-search="Infinity" data-placeholder="Selecteer een type" data-allow-clear="true" required>
+            <select class="custom-select" name="type" data-init-plugin="select2" data-minimum-results-for-search="Infinity" data-placeholder="Selecteer een type" data-allow-clear="true" required>
                 <option value="select" @if($attribute->json['type'] == 'select') selected @endif>Dropdown keuzelijst</option>
                 <option value="radio" @if($attribute->json['type'] == 'radio') selected @endif>Keuzerondjes</option>
                 <option value="color" @if($attribute->json['type'] == 'color') selected @endif>Kleur</option>
             </select>
           </div>
-
         </div>
-      </div>
-    </div>
-  </div>
-</div>
 
-  <div class="card-block">
-    <div class="row">
-      <div class="col-md-12">
-        <div class="card card-transparent">
+        <div class="col-sm-12">
           <!-- Nav tabs -->
-          <ul class="nav nav-tabs nav-tabs-linetriangle" data-init-reponsive-tabs="dropdownfx">
-            @foreach(ChuckSite::getSupportedLocales() as $langKey => $langValue)
-              <li class="nav-item">
-                <a href="#" @if($loop->iteration == 1) class="active" @endif data-toggle="tab" data-target="#tab_resource_{{ $langKey }}"><span>{{ $langValue['name'] }} ({{ $langValue['native'] }})</span></a>
-              </li>
-            @endforeach
-          </ul>
+          <div class="my-3">
+            <ul class="nav nav-tabs justify-content-start" role="tablist">
+              @foreach(ChuckSite::getSupportedLocales() as $langKey => $langValue)
+                <li class="nav-item" role="presentation">
+                  <a href="#" class="nav-link{{ $loop->iteration == 1 ? ' active' : '' }}" data-toggle="tab" data-target="#tab_resource_{{ $langKey }}"><span>{{ $langValue['name'] }} ({{ $langValue['native'] }})</span></a>
+                </li>
+              @endforeach
+            </ul>
+          </div>
           <!-- Tab panes -->
-          <div class="tab-content">
-
+          <div class="tab-content mt-3">
             @foreach(ChuckSite::getSupportedLocales() as $langKey => $langValue)
             <div class="tab-pane fade show @if($loop->iteration == 1) active @endif" id="tab_resource_{{ $langKey }}">
               <div class="row column-seperation">
@@ -74,9 +63,11 @@
                     <div class="row resource_field_row" data-order="{{ $loop->iteration }}">
                       <div class="col-sm-2">
                         <div class="row">
-                          <button type="button" class="btn btn-xs btn-danger remove_attribute_button" data-order="{{ $loop->iteration }}" style="margin: 15px 2px;"><i class="fa fa-trash"></i></button>
-                          <button type="button" class="btn btn-xs btn-primary move_down_attribute_button" data-order="{{ $loop->iteration }}" style="margin: 15px 2px;"><i class="fa fa-arrow-down"></i></button>
-                          <button type="button" class="btn btn-xs btn-primary move_up_attribute_button" data-order="{{ $loop->iteration }}" style="margin: 15px 2px;"><i class="fa fa-arrow-up"></i></button>
+                          <div class="col-sm-12">
+                            <button type="button" class="btn btn-xs btn-danger remove_attribute_button" data-order="{{ $loop->iteration }}" style="margin: 15px 2px;"><i class="fa fa-trash"></i></button>
+                            <button type="button" class="btn btn-xs btn-primary move_down_attribute_button" data-order="{{ $loop->iteration }}" style="margin: 15px 2px;"><i class="fa fa-arrow-down"></i></button>
+                            <button type="button" class="btn btn-xs btn-primary move_up_attribute_button" data-order="{{ $loop->iteration }}" style="margin: 15px 2px;"><i class="fa fa-arrow-up"></i></button>
+                          </div>
                         </div>
                       </div>
 
@@ -111,9 +102,11 @@
                         
                         <div class="col-sm-2">
                           <div class="row">
-                            <button type="button" class="btn btn-xs btn-danger remove_attribute_button" data-order="1" style="margin: 15px 2px;"><i class="fa fa-trash"></i></button>
-                            <button type="button" class="btn btn-xs btn-primary move_down_attribute_button" data-order="1" style="margin: 15px 2px;"><i class="fa fa-arrow-down"></i></button>
-                            <button type="button" class="btn btn-xs btn-primary move_up_attribute_button" data-order="1" style="margin: 15px 2px;"><i class="fa fa-arrow-up"></i></button>
+                            <div class="col-sm-12">
+                              <button type="button" class="btn btn-xs btn-danger remove_attribute_button" data-order="1" style="margin: 15px 2px;"><i class="fa fa-trash"></i></button>
+                              <button type="button" class="btn btn-xs btn-primary move_down_attribute_button" data-order="1" style="margin: 15px 2px;"><i class="fa fa-arrow-down"></i></button>
+                              <button type="button" class="btn btn-xs btn-primary move_up_attribute_button" data-order="1" style="margin: 15px 2px;"><i class="fa fa-arrow-up"></i></button>
+                            </div>
                           </div>
                         </div>
 
@@ -157,24 +150,18 @@
               </div>
             </div>
             @endforeach
-
           </div>
           <br>
           <p class="pull-right">
             <input type="hidden" name="id" value="{{ $attribute->id }}">
             <input type="hidden" name="_token" value="{{ Session::token() }}">
-            <button type="submit" name="update" class="btn btn-success btn-cons pull-right" value="1">Opslaan</button>
-            <a href="{{ route('dashboard.module.ecommerce.attributes.index') }}" class="pull-right"><button type="button" class="btn btn-info btn-cons">Annuleren</button></a>
+            <button type="submit" name="update" class="btn btn-success btn-cons float-right" value="1">Opslaan</button>
+            <a href="{{ route('dashboard.module.ecommerce.attributes.index') }}" class="float-right"><button type="button" class="btn btn-info btn-cons mr-3">Annuleren</button></a>
           </p>
         </div>
       </div>
-    </div>
-  </div>
+    </form>
 </div>
-<!-- END card -->
-</form>
-</div>
-<!-- END CONTAINER FLUID -->
 @endsection
 
 @section('css')
