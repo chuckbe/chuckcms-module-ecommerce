@@ -7,6 +7,7 @@ Route::group(['middleware' => ['web']], function() {
 			
 			//START OF: ORDERS ROUTES
 			Route::get('/dashboard/ecommerce/orders', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\OrderController@index')->name('dashboard.module.ecommerce.orders.index');
+			Route::get('/dashboard/ecommerce/orders/create', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\OrderController@create')->name('dashboard.module.ecommerce.orders.create');
 			Route::get('/dashboard/ecommerce/orders/{order}/detail', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\OrderController@detail')->name('dashboard.module.ecommerce.orders.detail');
 			Route::post('/dashboard/ecommerce/orders/status/update', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\OrderController@status')->name('dashboard.module.ecommerce.orders.status.update');
 			Route::get('/dashboard/ecommerce/orders/{order}/invoice', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\OrderController@invoice')->name('dashboard.module.ecommerce.orders.invoice');
@@ -48,7 +49,9 @@ Route::group(['middleware' => ['web']], function() {
 			//START OF: DISCOUNTS ROUTES
 			Route::get('/dashboard/ecommerce/discounts', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\DiscountController@index')->name('dashboard.module.ecommerce.discounts.index');
 			Route::get('/dashboard/ecommerce/discounts/create', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\DiscountController@create')->name('dashboard.module.ecommerce.discounts.create');
+			Route::get('/dashboard/ecommerce/discounts/{discount}/edit', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\DiscountController@edit')->name('dashboard.module.ecommerce.discounts.edit');
 			Route::post('/dashboard/ecommerce/discounts/save', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\DiscountController@save')->name('dashboard.module.ecommerce.discounts.save');
+			Route::post('/dashboard/ecommerce/discounts/delete', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\DiscountController@delete')->name('dashboard.module.ecommerce.discounts.delete');
 			//END OF: DISCOUNTS ROUTES
 			
 			//START OF: SETTINGS ROUTES
@@ -56,6 +59,7 @@ Route::group(['middleware' => ['web']], function() {
 			Route::get('/dashboard/ecommerce/settings/update', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\Settings\GeneralController@update')->name('dashboard.module.ecommerce.settings.index.general.update');
 			
 			Route::get('/dashboard/ecommerce/settings/layout', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\SettingController@layout')->name('dashboard.module.ecommerce.settings.index.layout');
+			Route::post('/dashboard/ecommerce/settings/layout/update', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\Settings\LayoutController@update')->name('dashboard.module.ecommerce.settings.index.layout.update');
 			
 			Route::get('/dashboard/ecommerce/settings/orders', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\SettingController@orders')->name('dashboard.module.ecommerce.settings.index.orders');
 			Route::get('/dashboard/ecommerce/settings/orders/statuses/edit/{status}', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\Settings\StatusController@edit')->name('dashboard.module.ecommerce.settings.index.orders.statuses.edit');
@@ -69,6 +73,7 @@ Route::group(['middleware' => ['web']], function() {
 			Route::post('/dashboard/ecommerce/settings/shipping/carrier/delete', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\Settings\CarrierController@delete')->name('dashboard.module.ecommerce.settings.shipping.carrier.delete');
 
 			Route::get('/dashboard/ecommerce/settings/integrations', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\SettingController@integrations')->name('dashboard.module.ecommerce.settings.index.integrations');
+			Route::post('/dashboard/ecommerce/settings/integrations/update', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\Settings\IntegrationsController@update')->name('dashboard.module.ecommerce.settings.index.integrations.update');
 			//END OF: SETTINGS ROUTES
 		});
 		
@@ -109,6 +114,9 @@ Route::group(['middleware' => ['web']], function() {
 
 	Route::post('/cart-detail-html', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\CartController@detailHtml')->name('module.ecommerce.cart.html.detail');
 	Route::post('/cart-overview-html', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\CartController@overviewHtml')->name('module.ecommerce.cart.html.overview');
+
+	Route::post('/cart-add-coupon', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\CartController@addCoupon')->name('module.ecommerce.cart.coupon.add');
+	Route::post('/cart-remove-coupon', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\CartController@removeCoupon')->name('module.ecommerce.cart.coupon.remove');
 
 	Route::get('/verlanglijstje', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\WishlistController@overview')->name('module.ecommerce.wishlist.overview');
 	Route::post('/update-wishlist', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\WishlistController@updateWishlist')->name('module.ecommerce.wishlist.update');
