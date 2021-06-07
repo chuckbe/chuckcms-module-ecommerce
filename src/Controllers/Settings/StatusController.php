@@ -71,6 +71,7 @@ class StatusController extends Controller
         }
 
         if($request->get('_has_email') == '1') {
+            $json['settings']['order']['statuses'][$statusKey]['send_email'] = true;
 
             foreach( $request->get('email_key') as $emailKey) {
                 $json['settings']['order']['statuses'][$statusKey]['email'][$emailKey]['to'] = $request->get('to')[$emailKey];
@@ -97,7 +98,7 @@ class StatusController extends Controller
         $ecommerce->json = $json;
         $ecommerce->update();
 
-        return redirect()->route('dashboard.module.ecommerce.settings.index.orders');
+        return redirect()->route('dashboard.module.ecommerce.settings.index.orders')->with('notification', 'Instellingen opgeslagen!');
     }
 
     public function email($status)
@@ -137,6 +138,7 @@ class StatusController extends Controller
 
         $langs = ChuckSite::getSupportedLocales();
 
+        $json['settings']['order']['statuses'][$statusKey]['send_email'] = true;
         $json['settings']['order']['statuses'][$statusKey]['email'][$emailKey]['to'] = $request->get('to');
         $json['settings']['order']['statuses'][$statusKey]['email'][$emailKey]['to_name'] = $request->get('to_name');
         $json['settings']['order']['statuses'][$statusKey]['email'][$emailKey]['cc'] = $request->get('cc');
@@ -159,7 +161,7 @@ class StatusController extends Controller
         $ecommerce->json = $json;
         $ecommerce->update();
 
-        return redirect()->route('dashboard.module.ecommerce.settings.index.orders.statuses.edit', ['status' => $statusKey]);
+        return redirect()->route('dashboard.module.ecommerce.settings.index.orders.statuses.edit', ['status' => $statusKey])->with('notification', 'Instellingen opgeslagen!');
     }
 
     public function emailDelete(Request $request)

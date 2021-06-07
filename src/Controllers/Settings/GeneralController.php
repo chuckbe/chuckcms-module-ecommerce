@@ -87,7 +87,7 @@ class GeneralController extends Controller
         $ecommerce->json = $json;
         $ecommerce->update();
 
-        return redirect()->route('dashboard.module.ecommerce.settings.index.orders');
+        return redirect()->route('dashboard.module.ecommerce.settings.index.orders')->with('notification', 'Instellingen opgeslagen!');
     }
 
 }
