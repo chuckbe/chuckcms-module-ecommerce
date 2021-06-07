@@ -3,7 +3,7 @@
 namespace Chuckbe\ChuckcmsModuleEcommerce\Controllers;
 
 use Auth;
-use Cart;
+use ChuckCart;
 use ChuckEcommerce;
 use ChuckProduct;
 use Chuckbe\ChuckcmsModuleEcommerce\Chuck\CartRepository;
@@ -53,14 +53,14 @@ class CheckoutController extends Controller
     public function index()
     {
         if (Auth::user()) {
-            Cart::instance('shopping')->restore('shopping_'.Auth::user()->id);
+            ChuckCart::instance('shopping')->restore('shopping_'.Auth::user()->id);
         }
 
-        if (Cart::instance('shopping')->content()->count() == 0) {
+        if (ChuckCart::instance('shopping')->content()->count() == 0) {
             return redirect()->route('module.ecommerce.cart.overview');
         }
 
-        if (Cart::instance('shopping')->total() < ChuckEcommerce::getSetting('order.minimum')) {
+        if (ChuckCart::instance('shopping')->total() < ChuckEcommerce::getSetting('order.minimum')) {
             return redirect()->route('module.ecommerce.cart.overview');
         }
 
@@ -75,17 +75,17 @@ class CheckoutController extends Controller
             $user = $this->userRepository->create($request);
             Auth::login($user);
             $customer = $this->customerRepository->createFromUser($user, $request);
-            Cart::instance('shopping')->store('shopping_'.$user->id);
+            ChuckCart::instance('shopping')->store('shopping_'.$user->id);
             //send email for customer creation
         }  elseif (!Auth::check() && (bool)$request->get('check_out_as_guest')) {
             $customer = $this->customerRepository->createFromRequest($request);
         } elseif(Auth::check()) {
             $user = Auth::user();
-            Cart::instance('shopping')->restore('shopping_'.$user->id);
+            ChuckCart::instance('shopping')->restore('shopping_'.$user->id);
             $customer = $user->customer;
         }
 
-        $cart = Cart::instance('shopping');
+        $cart = ChuckCart::instance('shopping');
 
         $products = $this->cartRepository->getProducts($cart);
 
@@ -159,8 +159,6 @@ class CheckoutController extends Controller
             'status' => ChuckEcommerce::getSetting('order.statuses.'.$order->status)
         ]);     
     }
-
-
 
     public function orderPay($order_number)
     {

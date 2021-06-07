@@ -117,7 +117,7 @@ $(document).ready(function() {
         }
 
         var new_total_price = Number(subtotal_price) + Number(shipping_price);
-        $('.ce_checkoutTotalPrice').text('€ ' + new_total_price.toFixed(2).replace('.',','));
+        $('.ce_checkoutTotalPrice').text('€ ' + new_total_price.toFixed(2).replace('.',',')); //@TODO: FIX THIS
 
         var tax_price = $('.ce_checkoutTaxPrice').attr('data-tax-price');
         $('.ce_checkoutTaxPrice').text('€ ' + (parseFloat(tax_price) + parseFloat(shipping_price_tax)).toFixed(2).replace('.',','));
@@ -271,7 +271,6 @@ $(document).ready(function() {
             }
         })
         .done(function(data) {
-            console.log( 'data :: ', data);
             if (data.status == "availability"){
                 console.log(data.notification);
 
@@ -304,32 +303,42 @@ $(document).ready(function() {
         });
     }
 
-    function removeTaxFromCart () {
-        subtotal = $('.ce_checkoutSubtotalPrice').attr('data-sub-total-no-tax');
+    function removeTaxFromCart () { //@TODO: ADD DISCOUNT PRICE SWAP
+        subtotal = $('.ce_checkoutSubtotalPrice').attr('data-sub-total');
+        subtotal_no_tax = $('.ce_checkoutSubtotalPrice').attr('data-sub-total-no-tax');
         $('.ce_checkoutSubtotalPrice').text('€ ' + parseFloat(subtotal).toFixed(2).replace('.',','));
 
         shipping = parseFloat($('.ce_checkoutShippingPrice').attr('data-shipping-price')) - parseFloat($('.ce_checkoutShippingPrice').attr('data-tax-shipping'));
-        $('.ce_checkoutShippingPrice').text('€ ' + parseFloat(shipping).toFixed(2).replace('.',','));
+        if(parseFloat(shipping) > 0) {
+            $('.ce_checkoutShippingPrice').text('€ ' + parseFloat(shipping).toFixed(2).replace('.',','));
+        } else {
+            $('.ce_checkoutShippingPrice').text('gratis');
+        }
 
         tax = parseFloat(0);
         $('.ce_checkoutTaxPrice').text('€ ' + parseFloat(tax).toFixed(2).replace('.',','));
 
-        total = parseFloat(subtotal) + parseFloat($('.ce_checkoutShippingPrice').attr('data-tax-shipping'));
+        total = parseFloat(subtotal_no_tax);
         $('.ce_checkoutTotalPrice').text('€ ' + parseFloat(total).toFixed(2).replace('.',','));
     }
 
-    function addTaxToCart () {
+    function addTaxToCart () { //@TODO: ADD DISCOUNT PRICE SWAP
+        total = $('.ce_checkoutSubtotalPrice').attr('data-total');
         subtotal = $('.ce_checkoutSubtotalPrice').attr('data-sub-total');
-        $('.ce_checkoutSubtotalPrice').text('€ ' + parseFloat(subtotal).toFixed(2).replace('.',','));
+        $('.ce_checkoutSubtotalPrice').text('€ ' + parseFloat(total).toFixed(2).replace('.',','));
 
         shipping = $('.ce_checkoutShippingPrice').attr('data-shipping-price');
-        $('.ce_checkoutShippingPrice').text('€ ' + parseFloat(shipping).toFixed(2).replace('.',','));
+        if(parseFloat(shipping) > 0) {
+            $('.ce_checkoutShippingPrice').text('€ ' + parseFloat(shipping).toFixed(2).replace('.',','));
+        } else {
+            $('.ce_checkoutShippingPrice').text('gratis');
+        }
 
         tax = parseFloat($('.ce_checkoutTaxPrice').attr('data-tax-price')) + parseFloat($('.ce_checkoutShippingPrice').attr('data-tax-shipping'));
         $('.ce_checkoutTaxPrice').text('€ ' + parseFloat(tax).toFixed(2).replace('.',','));
 
-        total = parseFloat(subtotal) + parseFloat($('.ce_checkoutShippingPrice').attr('data-shipping-price'));
-        $('.ce_checkoutTotalPrice').text('€ ' + parseFloat(total).toFixed(2).replace('.',','));
+        final_price = parseFloat(subtotal) + parseFloat($('.ce_checkoutShippingPrice').attr('data-shipping-price'));
+        $('.ce_checkoutTotalPrice').text('€ ' + parseFloat(final_price).toFixed(2).replace('.',','));
     }
 });
 </script>
@@ -374,10 +383,10 @@ $(document).ready(function() {
     <div class="col-md-4 order-md-2 mb-4">
       <h4 class="d-flex justify-content-between align-items-center mb-3">
         <span class="text-muted">Shopping Cart</span>
-        <span class="badge badge-secondary badge-pill">{{ Cart::instance('shopping')->content()->count() }}</span>
+        <span class="badge badge-secondary badge-pill">{{ ChuckCart::instance('shopping')->content()->count() }}</span>
       </h4>
       <ul class="list-group mb-3">
-        @foreach(Cart::instance('shopping')->content() as $item)
+        @foreach(ChuckCart::instance('shopping')->content() as $item)
         <li class="list-group-item d-flex justify-content-between lh-condensed">
           <div>
             <h6 class="my-0">{{ $item->name }}</h6>
@@ -385,19 +394,32 @@ $(document).ready(function() {
                 @foreach($item->options as $oKey => $oValue)
                 {{ ($loop->first ? '(' : '') . $oKey }}: {{ $oValue . ($loop->last ? ')' : ', ') }} 
                 @endforeach
-            </small>
+            </small><br>
+            <small class="text-muted">
+            @foreach($item->extras as $eKey => $eValue)
+            {{ $eValue['qty'].'x '.$eKey }}{!! !$loop->last ? '<br>' : '' !!}
+            @endforeach 
+          </small>
             <div class="w-100"></div>
-            <small class="text-muted">{{ $item->qty }}x {{ ChuckEcommerce::formatPrice($item->priceTax) }}</small>
+            <hr class="my-0 mt-1">
+            <small class="text-muted">{{ $item->qty }}x {{ ChuckEcommerce::formatPrice($item->_unit) }}</small>
           </div>
-          <span class="text-muted">{{ ChuckEcommerce::formatPrice($item->total) }}</span>
+          <span class="text-muted">{{ ChuckEcommerce::formatPrice($item->_total) }}</span>
         </li>
         @endforeach
 
 
         <li class="list-group-item d-flex justify-content-between">
           <span>Subtotaal (EUR)</span>
-          <strong class="ce_checkoutSubtotalPrice" data-sub-total="{{ Cart::instance('shopping')->total() }}" data-sub-total-no-tax="{{ Cart::instance('shopping')->subtotal() }}">{{ ChuckEcommerce::formatPrice(Cart::instance('shopping')->total()) }}</strong>
+          <strong class="ce_checkoutSubtotalPrice" data-sub-total="{{ ChuckCart::instance('shopping')->final() }}" data-total="{{ ChuckCart::instance('shopping')->total() }}" data-sub-total-no-tax="{{ (ChuckCart::instance('shopping')->final() - ChuckCart::instance('shopping')->tax()) }}">{{ ChuckEcommerce::formatPrice(ChuckCart::instance('shopping')->total()) }}</strong>
         </li>
+
+        @if(ChuckCart::instance('shopping')->hasDiscount())
+        <li class="list-group-item d-flex justify-content-between">
+          <span>Korting (EUR)</span>
+          <strong class="ce_checkoutDiscountPrice" data-discount="{{ ChuckCart::instance('shopping')->discount() }}">-{{ ChuckEcommerce::formatPrice(ChuckCart::instance('shopping')->discount()) }}</strong>
+        </li>
+        @endif
 
         <li class="list-group-item d-flex justify-content-between">
           <span>Verzending (EUR)</span>
@@ -405,8 +427,12 @@ $(document).ready(function() {
         </li>
 
         <li class="list-group-item d-flex justify-content-between">
-          <span>Totaal (EUR) <br> <small><span class="ce_checkoutTaxPrice" data-tax-price="{{ Cart::instance('shopping')->tax() }}">{{ ChuckEcommerce::formatPrice(Cart::instance('shopping')->tax() + ChuckEcommerce::taxFromPrice(ChuckEcommerce::getDefaultShippingPriceForCart('shopping'), 21)) }}</span> BTW inbegrepen. </small></span>
-          <strong class="ce_checkoutTotalPrice">{{ ChuckEcommerce::formatPrice(Cart::instance('shopping')->total() + ChuckEcommerce::getDefaultShippingPriceForCart('shopping')) }}</strong>
+            <span>Totaal (EUR) <br> 
+                <small>
+                <span class="ce_checkoutTaxPrice" data-tax-price="{{ ChuckCart::instance('shopping')->tax() }}">{{ ChuckEcommerce::formatPrice(ChuckCart::instance('shopping')->tax() + ChuckEcommerce::taxFromPrice(ChuckEcommerce::getDefaultShippingPriceForCart('shopping'), 21)) }}</span> BTW inbegrepen. 
+                </small>
+            </span>
+          <strong class="ce_checkoutTotalPrice">{{ ChuckEcommerce::formatPrice(ChuckCart::instance('shopping')->final() + ChuckEcommerce::getDefaultShippingPriceForCart('shopping')) }}</strong>
         </li>
       </ul>
 
@@ -605,11 +631,11 @@ $(document).ready(function() {
             @endforeach
         </div>
         <hr class="mb-4">
-        <div class="custom-control custom-checkbox">
+        <div class="custom-control custom-checkbox mb-2">
           <input type="checkbox" class="custom-control-input" id="ce_checkoutAcceptPolicy" name="legal_approval" required>
           <label class="custom-control-label" for="ce_checkoutAcceptPolicy">Ik bevestig hierbij de bestelling en bevestig dat ik instem met de algemene voorwaarden.</label>
         </div>
-        <div class="alert alert-warning ce_checkoutAlertItemsOutOfStock d-none" role="alert">
+        <div class="alert alert-warning ce_checkoutAlertItemsOutOfStock mb-2 d-none" role="alert">
             <h4 class="alert-heading">Sorry, we hebben helaas niet meer alle items in stock.</h4>
             <ul class="ce_checkoutAlertItemsOutOfStockList">
                 <li class="ce_checkoutAlertItemsOutOfStockItem">Product</li>
@@ -624,11 +650,6 @@ $(document).ready(function() {
 
   <footer class="my-5 pt-5 text-muted text-center text-small">
     <p class="mb-1">&copy; {{ date('Y') }} {{ ChuckSite::getSetting('company.name') }}</p>
-    <ul class="list-inline">
-      <li class="list-inline-item"><a href="#">Privacy</a></li>
-      <li class="list-inline-item"><a href="#">Terms</a></li>
-      <li class="list-inline-item"><a href="#">Support</a></li>
-    </ul>
   </footer>
 </div>
 
