@@ -8,7 +8,6 @@
         "laravel/framework": "~5.8||^6.0||^7.0.0",
         "barryvdh/laravel-dompdf": "^0.8.1",
         "chuckbe/chuckcms": "~0.1",
-        "hardevine/shoppingcart": "^2.7",
         "mollie/laravel-mollie": "^2.0"
     },
     "authors": [
@@ -28,7 +27,11 @@
                 "Chuckbe\\ChuckcmsModuleEcommerce\\ChuckcmsModuleEcommerceServiceProvider"
             ],
             "aliases": {
-                
+                "ChuckCart": "Chuckbe\\ChuckcmsModuleEcommerce\\Facades\\Cart", 
+                "ChuckCollection": "Chuckbe\\ChuckcmsModuleEcommerce\\Facades\\Collection", 
+                "ChuckCustomer": "Chuckbe\\ChuckcmsModuleEcommerce\\Facades\\Customer", 
+                "ChuckEcommerce": "Chuckbe\\ChuckcmsModuleEcommerce\\Facades\\Ecommerce", 
+                "ChuckProduct": "Chuckbe\\ChuckcmsModuleEcommerce\\Facades\\Product"
             }
         }
     },
