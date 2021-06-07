@@ -72,7 +72,8 @@ return [
 		],
 
 		'template' => [
-			'hintpath' => 'chuckcms-template-starter'
+			'hintpath' => 'chuckcms-template-starter',
+            'registration_blade' => 'account.register',
 		],
 	],
 
