@@ -91,8 +91,8 @@ class RegisterController extends Controller
     public function showRegistrationForm()
     {
         $templateHintpath = config('chuckcms-module-ecommerce.auth.template.hintpath');
-        $template = Template::where('type', 'ecommerce')->where('active', 1)->where('hintpath', $templateHintpath)->first();
-        return view('chuckcms-template-london::templates.chuckcms-template-london.account.auth', compact('errors', 'template'));
+        $template = Template::where('active', 1)->where('hintpath', $templateHintpath)->first();
+        return view($templateHintpath.'::templates.'.$templateHintpath.'.'.config('chuckcms-module-ecommerce.auth.template.registration_blade'), compact('template'));
     }
 
     /**
@@ -138,7 +138,7 @@ class RegisterController extends Controller
             'surname' => $data['surname'],
             'name' => $data['name'],
             'email' => $data['email'],
-            'tel' => $data['tel'],
+            'tel' => array_key_exists('tel', $data) ? $data['tel'] : null,
             'json' => $json
         ]);
 

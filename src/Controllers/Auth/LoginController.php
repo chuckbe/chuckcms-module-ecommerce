@@ -3,7 +3,7 @@
 namespace Chuckbe\ChuckcmsModuleEcommerce\Controllers\Auth;
 
 use Auth;
-use Cart;
+use ChuckCart;
 use App\Http\Controllers\Controller;
 use Chuckbe\Chuckcms\Models\Template;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
@@ -34,13 +34,13 @@ class LoginController extends Controller
     {
         $userId = Auth::user()->id;
 
-        Cart::instance('shopping')->restore('shopping_' . $userId);
-        $cart = Cart::instance('shopping')->content();
-        Cart::instance('shopping')->store('shopping_' . $userId);
+        ChuckCart::instance('shopping')->restore('shopping_' . $userId);
+        $cart = ChuckCart::instance('shopping')->content();
+        ChuckCart::instance('shopping')->store('shopping_' . $userId);
 
-        Cart::instance('wishlist')->restore('wishlist_' . $userId);
-        $wishlist = Cart::instance('wishlist')->content();
-        Cart::instance('wishlist')->store('wishlist_' . $userId);
+        ChuckCart::instance('wishlist')->restore('wishlist_' . $userId);
+        $wishlist = ChuckCart::instance('wishlist')->content();
+        ChuckCart::instance('wishlist')->store('wishlist_' . $userId);
 
         if (Auth::user()->hasRole('customer')) {
             return config('chuckcms-module-ecommerce.auth.redirect.customer');
