@@ -7,6 +7,8 @@ use Chuckbe\ChuckcmsModuleEcommerce\Chuck\BrandRepository;
 use Chuckbe\ChuckcmsModuleEcommerce\Chuck\CollectionRepository;
 use Chuckbe\ChuckcmsModuleEcommerce\Chuck\ProductRepository;
 
+use Chuckbe\ChuckcmsModuleEcommerce\Requests\StoreProductRequest;
+
 use Chuckbe\ChuckcmsModuleEcommerce\Models\Product;
 use Chuckbe\Chuckcms\Models\Repeater;
 
@@ -60,24 +62,15 @@ class ProductController extends Controller
         return view('chuckcms-module-ecommerce::backend.products.edit', compact('collections', 'brands', 'attributes', 'product'));
     }
 
-    public function save(Request $request)
+    public function save(StoreProductRequest $request)
     {
-        $this->validate(request(), [ //@todo create custom Request class for product validation
-            'slug' => 'required'
-        ]);
-
         $product = $this->productRepository->save($request);
 
         return redirect()->route('dashboard.module.ecommerce.products.index');
     }
 
-    public function update(Request $request)
+    public function update(StoreProductRequest $request)
     {
-        $this->validate(request(), [ //@todo create custom Request class for product validation
-            'product_id' => 'required',
-            'slug' => 'required'
-        ]);
-
         $product = $this->productRepository->update($request);
 
         return redirect()->route('dashboard.module.ecommerce.products.index');

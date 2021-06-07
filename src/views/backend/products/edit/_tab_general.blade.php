@@ -41,4 +41,12 @@
         <input type="checkbox" class="boolean_checkbox_input" id="is_download" value="{{ $product->json['is_download'] == 'true' ? 1 : 0 }}" name="is_download" @if($product->json['is_download'] == true) checked @endif /> Is virtueel product?
     </label>
   </div>
+  <div class="col-sm-12 mt-2">
+    <label class="sr-only" for="">In aanbieding?</label>
+    <div class="w-100 d-block mb-lg-1"></div>
+    <input type="hidden" class="boolean_checkbox_input_hidden" value="0" name="is_featured" @if($product->json['is_featured'] ?? false) disabled @endif>
+    <label for="is_featured">
+        <input type="checkbox" class="boolean_checkbox_input" id="is_featured" value="{{ ($product->json['is_featured'] ?? false) == 'true' ? 1 : 0 }}" name="is_featured" @if($product->json['is_featured'] ?? false) checked @endif /> In aanbieding?
+    </label>
+  </div>
 </div>

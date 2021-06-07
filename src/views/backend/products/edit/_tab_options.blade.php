@@ -69,3 +69,94 @@
         <small class="d-none text-danger" id="new_option_error">Vul alle velden in</small>
     </div>
 </div>
+<div class="form-group row">
+    <div class="col-sm-12 extras-row">
+        <div class="extraInputContainer">
+            @if( (array_key_exists('extras', $product->json) && count($product->json['extras']) == 0) || !array_key_exists('extras', $product->json))
+            <div class="row extra_input_row" style="align-items: center;">
+                <div class="col-sm-2">
+                    <button class="btn btn-danger btn-round removeExtraRowButton" style="display:none;">-</button>
+                    <button class="btn btn-success btn-round addExtraRowButton">+</button>
+                </div>
+                <div class="col-sm-5">
+                    <div class="form-group form-group-default">
+                        <label>Naam</label>
+                        <input type="text" class="form-control" placeholder="Naam" name="extra_name[]">
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="form-group form-group-default">
+                        <label>Maximum</label>
+                        <input type="number" min="1" max="99999" step="1" class="form-control" name="extra_maximum[]">
+                    </div>
+                </div>
+                <div class="col-sm-3 offset-sm-2">
+                    <div class="form-group form-group-default">
+                        <label>Prijs</label>
+                        <input type="text" data-auto-tax data-auto-tax-group="1" data-auto-tax-price data-a-dec="." data-a-sep="" data-m-dec="6" data-a-pad=true class="autonumeric form-control" name="extra_price[]">
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="form-group form-group-default">
+                        <label>BTW</label>
+                        <select class="custom-select" name="extra_vat[]" data-auto-tax data-auto-tax-group="1" data-auto-tax-vat data-init-plugin="select2" data-minimum-results-for-search="Infinity" required>
+                            @foreach(config('chuckcms-module-ecommerce.vat') as $vatKey => $vatValue)
+                            <option value="{{ $vatKey }}" data-amount="{{ $vatValue['amount'] }}">{{ $vatValue['type'] }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="form-group form-group-default">
+                        <label>Prijs met BTW</label>
+                        <input type="text" data-auto-tax data-auto-tax-group="1" data-auto-tax-final data-a-dec="." data-a-sep="" data-m-dec="6" data-a-pad=true class="autonumeric form-control" name="extra_price_vat[]">
+                    </div>
+                </div>
+            </div>
+            @else
+                @foreach($product->json['extras'] as $extra)
+                <div class="row extra_input_row" style="align-items: center;">
+                    <div class="col-sm-2">
+                        <button class="btn btn-danger btn-round removeExtraRowButton" @if(count($product->json['options']) == 1) style="display:none;" @endif>-</button>
+                        <button class="btn btn-success btn-round addExtraRowButton">+</button>
+                    </div>
+                    <div class="col-sm-5">
+                      <div class="form-group form-group-default">
+                        <label>Naam</label>
+                        <input type="text" class="form-control" placeholder="Naam" name="extra_name[]" value="{{ $extra['name'] }}">
+                      </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group form-group-default">
+                            <label>Maximum</label>
+                            <input type="number" min="1" max="99999" step="1" class="form-control" name="extra_maximum[]" value="{{ $extra['maximum'] }}">
+                        </div>
+                    </div>
+                    <div class="col-sm-3 offset-sm-2">
+                        <div class="form-group form-group-default">
+                            <label>Prijs</label>
+                            <input type="text" data-auto-tax data-auto-tax-group="{{ $loop->index }}" data-auto-tax-price data-a-dec="." data-a-sep="" data-m-dec="6" data-a-pad=true class="autonumeric form-control" name="extra_price[]" value="{{ $extra['price'] }}">
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="form-group form-group-default">
+                            <label>BTW</label>
+                            <select class="custom-select" name="extra_vat[]" data-auto-tax data-auto-tax-group="{{ $loop->index }}" data-auto-tax-vat data-init-plugin="select2" data-minimum-results-for-search="Infinity" required>
+                                @foreach(config('chuckcms-module-ecommerce.vat') as $vatKey => $vatValue)
+                                <option value="{{ $vatKey }}" data-amount="{{ $vatValue['amount'] }}" @if((int)$vatValue['amount'] == (int)$extra['vat']['amount']) selected @endif>{{ $vatValue['type'] }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="form-group form-group-default">
+                            <label>Prijs met BTW</label>
+                            <input type="text" data-auto-tax data-auto-tax-group="{{ $loop->index }}" data-auto-tax-final data-a-dec="." data-a-sep="" data-m-dec="6" data-a-pad=true class="autonumeric form-control" name="extra_price_vat[]" value="{{ $extra['final'] }}">
+                        </div>
+                    </div>
+                </div>
+                @endforeach
+            @endif
+        </div>
+    </div>
+</div>

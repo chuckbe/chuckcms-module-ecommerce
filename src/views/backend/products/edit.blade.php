@@ -105,63 +105,119 @@
 
 <script>
 $(document).ready(function() {
-$( "#options_input_container" ).sortable({revert: true});
-
-$('body').on('click', '.remove_line_button', function() {
-    checker = $(this).parents('._input_container').find('._input_line').length;
-    if(checker > 1) {
-        $(this).parents('._input_line').remove();
-    } else {
-        $(this).parents('._input_line').addClass('d-none');
-        $(this).parents('._input_line').find('input').prop('disabled', true);
-    }
-});
-
-$('body').on('click', '#new_option_button', function() {
-    $('#new_option_error').addClass('d-none');
-    if($('#new_option_key').val().length == 0 || $('#new_option_value').val().length == 0) {
-        $('#new_option_error').removeClass('d-none');
-        return;
-    }
-
-    new_key = $('#new_option_key').val();
-    new_value = $('#new_option_value').val();
-    //new_file = $('#new_css_asset').is(':checked');
-
-    if($('.option_input_line').length > 1) {
-        $('.option_input_line:first').clone().appendTo('.option_input_container');
-        $('.option_input_container').append('<hr>');
-    } else {
-      if($('.option_input_line:first').hasClass('d-none')) {
-        $('.option_input_line:first').removeClass('d-none');
-        $('.option_input_line:first').find('input').prop('disabled', false);
-      } else {
-        $('.option_input_line:first').clone().appendTo('.option_input_container');
-        $('.option_input_container').append('<hr>');
-      }
-        
-    }
-
-    $('.option_input_line:last').find('.option_key_input').attr('id', 'option_key_'+new_key);
-    $('.option_input_line:last').find('.option_key_input').val(new_key);
-    $('.option_input_line:last').find('.option_key_input').siblings('label').attr('for', 'option_key_'+new_key);
-
-    $('.option_input_line:last').find('.option_value_input').attr('id', 'option_value_'+new_key);
-    $('.option_input_line:last').find('.option_value_input').val(new_value);
-    $('.option_input_line:last').find('.option_value_input').siblings('label').attr('for', 'option_value_'+new_key);
-
+  toggleRemoveExtraButton(); 
     
+  $( "#options_input_container" ).sortable({revert: true});
 
-    $('#new_option_key').val('');
-    $('#new_option_value').val('');
-});
+  $('body').on('click', '.remove_line_button', function() {
+      checker = $(this).parents('._input_container').find('._input_line').length;
+      if(checker > 1) {
+          $(this).parents('._input_line').remove();
+      } else {
+          $(this).parents('._input_line').addClass('d-none');
+          $(this).parents('._input_line').find('input').prop('disabled', true);
+      }
+  });
+
+  $('body').on('click', '#new_option_button', function() {
+      $('#new_option_error').addClass('d-none');
+      if($('#new_option_key').val().length == 0 || $('#new_option_value').val().length == 0) {
+          $('#new_option_error').removeClass('d-none');
+          return;
+      }
+
+      new_key = $('#new_option_key').val();
+      new_value = $('#new_option_value').val();
+      //new_file = $('#new_css_asset').is(':checked');
+
+      if($('.option_input_line').length > 1) {
+          $('.option_input_line:first').clone().appendTo('.options_input_container');
+          $('.option_input_container').append('<hr>');
+      } else {
+        if($('.option_input_line:first').hasClass('d-none')) {
+          $('.option_input_line:first').removeClass('d-none');
+          $('.option_input_line:first').find('input').prop('disabled', false);
+        } else {
+          $('.option_input_line:first').clone().appendTo('.options_input_container');
+          $('.option_input_container').append('<hr>');
+        }
+          
+      }
+
+      $('.option_input_line:last').find('.option_key_input').attr('id', 'option_key_'+new_key);
+      $('.option_input_line:last').find('.option_key_input').val(new_key);
+      $('.option_input_line:last').find('.option_key_input').siblings('label').attr('for', 'option_key_'+new_key);
+
+      $('.option_input_line:last').find('.option_value_input').attr('id', 'option_value_'+new_key);
+      $('.option_input_line:last').find('.option_value_input').val(new_value);
+      $('.option_input_line:last').find('.option_value_input').siblings('label').attr('for', 'option_value_'+new_key);
+
+      
+
+      $('#new_option_key').val('');
+      $('#new_option_value').val('');
+  });
+
+  $('body').on('click', '.addExtraRowButton', function (event) {
+    event.preventDefault();
+    $('.extra_input_row:first').clone().appendTo('.extraInputContainer');
+
+    vardatainput = $('.extra_input_row:last').find('.img_lfm_link').attr('data-input');
+    vardatapreview = $('.extra_input_row:last').find('.img_lfm_link').attr('data-preview');
+
+    $('.extra_input_row:last').find('.img_lfm_link').attr('data-input', vardatainput+'_'+$('.extra_input_row').length);
+    $('.extra_input_row:last').find('.img_lfm_link').attr('data-preview', vardatapreview+'_'+$('.extra_input_row').length);
+    inputid = $('.extra_input_row:last').find('.img_lfm_input').attr('id');
+    $('.extra_input_row:last').find('.img_lfm_input').attr('id',inputid+'_'+$('.extra_input_row').length);
+    holderid = $('.extra_input_row:last').find('.img_lfm_holder').attr('id');
+    $('.extra_input_row:last').find('.img_lfm_holder').attr('id',holderid+'_'+$('.extra_input_row').length);
+
+    toggleRemoveExtraButton();
+
+    init();
+  });
+
+  $('body').on('click', '.removeExtraRowButton', function (event) {
+    event.preventDefault();
+    $(this).parents('.extra_input_row').remove();
+
+    toggleRemoveExtraButton();
+  });
+
+  function toggleRemoveExtraButton() {
+    if($('.extra_input_row').length > 1) {
+      $('.removeExtraRowButton').show();
+    } else {
+      $('.removeExtraRowButton').hide();
+    }
+  }
 
 
-});
-</script>
+  $("body").on('keyup', "[data-auto-tax][data-auto-tax-price]", function () {
+    let auto_tax_group = $(this).attr('data-auto-tax-group');
+    var vat = parseFloat($("[data-auto-tax][data-auto-tax-group='"+auto_tax_group+"'][data-auto-tax-vat]").find(":selected").attr("data-amount"));
+    var exvat = parseFloat($(this).val());
+    var invat = (exvat + ((exvat / 100) * vat)).toFixed(6);
+    $("[data-auto-tax][data-auto-tax-group='"+auto_tax_group+"'][data-auto-tax-final]").val(invat).change();
+  });
 
-<script>
-	$( document ).ready(function() { 
+  $("body").on('change', "[data-auto-tax][data-auto-tax-vat]", function() {
+    let auto_tax_group = $(this).attr('data-auto-tax-group');
+    var vat = parseFloat($(this).find(":selected").attr("data-amount"));
+    var exvat = parseFloat($("[data-auto-tax][data-auto-tax-group='"+auto_tax_group+"'][data-auto-tax-price]").val());
+    var invat = (exvat + ((exvat / 100) * vat)).toFixed(6);
+    $("[data-auto-tax][data-auto-tax-group='"+auto_tax_group+"'][data-auto-tax-final]").val(invat).change(); //maybe add a check to see which was last edited and then update the opposite input
+  });
+
+  $("body").on('keyup', "[data-auto-tax][data-auto-tax-final]", function () {
+    let auto_tax_group = $(this).attr('data-auto-tax-group');
+    var vat = parseFloat('1.'+$("[data-auto-tax][data-auto-tax-group='"+auto_tax_group+"'][data-auto-tax-vat]").find(":selected").attr("data-amount"));
+    var invat = parseFloat($(this).val());
+    var exvat = (invat / vat).toFixed(6);
+    $("[data-auto-tax][data-auto-tax-group='"+auto_tax_group+"'][data-auto-tax-price]").val(exvat).change();
+  });
+
+  
 
     $('body').on('change', '.boolean_checkbox_input', function() {
         if($(this).is(':checked')) {

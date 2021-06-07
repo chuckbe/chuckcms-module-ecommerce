@@ -76,7 +76,7 @@
     <div class="col-sm-4">
       <div class="form-group form-group-default required">
         <label>Combinatie Kortingsprijs met BTW</label>
-        <input class="form-control combination_price_discount_input" type="text" data-a-dec="." data-a-sep="" data-m-dec="6" data-a-pad=true class="autonumeric form-control" name="combinations[{{ $combinationKey }}][price][discount]" value="{{ $combination['price']['discount'] }}" placeholder="Kortingsprijs met BTW" required>
+        <input class="form-control combination_price_discount_input" type="text" data-a-dec="." data-a-sep="" data-m-dec="6" data-a-pad=true class="autonumeric form-control" name="combinations[{{ $combinationKey }}][price][discount]" value="{{ $combination['price']['discount'] ?? '0.000000' }}" placeholder="Kortingsprijs met BTW" required>
       </div>
     </div>
 

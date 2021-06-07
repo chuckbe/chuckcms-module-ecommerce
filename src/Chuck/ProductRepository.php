@@ -50,6 +50,11 @@ class ProductRepository
         return $this->product->get();
     }
 
+    public function all()
+    {
+        return $this->product->get();
+    }
+
     /**
      * Search all the products
      *
@@ -73,7 +78,9 @@ class ProductRepository
 
     public function getFeatured()
     {
-        return $this->product->get();
+        return $this->product
+                    ->where('json->is_featured', true)
+                    ->get();
     }
 
     public function forCollection($collection, $parent = null)
@@ -138,6 +145,7 @@ class ProductRepository
         $json['is_displayed'] = ($values->get('is_displayed') == '1' ? true : false);
         $json['is_buyable'] = ($values->get('is_buyable') == '1' ? true : false);
         $json['is_download'] = ($values->get('is_download') == '1' ? true : false);
+        $json['is_featured'] = ($values->get('is_featured') == '1' ? true : false);
 
         $json['price']['unit']['amount'] = $values->get('price')['unit']['amount'];
         $json['price']['unit']['type'] = $values->get('price')['unit']['type'];
@@ -153,7 +161,7 @@ class ProductRepository
 
         $attributes = [];
         $langs = ChuckSite::getSupportedLocales();
-        if( count($values->get('attributes')) > 0 ) {
+        if( is_array($values->get('attributes')) && count($values->get('attributes')) > 0 ) {
             foreach ($values->get('attributes') as $attributeId) {
             	$attribute = $this->attributeRepository->getById($attributeId);
             	$selectedOptions = $values->get('attribute')[$attribute->id];
@@ -184,8 +192,8 @@ class ProductRepository
         $combinations = [];
         $totalQuantity = 0;
 
-        if( $values['combination_slugs'][0] !== null && count($values['combination_slugs']) > 0 && count($values->get('attributes')) > 0 ) {
-            if ( $values->get('attribute') !== null && count(array_values($values->get('attribute'))[0]) > 0 ) {
+        if( !is_null($values['combination_slugs'][0]) && count($values['combination_slugs']) > 0 && count($values->get('attributes')) > 0 ) {
+            if ( !is_null($values->get('attribute')) && count(array_values($values->get('attribute'))[0]) > 0 ) {
                 $q = 0;
                 foreach ($values->get('combination_slugs') as $combinationKey) {
                 	$combinations[$combinationKey] = [];
@@ -228,6 +236,28 @@ class ProductRepository
         }
         $json['combinations'] = $combinations;
 
+        $options = [];
+        if(is_array($values->option_key)) {
+            $countOptions = count($values->option_key);
+            for ($i=0; $i < $countOptions; $i++) { 
+                $options[$values->option_key[$i]]['value'] = $values->option_value[$i];
+            }
+        }
+        $json['options'] = $options;
+
+        $extras = [];
+        if(is_array($values->extra_name) && !is_null($values->extra_name[0])) {
+            $countExtras = count($values->extra_name);
+            for ($i=0; $i < $countExtras; $i++) { 
+                $extras[$values->extra_name[$i]]['name'] = $values->extra_name[$i];
+                $extras[$values->extra_name[$i]]['price'] = $values->extra_price[$i];
+                $extras[$values->extra_name[$i]]['maximum'] = $values->extra_maximum[$i];
+                $extras[$values->extra_name[$i]]['vat']['amount'] = config('chuckcms-module-ecommerce.vat.'.$values->extra_vat[$i].'.amount');
+                $extras[$values->extra_name[$i]]['vat']['type'] = config('chuckcms-module-ecommerce.vat.'.$values->extra_vat[$i].'.type');
+                $extras[$values->extra_name[$i]]['final'] = $values->extra_price_vat[$i];
+            }
+        }
+        $json['extras'] = $extras;
 
         $json['images']['image0']['url'] = $values->get('featured_image');
         $json['images']['image0']['alt'] = str_slug($values->get('slug'), '-');
@@ -294,6 +324,7 @@ class ProductRepository
         $json['is_displayed'] = ($values->get('is_displayed') == '1' ? true : false);
         $json['is_buyable'] = ($values->get('is_buyable') == '1' ? true : false);
         $json['is_download'] = ($values->get('is_download') == '1' ? true : false);
+        $json['is_featured'] = ($values->get('is_featured') == '1' ? true : false);
 
         $json['price']['unit']['amount'] = $values->get('price')['unit']['amount'];
         $json['price']['unit']['type'] = $values->get('price')['unit']['type'];
@@ -309,7 +340,7 @@ class ProductRepository
 
         $attributes = [];
         $langs = ChuckSite::getSupportedLocales();
-        if( is_array($values->get('attributes')) ) {
+        if( is_array($values->get('attributes')) && is_array($values->get('attributes')) ) {
             foreach ($values->get('attributes') as $attributeId) {
             	$attribute = $this->attributeRepository->getById($attributeId);
             	$selectedOptions = $values->get('attribute')[$attribute->id];
@@ -340,8 +371,8 @@ class ProductRepository
         $combinations = [];
         $totalQuantity = 0;
 
-        if( $values['combination_slugs'][0] !== null && count($values['combination_slugs']) > 0 && count($values->get('attributes')) > 0 ) {
-            if ( $values->get('attribute') !== null && count(array_values($values->get('attribute'))[0]) > 0 ) {
+        if( !is_null($values['combination_slugs'][0]) && count($values['combination_slugs']) > 0 && count($values->get('attributes')) > 0 ) {
+            if ( !is_null($values->get('attribute')) && count(array_values($values->get('attribute'))[0]) > 0 ) {
                 $q = 0;
                 foreach ($values->get('combination_slugs') as $combinationKey) {
                 	$combinations[$combinationKey] = [];
@@ -400,6 +431,19 @@ class ProductRepository
         }
         $json['options'] = $options;
 
+        $extras = [];
+        if(is_array($values->extra_name) && !is_null($values->extra_name[0])) {
+            $countExtras = count($values->extra_name);
+            for ($i=0; $i < $countExtras; $i++) { 
+                $extras[$values->extra_name[$i]]['name'] = $values->extra_name[$i];
+                $extras[$values->extra_name[$i]]['price'] = $values->extra_price[$i];
+                $extras[$values->extra_name[$i]]['maximum'] = $values->extra_maximum[$i];
+                $extras[$values->extra_name[$i]]['vat']['amount'] = config('chuckcms-module-ecommerce.vat.'.$values->extra_vat[$i].'.amount');
+                $extras[$values->extra_name[$i]]['vat']['type'] = config('chuckcms-module-ecommerce.vat.'.$values->extra_vat[$i].'.type');
+                $extras[$values->extra_name[$i]]['final'] = $values->extra_price_vat[$i];
+            }
+        }
+        $json['extras'] = $extras;
 
         $json['images']['image0']['url'] = $values->get('featured_image');
         $json['images']['image0']['alt'] = str_slug($values->get('slug'), '-');
@@ -642,17 +686,6 @@ class ProductRepository
         return false;
     }
 
-    public function priceObject(Repeater $product, $sku) 
-    {
-        if($product->json['code']['sku'] == $sku) {
-            return $product->json['price'];
-        }
-
-        $combination = $this->combinationForSKU($product, $sku);
-
-        return $combination['price'];
-    }
-
     public function lowestPrice(Repeater $product)
     {
         if ( count($product->json['combinations']) == 0 ) {
@@ -787,43 +820,44 @@ class ProductRepository
         return array_key_exists('dimensions', $product->json) ? (float)$product->json['dimensions']['weight'] : 0.00;
     }
 
-    public function getOptions(Repeater $product, $sku, $given_options)
+    public function getOptions(Repeater $product, $sku, $given_options = [])
     {
-        if($product->json['code']['sku'] == $sku) {
-            return array();
-        }
-        foreach ( $product->json['combinations'] as $combinationKey => $combination) {
-            if($combination['code']['sku'] == $sku) {
-                $key = $combinationKey;
-            }
-        }
-
-        $combination_attribute_keys = explode('__', $key);
         $options = [];
-        foreach($product->json['attributes'] as $attribute) {
-            foreach($attribute['values'] as $attributeKey => $attributeValue) {
-                if(in_array($attributeKey, $combination_attribute_keys)) {
-                    $options[$attribute['key']] = $attributeValue['display_name'][app()->getLocale()];
-                }
-            }
 
+        if ( !array_key_exists('options', $product->json)) {
+            return $options;
         }
 
-        if ( array_key_exists('options', $product->json)) {
-            if (is_array($given_options)) {
-                foreach($given_options as $given_option) {
-                    $optionKey = explode('%|%', $given_option)[0];
-                    $optionValue = explode('%|%', $given_option)[1];
-                    if ( array_key_exists($optionKey, $product->json['options'])) {
-                        $options[Str::slug($optionKey, '_')] = $optionValue;
+        $combination_attribute_keys = [];
+        if( $this->isCombination($product, $sku) ) {
+            $combination_attribute_keys = explode('__', $this->combinationKeyForSKU($product, $sku));
+
+            foreach($product->json['attributes'] as $attribute) {
+                foreach($attribute['values'] as $attributeKey => $attributeValue) { 
+                    if(in_array($attributeKey, $combination_attribute_keys)) {
+                        $options[$attribute['key']] = $attributeValue['display_name'][app()->getLocale()];
                     }
                 }
-            } elseif (is_a($given_options, 'Illuminate\Support\Collection')) {
-                foreach($given_options as $optionKey => $optionValue) {
-                    if ( array_key_exists($optionKey, $product->json['options'])) {
-                        $options[Str::slug($optionKey, '_')] = $optionValue;
-                    }
-                }
+            }
+        } 
+
+        if ( is_null($given_options) ) {
+            $given_options = [];
+        }
+
+        foreach($given_options as $key => $given_option) {
+            if (is_array($given_options)) { 
+                $optionKey = explode('%|%', $given_option)[0];
+                $optionValue = explode('%|%', $given_option)[1];
+            }
+
+            if (is_a($given_options, 'Illuminate\Support\Collection')) {
+                $optionKey = $key;
+                $optionValue = $given_option;
+            }
+
+            if ( array_key_exists($optionKey, $product->json['options'])) {
+                $options[Str::slug($optionKey, '_')] = $optionValue;
             }
         }
 
@@ -832,39 +866,150 @@ class ProductRepository
 
     public function getOptionsText(Repeater $product, $sku, $given_options = [])
     {
-        if($product->json['code']['sku'] == $sku) {
-            return null;
-        }
-        foreach ( $product->json['combinations'] as $combinationKey => $combination) {
-            if($combination['code']['sku'] == $sku) {
-                $key = $combinationKey;
-            }
+        $options = [];
+
+        if ( !array_key_exists('options', $product->json)) {
+            return $options;
         }
 
-        $combination_attribute_keys = explode('__', $key);
-        $options = [];
-        foreach($product->json['attributes'] as $attribute) {
-            foreach($attribute['values'] as $attributeKey => $attributeValue) {
-                if(in_array($attributeKey, $combination_attribute_keys)) {
-                    $options[] = $attribute['key'].': '.$attributeValue['display_name'][app()->getLocale()];
+        $combination_attribute_keys = [];
+        if( $this->isCombination($product, $sku) ) {
+            $combination_attribute_keys = explode('__', $this->combinationKeyForSKU($product, $sku));
+
+            foreach($product->json['attributes'] as $attribute) {
+                foreach($attribute['values'] as $attributeKey => $attributeValue) { 
+                    if(in_array($attributeKey, $combination_attribute_keys)) {
+                        $options[] = $attribute['key'].': '.$attributeValue['display_name'][app()->getLocale()];
+                    }
                 }
             }
+        } 
 
+        if ( is_null($given_options) ) {
+            $given_options = [];
         }
 
-        if ( array_key_exists('options', $product->json)) {
+        foreach($given_options as $key => $given_option) {
+            if (is_array($given_options)) { 
+                $optionKey = explode('%|%', $given_option)[0];
+                $optionValue = explode('%|%', $given_option)[1];
+            }
+
             if (is_a($given_options, 'Illuminate\Support\Collection')) {
-                foreach($given_options as $optionKey => $optionValue) {
-                    foreach($product->json['options'] as $poKey => $poValue) {
-                        if ($optionKey == Str::slug($poKey, '_')) {
-                            $options[] = $poKey.': '.$optionValue;
-                        }
-                    }
+                $optionKey = $key;
+                $optionValue = $given_option;
+            }
+
+            foreach($product->json['options'] as $poKey => $poValue) {
+                if ($optionKey == Str::slug($poKey, '_') || $optionKey == $poKey) {
+                    $options[] = $poKey.': '.$optionValue;
                 }
             }
         }
 
         return implode(', ', $options);
+    }
+
+    public function getExtras(Repeater $product, $sku, $given_extras = [])
+    {
+        $extras = [];
+
+        if ( !array_key_exists('extras', $product->json)) {
+            return $extras;
+        }
+
+        if ( is_null($given_extras) ) {
+            $given_extras = [];
+        }
+
+        foreach($given_extras as $key => $given_extra) {
+            if (is_array($given_extras)) { 
+                $extraKey = explode('%|%', $given_extra)[0];
+                $extraValue = explode('%|%', $given_extra)[1];
+            }
+
+            if (is_a($given_extras, 'Illuminate\Support\Collection')) {
+                $extraKey = $key;
+                $extraValue = $given_extra['qty'];
+            }
+            
+            if ( array_key_exists($extraKey, $product->json['extras']) && $extraValue > 0) {
+                $extras[$extraKey] = $product->json['extras'][$extraKey];
+                $extras[$extraKey]['qty'] = (int)$extraValue;
+            }
+        }
+
+        return $extras;
+    }
+
+    public function getExtrasText(Repeater $product, $sku, $given_extras = [])
+    {
+        $extras = [];
+        
+        if ( !array_key_exists('extras', $product->json)) {
+            return $extras;
+        }
+
+        if ( is_null($given_extras) ) {
+            $given_extras = [];
+        }
+
+        foreach($given_extras as $key => $given_extra) {
+            if (is_array($given_extras)) { 
+                $extraKey = explode('%|%', $given_extra)[0];
+                $extraValue = explode('%|%', $given_extra)[1];
+            }
+
+            if (is_a($given_extras, 'Illuminate\Support\Collection')) {
+                $extraKey = $key;
+                $extraValue = $given_extra['qty'];
+            }
+            
+            if ( array_key_exists($extraKey, $product->json['extras']) && $extraValue > 0) {
+                $extras[] = (int)$extraValue.'x '.$product->json['extras'][$extraKey]['name'].': '.ChuckEcommerce::formatPrice(((int)$extraValue * (float)$product->json['extras'][$extraKey]['final']));
+            }
+        }
+        
+
+        return implode(', ', $extras);
+    }
+
+    public function hasCollectionBySKU($collectionId, $sku)
+    {
+        $product = $this->sku($sku);
+        return $this->hasCollection($product, $collectionId);
+    }
+
+    public function hasCollection(Repeater $product, $collectionId)
+    {
+        if(!is_array($product->collection)) {
+            return false;
+        }
+
+        if(!in_array($collectionId, $product->collection)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public function hasBrandBySKU($brandId, $sku)
+    {
+        $product = $this->sku($sku);
+        return $this->hasBrand($product, $brandId);
+    }
+
+    public function hasBrand(Repeater $product, $brandId)
+    {
+        if(is_null($product->brand)) {
+            return false;
+        }
+
+        if($product->brand !== $brandId) {
+            return false;
+        }
+
+        return true;
     }
 
 }

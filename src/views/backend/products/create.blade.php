@@ -1,665 +1,531 @@
-@extends('chuckcms::backend.layouts.admin')
+@extends('chuckcms::backend.layouts.base')
 
 @section('content')
-<!-- START CONTAINER FLUID -->
-<div class=" container-fluid   container-fixed-lg">
-
-<!-- START card -->
-<form action="{{ route('dashboard.module.ecommerce.products.save') }}" method="POST">
-<div class="card card-transparent">
-  <div class="card-header ">
-    <div class="card-title">Maak een nieuw product
-    </div>
-  </div>
-
-<div class="card-block">
-  <div class="row">
-    <div class="col-lg-12">
-      <div class="card card-default">
-        <div class="card-block">
-          
-          <div class="form-group form-group-default required">
-            <label>Slug *</label>
-            <input type="text" class="form-control product_slug_input" placeholder="slug" id="product_slug" name="slug" required>
-          </div>
-
-          <div class="row">
-            <div class="col-sm-6">
-              <div class="form-group form-group-default">
-                <label>Productcode UPC</label>
-                <input type="text" class="form-control" placeholder="UPC Code" name="code[upc]">
-              </div>
-            </div>
-            <div class="col-sm-6">
-              <div class="form-group form-group-default">
-                <label>Productcode EAN</label>
-                <input type="text" class="form-control" placeholder="EAN Code" name="code[ean]">
-              </div>
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="col-sm-4">
-              <div class="form-group form-group-default input-group">
-                <div class="form-input-group">
-                  <label class="inline">Wordt weergegeven?</label>
-                </div>
-                <div class="input-group-addon bg-transparent h-c-50">
-                  <input type="hidden" name="is_displayed" value="0">
-                  <input type="checkbox" data-init-plugin="switchery" data-size="small" data-color="primary" value="1" name="is_displayed" />
-                </div>
-              </div>
-            </div>
-            <div class="col-sm-4">
-              <div class="form-group form-group-default input-group">
-                <div class="form-input-group">
-                  <label class="inline">Mag verkocht worden?</label>
-                </div>
-                <div class="input-group-addon bg-transparent h-c-50">
-                  <input type="hidden" name="is_buyable" value="0">
-                  <input type="checkbox" data-init-plugin="switchery" data-size="small" data-color="primary" value="1" name="is_buyable" />
-                </div>
-              </div>
-            </div>
-            <div class="col-sm-4">
-              <div class="form-group form-group-default input-group">
-                <div class="form-input-group">
-                  <label class="inline">Is virtueel product?</label>
-                </div>
-                <div class="input-group-addon bg-transparent h-c-50">
-                  <input type="hidden" name="is_download" value="0">
-                  <input type="checkbox" data-init-plugin="switchery" data-size="small" data-color="primary" value="1" name="is_download" />
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          <hr>
-          
-          <div class="row">
-            <div class="col-sm-6">
-              <div class="form-group form-group-default">
-                <label>Inkoopprijs</label>
-                <input type="text" data-a-dec="." data-a-sep="" data-m-dec="6" data-a-pad=true class="autonumeric form-control" name="price[wholesale]" value="0.000000" placeholder="Inkoopprijs">
-              </div>
-            </div>
-            <div class="col-sm-6">
-              <div class="form-group form-group-default required">
-                <label>Verkoopprijs *</label>
-                <input type="text" id="sale_price_ex_input" data-a-dec="." data-a-sep="" data-m-dec="6" data-a-pad=true class="autonumeric form-control" name="price[sale]" value="0.000000" placeholder="Verkoopprijs" required>
-              </div>
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="col-sm-6">
-              <div class="form-group form-group-default form-group-default-select2 required">
-                <label>Belasting (BTW) *</label>
-                <select class="full-width" id="tax-input" name="price[vat]" data-init-plugin="select2" data-minimum-results-for-search="Infinity" required>
-                  @foreach(config('chuckcms-module-ecommerce.vat') as $vatKey => $vatValue)
-                    <option value="{{ $vatKey }}" data-amount="{{ $vatValue['amount'] }}" @if($vatValue['default']) selected @endif>{{ $vatValue['type'] }}</option>
-                  @endforeach
-                </select>
-              </div>
-            </div>
-            <div class="col-sm-6">
-              <div class="form-group form-group-default required">
-                <label>Verkoopprijs met BTW *</label>
-                <input type="text" id="sale_price_in_input" data-a-dec="." data-a-sep="" data-m-dec="6" data-a-pad=true class="autonumeric form-control" name="price[final]" value="0.000000" placeholder="Verkoopprijs" required>
-              </div>
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="col-sm-6">
-              <div class="row">
-                <div class="col-sm-6">
-                  <div class="form-group form-group-default">
-                    <label>Eenheidsprijs</label>
-                    <input type="text" data-a-dec="." data-a-sep="" data-m-dec="6" data-a-pad=true class="autonumeric form-control" name="price[unit][amount]" value="0.000000">
-                  </div>
-                </div>
-                <div class="col-sm-6">
-                  <div class="form-group form-group-default">
-                    <label>Per</label>
-                    <input type="text" class="form-control" name="price[unit][type]">
-                  </div>
-                </div>
-              </div>
-              
-            </div>
-            <div class="col-sm-6">
-              <div class="form-group form-group-default">
-                <label>Kortingsprijs met BTW</label>
-                <input type="text" data-a-dec="." data-a-sep="" data-m-dec="6" data-a-pad=true class="autonumeric form-control" name="price[discount]" value="0.000000" placeholder="Kortingsprijs met BTW">
-              </div>
-            </div>
-          </div>
-
-          <hr>
-          
-          <div class="row">
-            <div class="col-sm-6">
-              <div class="form-group form-group-default form-group-default-select2 required">
-                <label>Collectie *</label>
-                <select class="full-width" name="collection" data-init-plugin="select2" data-minimum-results-for-search="5" data-placeholder="Selecteer een collectie" required>
-                  <option></option>
-                  @foreach($collections as $collection)
-                    <option value="{{ $collection->id }}">{{ $collection->json['name'] }} {{ $collections->where('id', $collection->json['parent'])->first() ? '('.$collections->where('id', $collection->json['parent'])->first()->json['name'].')' : '' }}</option>
-                  @endforeach
-                </select>
-              </div>
-            </div>
-            <div class="col-sm-6">
-              <div class="form-group form-group-default form-group-default-select2">
-                <label>Merk/Fabrikant *</label>
-                <select class="full-width" name="brand" data-init-plugin="select2" data-minimum-results-for-search="Infinity" data-placeholder="Selecteer een merk" data-allow-clear="true">
-                  <option></option>
-                  @foreach($brands as $brand)
-                    <option value="{{ $brand->id }}">{{ $brand->json['name'] }}</option>
-                  @endforeach
-                </select>
-              </div>
-            </div>
-          </div>
-
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="card-block">
-  <div class="row">
-    <div class="col-lg-12">
-      <div class="card card-default">
-        <div class="card-block">
-
-          <div class="row">
-            <div class="col-sm-12">
-              <div class="form-group required">
-                <label for="featured_image">Hoofdafbeelding</label>
-                <div class="input-group">
-                  <span class="input-group-btn">
-                    <a id="lfm" data-input="featured_image_input" data-preview="featured_image_holder" class="btn btn-primary img_lfm_link" style="color:#FFF">
-                      <i class="fa fa-picture-o"></i> Upload afbeelding
-                    </a>
-                  </span>
-                  <input id="featured_image_input" name="featured_image" class="img_lfm_input form-control" accept="image/x-png" type="text" required>
-                </div>
-                <img id="featured_image_holder" src="" style="margin-top:15px;max-height:100px;">
-              </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-sm-12">
-              <div class="form-group">
-                <label for="image">Afbeelding</label>
-                <div class="input-group">
-                  <span class="input-group-btn">
-                    <a id="lfm" data-input="image_input" data-preview="image_holder" class="btn btn-primary img_lfm_link" style="color:#FFF">
-                      <i class="fa fa-picture-o"></i> Upload afbeelding
-                    </a>
-                  </span>
-                  <input id="image_input" name="image[]" class="img_lfm_input form-control" accept="image/x-png" type="text">
-                </div>
-                <img id="image_holder" src="" style="margin-top:15px;max-height:100px;">
-              </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-sm-12">
-              <div class="form-group">
-                <label for="image">Afbeelding</label>
-                <div class="input-group">
-                  <span class="input-group-btn">
-                    <a id="lfm" data-input="image1_input" data-preview="image1_holder" class="btn btn-primary img_lfm_link" style="color:#FFF">
-                      <i class="fa fa-picture-o"></i> Upload afbeelding
-                    </a>
-                  </span>
-                  <input id="image1_input" name="image[]" class="img_lfm_input form-control" accept="image/x-png" type="text">
-                </div>
-                <img id="image1_holder" src="" style="margin-top:15px;max-height:100px;">
-              </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-sm-12">
-              <div class="form-group">
-                <label for="image">Afbeelding</label>
-                <div class="input-group">
-                  <span class="input-group-btn">
-                    <a id="lfm" data-input="image2_input" data-preview="image2_holder" class="btn btn-primary img_lfm_link" style="color:#FFF">
-                      <i class="fa fa-picture-o"></i> Upload afbeelding
-                    </a>
-                  </span>
-                  <input id="image2_input" name="image[]" class="img_lfm_input form-control" accept="image/x-png" type="text">
-                </div>
-                <img id="image2_holder" src="" style="margin-top:15px;max-height:100px;">
-              </div>
-            </div>
-          </div>
-
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="card-block">
-  <div class="row">
-    <div class="col-lg-12">
-      <div class="card card-default">
-        <div class="card-block attributes-combinations-block" data-langs="{{ ChuckSite::getSetting('lang') }}">
-
-          <div class="row">
-            <div class="col-sm-12">
-              <div class="form-group form-group-default form-group-default-select2">
-                <label>Attributen</label>
-                <select class="full-width" id="attributes_multi_select" name="attributes[]" data-init-plugin="select2" data-minimum-results-for-search="5" data-placeholder="Selecteer attributen" multiple="multiple">
-                  <option></option>
-                  @foreach($attributes as $attribute)
-                    <option value="{{ $attribute->id }}">{{ $attribute->json['name'] }} ({{ count($attribute->json['values']) }})</option>
-                  @endforeach
-                </select>
-              </div>
-            </div>
-          </div>
-          
-          <hr>
-          <label for="">Opties</label>
-          @foreach($attributes as $attribute)
-          <div class="row attribute-select-row" data-attribute="{{ $attribute->id }}" style="display:none;">
-            <div class="col-sm-12">
-              <div class="form-group form-group-default form-group-default-select2 required">
-                <label>Attribuut {{ $attribute->json['name'] }}</label>
-                <select class="full-width attribute-multi-select-input" name="attribute[{{ $attribute->id }}][]" data-attribute="{{ $attribute->id }}" data-init-plugin="select2" data-minimum-results-for-search="Infinity" data-placeholder="Selecteer attribuuts" data-allow-clear="true" multiple="multiple">
-                  <option></option>
-                  @foreach($attribute->json['values'] as $attributeKey => $attributeValue)
-                    <option value="{{ $attributeKey }}" data-type="{{ $attribute->json['name'] }}" data-name="{{ $attribute->json['name'] }} {{ $attributeValue['display_name'][config('app.locale')] }}"  data-langs="{{ ChuckSite::getSetting('lang') }}" @foreach(ChuckSite::getSupportedLocales() as $langKey => $langValue) data-name-{{ $langKey }}="{{ $attributeValue['display_name'][$langKey] }}" @endforeach >{{ $attributeValue['display_name'][config('app.locale')] }}</option>
-                  @endforeach
-                </select>
-              </div>
-            </div>
-          </div>
-          @endforeach
-
-          <hr>
-          <label for="">Combinaties</label>
-          <div class="row combination-row" data-combination-key="" style="display:none;d">
-            <div class="col-sm-4">
-              <div class="form-group form-group-default required">
-                <label>Combinatie Aantal</label>
-                <input type="text" data-v-min="0" data-v-max="999999" data-m-dec="0" data-a-pad=true class="autonumeric form-control combination_quantity_input" name="combinations[slug][quantity]" value="0">
-              </div>
-            </div>
-            <div class="col-sm-8">
-              <div class="form-group form-group-default required">
-                <label>Combinatie Naam </label>
-                <input type="text" class="form-control combination_name_input" value="" disabled>
-                @foreach(ChuckSite::getSupportedLocales() as $langKey => $langValue)
-                <input type="hidden" class="combination_display_name_{{ $langKey }}" name="combinations[slug][display_name][langKey]" value="">
-                @endforeach
-                <input type="hidden" class="combination_slug" name="combination_slugs[]" value="">
-              </div>
-            </div>
-          </div>
-
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="card-block quantity-row">
-  <div class="row">
-    <div class="col-lg-12">
-      <div class="card card-default">
-        <div class="card-block">
-          <div class="row">
-            <div class="col-sm-12">
-              <div class="form-group form-group-default required">
-                <label>Globaal Aantal</label>
-                <input type="text" data-v-min="0" data-v-max="999999" data-m-dec="0" data-a-pad=true class="autonumeric form-control quantity_input_global" name="quantity" value="0">
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="card card-transparent">
-  <div class="card-block">
+<div class="container">
     <div class="row">
-      <div class="col-md-12">
-        <div class="card card-transparent">
-          <!-- Nav tabs -->
-          <ul class="nav nav-tabs nav-tabs-linetriangle" data-init-reponsive-tabs="dropdownfx">
-            @foreach(ChuckSite::getSupportedLocales() as $langKey => $langValue)
-              <li class="nav-item">
-                <a href="#" @if($loop->iteration == 1) class="active" @endif data-toggle="tab" data-target="#tab_product_{{ $langKey }}"><span>{{ $langValue['name'] }} ({{ $langValue['native'] }})</span></a>
-              </li>
-            @endforeach
-          </ul>
-          <!-- Tab panes -->
-          <div class="tab-content">
-
-            @foreach(ChuckSite::getSupportedLocales() as $langKey => $langValue)
-            <div class="tab-pane fade show @if($loop->iteration == 1) active @endif" id="tab_product_{{ $langKey }}">
-                  <div class="form-group form-group-default required">
-                    <label>Titel</label>
-                    <input type="text" class="form-control" placeholder="Titel" name="title[{{ $langKey }}]" required>
-                  </div>
-                  
-                  <div class="form-group">
-                    <label>Korte Beschrijving</label>
-                    <div class="summernote-wrapper">
-                    <textarea name="description[short][{{ $langKey }}]" class="summernote-text-editor" placeholder="Korte Beschrijving"></textarea>
-                    </div>
-                  </div>
-                  
-                  <div class="form-group">
-                    <label>Lange Beschrijving</label>
-                    <div class="summernote-wrapper">
-                    <textarea name="description[long][{{ $langKey }}]" class="summernote-text-editor" placeholder="Lange Beschrijving"></textarea>
-                    </div>
-                  </div>
-                
-                  <div class="form-group form-group-default required">
-                    <label>Meta Titel</label>
-                    <input type="text" class="form-control" placeholder="Meta Titel" name="meta_title[{{ $langKey }}]" required>
-                  </div>
-                
-                  <div class="form-group form-group-default required">
-                    <label>Meta Beschrijving</label>
-                    <textarea class="form-control" name="meta_description[{{ $langKey }}]" placeholder="Meta Beschrijving" cols="30" rows="10" style="height:80px" required></textarea>
-                  </div>
-                
-                  <div class="form-group form-group-default required">
-                    <label>Meta Keywords (scheiden met komma)</label>
-                    <textarea class="form-control" name="meta_keywords[{{ $langKey }}]" placeholder="Meta Keywords (scheiden met komma)" cols="30" rows="10" style="height:80px" required></textarea>
-                  </div>
-                
-
-            </div>
-            @endforeach
-
-          </div>
-          <br>
-          <p class="pull-right">
-            <input type="hidden" name="_token" value="{{ Session::token() }}">
-            <button type="submit" name="create" class="btn btn-success btn-cons pull-right" value="1">Opslaan</button>
-            <a href="{{ route('dashboard.content.resources') }}" class="pull-right"><button type="button" class="btn btn-info btn-cons">Annuleren</button></a>
-          </p>
+        <div class="col-sm-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mt-3">
+                    <li class="breadcrumb-item"><a href="{{ route('dashboard.module.ecommerce.products.index') }}">Producten</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Maak Nieuw Product</li>
+                </ol>
+            </nav>
         </div>
-      </div>
     </div>
-  </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="my-3">
+                <ul class="nav nav-tabs justify-content-start" id="pageTab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link active" id="p_general-tab" data-toggle="tab" href="#p_general" role="tab" aria-controls="p_general" aria-selected="true">Algemeen</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link" id="p_prices-tab" data-toggle="tab" href="#p_prices" role="tab" aria-controls="p_prices" aria-selected="false">Prijzen</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link" id="p_associations-tab" data-toggle="tab" href="#p_associations" role="tab" aria-controls="p_associations" aria-selected="false">Associaties</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link" id="p_images-tab" data-toggle="tab" href="#p_images" role="tab" aria-controls="p_images" aria-selected="false">Afbeeldingen</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link" id="p_combinations-tab" data-toggle="tab" href="#p_combinations" role="tab" aria-controls="p_combinations" aria-selected="false">Combinaties</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link" id="p_options-tab" data-toggle="tab" href="#p_options" role="tab" aria-controls="p_options" aria-selected="false">Opties</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link" id="p_texts-tab" data-toggle="tab" href="#p_texts" role="tab" aria-controls="p_texts" aria-selected="false">Teksten</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link" id="p_dimensions-tab" data-toggle="tab" href="#p_dimensions" role="tab" aria-controls="p_dimensions" aria-selected="false">Dimensies</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <form action="{{ route('dashboard.module.ecommerce.products.save') }}" method="POST">
+        <div class="row tab-content bg-light shadow-sm rounded p-3 mb-3 mx-1" id="pageTabContent">
+            
+            <div class="col-sm-12 tab-pane fade show active" id="p_general" role="tabpanel" aria-labelledby="p_general-tab">
+              @include('chuckcms-module-ecommerce::backend.products.create._tab_general')
+            </div>
+
+
+            <div class="col-sm-12 tab-pane fade" id="p_prices" role="tabpanel" aria-labelledby="p_prices-tab">
+              @include('chuckcms-module-ecommerce::backend.products.create._tab_prices')
+            </div>
+
+
+            <div class="col-sm-12 tab-pane fade" id="p_associations" role="tabpanel" aria-labelledby="p_associations-tab">
+              @include('chuckcms-module-ecommerce::backend.products.create._tab_associations')
+            </div>
+
+            <div class="col-sm-12 tab-pane fade" id="p_images" role="tabpanel" aria-labelledby="p_images-tab">
+              @include('chuckcms-module-ecommerce::backend.products.create._tab_images')
+            </div>
+
+            <div class="col-sm-12 tab-pane fade" id="p_combinations" role="tabpanel" aria-labelledby="p_combinations-tab">
+              @include('chuckcms-module-ecommerce::backend.products.create._tab_combinations')
+            </div>
+
+            <div class="col-sm-12 tab-pane fade" id="p_options" role="tabpanel" aria-labelledby="p_options-tab">
+              @include('chuckcms-module-ecommerce::backend.products.create._tab_options')
+            </div>
+
+            <div class="col-sm-12 tab-pane fade" id="p_texts" role="tabpanel" aria-labelledby="p_texts-tab">
+              @include('chuckcms-module-ecommerce::backend.products.create._tab_texts')
+            </div>
+
+            <div class="col-sm-12 tab-pane fade" id="p_dimensions" role="tabpanel" aria-labelledby="p_dimensions-tab">
+              @include('chuckcms-module-ecommerce::backend.products.create._tab_dimensions')
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12 text-right">
+                <input type="hidden" name="_token" value="{{ Session::token() }}">
+                <button class="btn btn-outline-success" type="submit" name="create" value="1">Opslaan</button>
+            </div>
+        </div>
+    </form>
 </div>
-<!-- END card -->
-</form>
-</div>
-<!-- END CONTAINER FLUID -->
 @endsection
 
 @section('css')
-	<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
-  <link href="//cdn.chuck.be/assets/plugins/summernote/css/summernote.css" rel="stylesheet" media="screen">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
+<link href="//cdn.chuck.be/assets/plugins/summernote/css/summernote.css" rel="stylesheet" media="screen">
 @endsection
 
 @section('scripts')
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
-  <script src="{{ URL::to('vendor/laravel-filemanager/js/lfm.js') }}"></script>
-  <script src="//cdn.chuck.be/assets/plugins/jquery-autonumeric/autoNumeric.js"></script>
-  <script src="//cdn.chuck.be/assets/plugins/summernote/js/summernote.min.js"></script>
-	<script>
-		$( document ).ready(function() { 
-    init(); 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
+<script src="{{ URL::to('vendor/laravel-filemanager/js/lfm.js') }}"></script>
+<script src="//cdn.chuck.be/assets/plugins/jquery-autonumeric/autoNumeric.js"></script>
+<script src="//cdn.chuck.be/assets/plugins/summernote/js/summernote.min.js"></script>
 
-    function init() {
-			$(".product_slug_input").keyup(function(){
-			    var text = $(this).val();
-			    slug_text = text.toLowerCase().replace(/[^\w ]+/g,'-').replace(/ +/g,'-');
-			    $(".product_slug_input").val(slug_text);   
-			});
+<script>
+$(document).ready(function() {
+  toggleRemoveExtraButton(); 
+    
+  $( "#options_input_container" ).sortable({revert: true});
 
-      //Autonumeric plug-in - automatic addition of dollar signs,etc controlled by tag attributes
-      $('.autonumeric').autoNumeric('init');
+  $('body').on('click', '.remove_line_button', function() {
+      checker = $(this).parents('._input_container').find('._input_line').length;
+      if(checker > 1) {
+          $(this).parents('._input_line').remove();
+      } else {
+          $(this).parents('._input_line').addClass('d-none');
+          $(this).parents('._input_line').find('input').prop('disabled', true);
+      }
+  });
 
-      //init media manager inputs 
-      var domain = "{{ URL::to('dashboard/media')}}";
-      $('.img_lfm_link').filemanager('image', {prefix: domain});
+  $('body').on('click', '#new_option_button', function() {
+      $('#new_option_error').addClass('d-none');
+      if($('#new_option_key').val().length == 0 || $('#new_option_value').val().length == 0) {
+          $('#new_option_error').removeClass('d-none');
+          return;
+      }
 
-      $('.summernote-text-editor').summernote({
-        height: 150,
-        fontNames: ['Arial', 'Arial Black', 'Open Sans', 'Helvetica', 'Helvetica Neue', 'Lato'],
-        toolbar: [
-          // [groupName, [list of button]]
-          ['style', ['bold', 'italic', 'underline', 'clear']],
-          ['font', ['strikethrough', 'superscript', 'subscript']],
-          ['fontsize', ['fontsize']],
-          ['para', ['ul', 'ol', 'paragraph']],
-          ['height', ['height']]
-        ]
-      });
-
-      $("#sale_price_ex_input").keyup(function(){
-        var vat = parseFloat($('#tax-input').find(":selected").attr("data-amount"));
-        var exvat = parseFloat($(this).val());
-        var invat = (exvat + ((exvat / 100) * vat)).toFixed(6);
-        $("#sale_price_in_input").val(invat).change();
-      });
-
-      $("#tax-input").on('change', function() {
-        var vat = parseFloat($(this).find(":selected").attr("data-amount"));
-        var exvat = parseFloat($("#sale_price_ex_input").val());
-        var invat = (exvat + ((exvat / 100) * vat)).toFixed(6);
-        $("#sale_price_in_input").val(invat).change();
-      });
-
-      $("#sale_price_in_input").keyup(function(){
-        var vat = parseFloat('1.'+$('#tax-input').find(":selected").attr("data-amount"));
-        console.log(vat);
-        var invat = parseFloat($(this).val());
-        var exvat = (invat / vat).toFixed(6);
-        console.log(exvat);
-        $("#sale_price_ex_input").val(exvat).change();
-      });
-
-      $("#attributes_multi_select").on('change', function(){
-        var selectedAttributes = $(this).val();
-        $('.attribute-select-row').each(function() {
-          if( jQuery.inArray($(this).attr('data-attribute'), selectedAttributes) !== -1 ){
-            $(this).show();
-          } else {
-            $(this).hide();
-          }
-        });
-      });
-
-      $(".attribute-multi-select-input").on('change', function(){
-        //check if all attributes are filled
-        var selectedAttributes = $("#attributes_multi_select").val();
-        var totalCombinations = parseInt(1);
-        var attributesList = [];
-        var attributesFullList = [];
-        var isSelected = 0;
-
-        for (var i = selectedAttributes.length - 1; i >= 0; i--) {
-          if( $(".attribute-multi-select-input[data-attribute="+selectedAttributes[i]+"]").val() == null ){
-            break; //break off function as not all attributes are filled
-          } else {
-            isSelected++;
-            totalCombinations = totalCombinations * parseInt($(".attribute-multi-select-input[data-attribute="+selectedAttributes[i]+"]").val().length);
-
-            var selectedOptions = $(".attribute-multi-select-input[data-attribute="+selectedAttributes[i]+"]").find('option:selected');
-
-            attributesList[i] = [];
-            attributesFullList[i] = [];
-
-            selectedOptions.each(function(index) {
-              var langs = $(this).attr('data-langs').split(',');
-              var name = {};
-              for (var g = 0; g < langs.length; g++) {
-                name[langs[g]] =$(this).attr('data-type')+' '+$(this).attr('data-name-'+langs[g]);
-              };
-              console.log('name :: ', name);
-              attributesList[i][index] = {
-                'key':$(this).attr('value'),
-                'name':$(this).attr('data-name'),
-                'display_name':name
-              };
-              attributesFullList[i][index] = {
-                'key':$(this).attr('value'),
-                'name':$(this).attr('data-name'),
-                'display_name':name
-              };
-            });
-            
-          }
-        };
-
-
-        if(selectedAttributes.length == isSelected) {
-          var isAllSelected = true;
+      new_key = $('#new_option_key').val();
+      new_value = $('#new_option_value').val();
+      
+      if($('.option_input_line').length > 1) {
+          $('.option_input_line:first').clone().appendTo('.options_input_container');
+          $('.option_input_container').append('<hr>');
+      } else {
+        console.log('check 1');
+        if($('.option_input_line:first').hasClass('d-none')) {
+        console.log('check 2');
+          $('.option_input_line:first').removeClass('d-none');
+          $('.option_input_line:first').find('input').prop('disabled', false);
         } else {
-          var isAllSelected = false;
+        console.log('check 3');
+          $('.option_input_line:first').clone().appendTo('.options_input_container');
+          $('.option_input_container').append('<hr>');
         }
+          
+      }
+
+      $('.option_input_line:last').find('.option_key_input').attr('id', 'option_key_'+new_key);
+      $('.option_input_line:last').find('.option_key_input').val(new_key);
+      $('.option_input_line:last').find('.option_key_input').siblings('label').attr('for', 'option_key_'+new_key);
+
+      $('.option_input_line:last').find('.option_value_input').attr('id', 'option_value_'+new_key);
+      $('.option_input_line:last').find('.option_value_input').val(new_value);
+      $('.option_input_line:last').find('.option_value_input').siblings('label').attr('for', 'option_value_'+new_key);
+
+      
+
+      $('#new_option_key').val('');
+      $('#new_option_value').val('');
+  });
+
+  $('body').on('click', '.addExtraRowButton', function (event) {
+    event.preventDefault();
+    $('.extra_input_row:first').clone().appendTo('.extraInputContainer');
+
+    vardatainput = $('.extra_input_row:last').find('.img_lfm_link').attr('data-input');
+    vardatapreview = $('.extra_input_row:last').find('.img_lfm_link').attr('data-preview');
+
+    $('.extra_input_row:last').find('.img_lfm_link').attr('data-input', vardatainput+'_'+$('.extra_input_row').length);
+    $('.extra_input_row:last').find('.img_lfm_link').attr('data-preview', vardatapreview+'_'+$('.extra_input_row').length);
+    inputid = $('.extra_input_row:last').find('.img_lfm_input').attr('id');
+    $('.extra_input_row:last').find('.img_lfm_input').attr('id',inputid+'_'+$('.extra_input_row').length);
+    holderid = $('.extra_input_row:last').find('.img_lfm_holder').attr('id');
+    $('.extra_input_row:last').find('.img_lfm_holder').attr('id',holderid+'_'+$('.extra_input_row').length);
+
+    $('.extra_input_row:last').find("[data-auto-tax]").attr('data-auto-tax-group', $('.extra_input_row').length);
+
+    toggleRemoveExtraButton();
+
+    init();
+  });
+
+  $('body').on('click', '.removeExtraRowButton', function (event) {
+    event.preventDefault();
+    $(this).parents('.extra_input_row').remove();
+
+    toggleRemoveExtraButton();
+  });
+
+  function toggleRemoveExtraButton() {
+    if($('.extra_input_row').length > 1) {
+      $('.removeExtraRowButton').show();
+    } else {
+      $('.removeExtraRowButton').hide();
+    }
+  }
+
+  $("body").on('keyup', "[data-auto-tax][data-auto-tax-price]", function () {
+    let auto_tax_group = $(this).attr('data-auto-tax-group');
+    var vat = parseFloat($("[data-auto-tax][data-auto-tax-group='"+auto_tax_group+"'][data-auto-tax-vat]").find(":selected").attr("data-amount"));
+    var exvat = parseFloat($(this).val());
+    var invat = (exvat + ((exvat / 100) * vat)).toFixed(6);
+    $("[data-auto-tax][data-auto-tax-group='"+auto_tax_group+"'][data-auto-tax-final]").val(invat).change();
+  });
+
+  $("body").on('change', "[data-auto-tax][data-auto-tax-vat]", function() {
+    let auto_tax_group = $(this).attr('data-auto-tax-group');
+    var vat = parseFloat($(this).find(":selected").attr("data-amount"));
+    var exvat = parseFloat($("[data-auto-tax][data-auto-tax-group='"+auto_tax_group+"'][data-auto-tax-price]").val());
+    var invat = (exvat + ((exvat / 100) * vat)).toFixed(6);
+    $("[data-auto-tax][data-auto-tax-group='"+auto_tax_group+"'][data-auto-tax-final]").val(invat).change(); //maybe add a check to see which was last edited and then update the opposite input
+  });
+
+  $("body").on('keyup', "[data-auto-tax][data-auto-tax-final]", function () {
+    let auto_tax_group = $(this).attr('data-auto-tax-group');
+    var vat = parseFloat('1.'+$("[data-auto-tax][data-auto-tax-group='"+auto_tax_group+"'][data-auto-tax-vat]").find(":selected").attr("data-amount"));
+    var invat = parseFloat($(this).val());
+    var exvat = (invat / vat).toFixed(6);
+    $("[data-auto-tax][data-auto-tax-group='"+auto_tax_group+"'][data-auto-tax-price]").val(exvat).change();
+  });
 
 
-        if(isAllSelected == true){
-          $('.quantity-row').hide();
-          var finalCombinations = [];
+    $('body').on('change', '.boolean_checkbox_input', function() {
+        if($(this).is(':checked')) {
+            $(this).val(1);
+            $(this).parent('label').siblings('input').prop('disabled', true);
+        } else {
+            $(this).val(0);
+            $(this).parent('label').siblings('input').prop('disabled', false);
+        }
+    });
 
-          function cartesian(cartes) {
-              var r = [], arg = cartes, max = arg.length-1;
-              function helper(arr, i) {
-                  for (var j=0, l=arg[i].length; j<l; j++) {
-                      var a = arr.slice(0); // clone arr
-                      a.push(arg[i][j]);
-                      if (i==max)
-                          r.push(a);
-                      else
-                          helper(a, i+1);
-                  }
-              }
-              helper([], 0);
-              return r;
-          }
-          console.log('og og list ::  ', attributesList);
-          preFinalCombinationsList = cartesian(attributesList);
-          console.log('cartesian function :: ', preFinalCombinationsList);
-          console.log('original attributes :: ', attributesFullList);
+  init(); 
 
-          //$(".combination-row:not(:first)").remove();
-          for (var i = 0; i < totalCombinations; i++) {
-            // add/copy attributes data to combination - preFinalCombinationsList[i]
-            
-            var combinationKey = '';
-            var combinationName = '';
-            var combinationDisplayName = {};
-            var langs = $('.attributes-combinations-block:first').attr('data-langs').split(',');
+  function init() {
+    $(".product_slug_input").keyup(function(){
+        var text = $(this).val();
+        slug_text = text.toLowerCase().replace(/[^\w ]+/g,'-').replace(/ +/g,'-');
+        $(".product_slug_input").val(slug_text);   
+    });
 
-            for (var g = 0; g < preFinalCombinationsList[i].length; g++) {
+    //Autonumeric plug-in - automatic addition of dollar signs,etc controlled by tag attributes
+    $('.autonumeric').autoNumeric('init');
 
-              if(combinationKey == ''){
-                combinationKey = preFinalCombinationsList[i][g].key;
-                combinationName = preFinalCombinationsList[i][g].name;
-                for (var k = 0; k < langs.length; k++) {
-                  combinationDisplayName[langs[k]] = preFinalCombinationsList[i][g].display_name[langs[k]];
-                };
-                
-              } else {
-                combinationKey = combinationKey+'__'+preFinalCombinationsList[i][g].key;
-                combinationName = combinationName+' '+preFinalCombinationsList[i][g].name;
-                for (var k = 0; k < langs.length; k++) {
-                  combinationDisplayName[langs[k]] = combinationDisplayName[langs[k]]+' '+preFinalCombinationsList[i][g].display_name[langs[k]];
-                };
-              }
+    //init media manager inputs 
+    var domain = "{{ URL::to('dashboard/media')}}";
+    $('.img_lfm_link').filemanager('image', {prefix: domain});
 
+    $('.summernote-text-editor').summernote({
+      height: 150,
+      fontNames: ['Arial', 'Arial Black', 'Open Sans', 'Helvetica', 'Helvetica Neue', 'Lato'],
+      toolbar: [
+        // [groupName, [list of button]]
+        ['style', ['bold', 'italic', 'underline', 'clear']],
+        ['font', ['strikethrough', 'superscript', 'subscript']],
+        ['fontsize', ['fontsize']],
+        ['para', ['ul', 'ol', 'paragraph']],
+        ['height', ['height']]
+      ]
+    });
+
+    $("#sale_price_ex_input").keyup(function(){
+      var vat = parseFloat($('#tax-input').find(":selected").attr("data-amount"));
+      var exvat = parseFloat($(this).val());
+      var invat = (exvat + ((exvat / 100) * vat)).toFixed(6);
+      $("#sale_price_in_input").val(invat).change();
+    });
+
+    $("#tax-input").on('change', function() {
+      var vat = parseFloat($(this).find(":selected").attr("data-amount"));
+      var exvat = parseFloat($("#sale_price_ex_input").val());
+      var invat = (exvat + ((exvat / 100) * vat)).toFixed(6);
+      $("#sale_price_in_input").val(invat).change();
+    });
+
+    $("#sale_price_in_input").keyup(function(){
+      var vat = parseFloat('1.'+$('#tax-input').find(":selected").attr("data-amount"));
+      var invat = parseFloat($(this).val());
+      var exvat = (invat / vat).toFixed(6);
+      $("#sale_price_ex_input").val(exvat).change();
+    });
+
+
+    $(".sale_price_ex_input").keyup(function(){
+      var combi_slug = $(this).attr('data-combination-key');
+      var vat = parseFloat($('#tax-input').find(":selected").attr("data-amount"));
+      var exvat = parseFloat($(this).val());
+      var invat = (exvat + ((exvat / 100) * vat)).toFixed(6);
+      $(".sale_price_in_input[data-combination-key="+combi_slug+"]").val(invat).change();
+    });
+
+    $(".sale_price_in_input").keyup(function(){
+      var combi_slug = $(this).attr('data-combination-key');
+      var vat = parseFloat('1.'+$('#tax-input').find(":selected").attr("data-amount"));
+      var invat = parseFloat($(this).val());
+      var exvat = (invat / vat).toFixed(6);
+      $(".sale_price_ex_input[data-combination-key="+combi_slug+"]").val(exvat).change();
+    });
+
+
+
+    $("#attributes_multi_select").on('change', function(){
+      var selectedAttributes = $(this).val();
+      $('.attribute-select-row').each(function() {
+        if( jQuery.inArray($(this).attr('data-attribute'), selectedAttributes) !== -1 ){
+          $(this).show();
+        } else {
+          $(this).hide();
+        }
+      });
+    });
+
+    $(".attribute-multi-select-input").on('focusout', function(){
+      //check if all attributes are filled
+      var selectedAttributes = $("#attributes_multi_select").val();
+      var totalCombinations = parseInt(1);
+      var attributesList = [];
+      var attributesFullList = [];
+      var isSelected = 0;
+
+      for (var i = selectedAttributes.length - 1; i >= 0; i--) {
+        if( $(".attribute-multi-select-input[data-attribute="+selectedAttributes[i]+"]").val() == null ){
+          break; //break off function as not all attributes are filled
+        } else {
+          isSelected++;
+          totalCombinations = totalCombinations * parseInt($(".attribute-multi-select-input[data-attribute="+selectedAttributes[i]+"]").val().length);
+
+          var selectedOptions = $(".attribute-multi-select-input[data-attribute="+selectedAttributes[i]+"]").find('option:selected');
+
+          attributesList[i] = [];
+          attributesFullList[i] = [];
+
+          selectedOptions.each(function(index) {
+            var langs = $(this).attr('data-langs').split(',');
+            var name = {};
+            for (var g = 0; g < langs.length; g++) {
+              name[langs[g]] =$(this).attr('data-type')+' '+$(this).attr('data-name-'+langs[g]);
             };
+            attributesList[i][index] = {
+              'key':$(this).attr('value'),
+              'name':$(this).attr('data-name'),
+              'display_name':name
+            };
+            attributesFullList[i][index] = {
+              'key':$(this).attr('value'),
+              'name':$(this).attr('data-name'),
+              'display_name':name
+            };
+          });
+          
+        }
+      };
 
-            finalCombinations[i] = {'key':combinationKey,'name':combinationName,'display_name':combinationDisplayName};       
+
+      if(selectedAttributes.length == isSelected) {
+        var isAllSelected = true;
+      } else {
+        var isAllSelected = false;
+      }
+
+
+      if(isAllSelected == true){
+        $('.quantity-row').hide();
+        var finalCombinations = [];
+
+        function cartesian(cartes) {
+            var r = [], arg = cartes, max = arg.length-1;
+            function helper(arr, i) {
+                for (var j=0, l=arg[i].length; j<l; j++) {
+                    var a = arr.slice(0); // clone arr
+                    a.push(arg[i][j]);
+                    if (i==max)
+                        r.push(a);
+                    else
+                        helper(a, i+1);
+                }
+            }
+            helper([], 0);
+            return r;
+        }
+        //console.log('og og list ::  ', attributesList);
+        preFinalCombinationsList = cartesian(attributesList);
+        //console.log('cartesian function :: ', preFinalCombinationsList);
+        //console.log('original attributes :: ', attributesFullList);
+
+        //$(".combination-row:not(:first)").remove();
+        for (var i = 0; i < totalCombinations; i++) {
+          // add/copy attributes data to combination - preFinalCombinationsList[i]
+          
+          var combinationKey = '';
+          var combinationName = '';
+          var combinationDisplayName = {};
+          var langs = $('.attributes-combinations-block:first').attr('data-langs').split(',');
+
+          for (var g = 0; g < preFinalCombinationsList[i].length; g++) {
+
+            if(combinationKey == ''){
+              combinationKey = preFinalCombinationsList[i][g].key;
+              combinationName = preFinalCombinationsList[i][g].name;
+              for (var k = 0; k < langs.length; k++) {
+                combinationDisplayName[langs[k]] = preFinalCombinationsList[i][g].display_name[langs[k]];
+              };
+              
+            } else {
+              combinationKey = combinationKey+'__'+preFinalCombinationsList[i][g].key;
+              combinationName = combinationName+' '+preFinalCombinationsList[i][g].name;
+              for (var k = 0; k < langs.length; k++) {
+                combinationDisplayName[langs[k]] = combinationDisplayName[langs[k]]+' '+preFinalCombinationsList[i][g].display_name[langs[k]];
+              };
+            }
+
           };
 
-          
-          if($('.combination-row').length == 1) { // only 1 row => so no previous combinations...
-            console.log('is this a check ?');
-            for (var i = 0; i < finalCombinations.length; i++) {
-              if(i == 0){
-                $('.combination-row:first').show();
-                $('.combination-row:first').attr('data-combination-key',finalCombinations[i].key);
-                $('.combination-row:first').find('.combination_name_input').attr('value', finalCombinations[i].name);
-                //change name attributes of inputs
-              } else if(i > 0) {
-                $('.combination-row:first').clone().appendTo('.attributes-combinations-block');
-                $('.combination-row:last').attr('data-combination-key',finalCombinations[i].key);
-                $('.combination-row:last').find('.combination_name_input').attr('value', finalCombinations[i].name);
-                //change name attributes of inputs
-              }
-            };
-          } else {
-            console.log(' second check bruhh ');
-            $('.combination-row').addClass('old-combination-row');
-            for (var i = 0; i < finalCombinations.length; i++) {
-              //keep combinations that are present, remove others and add remaining new combinations
+          finalCombinations[i] = {'key':combinationKey,'name':combinationName,'display_name':combinationDisplayName};       
+        };
+
+        
+        if($('.combination-row').length == 1) { // only 1 row => so no previous combinations...
+          for (var i = 0; i < finalCombinations.length; i++) {
+            if(i == 0){
+              $('.combination-row:first').show();
+              $('.combination-row:first').attr('data-combination-key',finalCombinations[i].key);
+              $('.combination-row:first').find('.combination_name_input').attr('value', finalCombinations[i].name);
+              //change name attributes of inputs
+            } else if(i > 0) {
+              $('.combination-row:first').clone().appendTo('.attributes-combinations-block');
+              $('.combination-row:last').attr('data-combination-key',finalCombinations[i].key);
+              $('.combination-row:last').find('.combination_name_input').attr('value', finalCombinations[i].name);
+              //change name attributes of inputs
+            }
+          };
+        } else { // there are previous combinations
+          $('.combination-row').addClass('old-combination-row');
+          for (var i = 0; i < finalCombinations.length; i++) {
+            //keep combinations that are present, remove others and add remaining new combinations
+            
               
-                
-                
-                if($('.combination-row[data-combination-key="'+finalCombinations[i].key+'"]').length == 0){
-                  var oldQuantity = '0';
-                } else {
-                  var oldQuantity = $('.old-combination-row[data-combination-key="'+finalCombinations[i].key+'"]').find('.combination_quantity_input').val();
-                  console.log('ahja :: ', $('.combination-row[data-combination-key="'+finalCombinations[i].key+'"]').find('.combination_quantity_input').val());
-                }
+              
+              if($('.combination-row[data-combination-key="'+finalCombinations[i].key+'"]').length == 0){
+                var oldQuantity = '0';
+                var oldPriceSale = '0.000000';
+                var oldPriceFinal = '0.000000';
+                var oldPriceDiscount = '0.000000';
+                var oldWidth = '0,00';
+                var oldHeight = '0,00';
+                var oldDepth = '0,00';
+                var oldWeight = '0,000';
+              } else {
+                var oldQuantity = $('.old-combination-row[data-combination-key="'+finalCombinations[i].key+'"]').find('.combination_quantity_input').val();
+                var oldPriceSale = $('.old-combination-row[data-combination-key="'+finalCombinations[i].key+'"]').find('.combination_price_sale_input').val();
+                var oldPriceFinal = $('.old-combination-row[data-combination-key="'+finalCombinations[i].key+'"]').find('.combination_price_final_input').val();
+                var oldPriceDiscount = $('.old-combination-row[data-combination-key="'+finalCombinations[i].key+'"]').find('.combination_price_discount_input').val();
 
-                console.log('da old quantity :: ', oldQuantity);
+                var oldWidth = $('.old-combination-row[data-combination-key="'+finalCombinations[i].key+'"]').find('.combination_width_input').val();
+                var oldHeight = $('.old-combination-row[data-combination-key="'+finalCombinations[i].key+'"]').find('.combination_height_input').val();
+                var oldDepth = $('.old-combination-row[data-combination-key="'+finalCombinations[i].key+'"]').find('.combination_depth_input').val();
+                var oldWeight = $('.old-combination-row[data-combination-key="'+finalCombinations[i].key+'"]').find('.combination_weight_input').val();
+              }
 
-                $('.combination-row:first').clone().appendTo('.attributes-combinations-block');
-                $('.combination-row:last').removeClass('old-combination-row');
-                $('.combination-row:last').attr('data-combination-key',finalCombinations[i].key);
-                
-                $('.combination-row:last').find('.combination_quantity_input').val(oldQuantity);
-                $('.combination-row:last').find('.combination_quantity_input').attr('name', 'combinations['+finalCombinations[i].key+'][quantity]');
+              console.log('da old quantity :: ', oldQuantity);
 
-                $('.combination-row:last').find('.combination_name_input').attr('value', finalCombinations[i].name);
-                
-                for (var k = 0; k < langs.length; k++) {
-                  $('.combination-row:last').find('.combination_display_name_'+langs[k]).attr('name', 'combinations['+finalCombinations[i].key+'][display_name]['+langs[k]+']');
-                  $('.combination-row:last').find('.combination_display_name_'+langs[k]).attr('value', finalCombinations[i].display_name[langs[k]]);
-                };
-                $('.combination-row:last').find('input.combination_slug').attr('value', finalCombinations[i].key);
+              $('.combination-row:first').clone().appendTo('.attributes-combinations-block');
+              $('.combination-row:last').removeClass('old-combination-row');
+              $('.combination-row:last').attr('data-combination-key',finalCombinations[i].key);
+              
+              $('.combination-row:last').find('.combination_quantity_input').val(oldQuantity);
+              $('.combination-row:last').find('.combination_quantity_input').attr('name', 'combinations['+finalCombinations[i].key+'][quantity]');
 
-                $('.combination-row:last').show();
-                
-            };
-            $('.old-combination-row').remove();
-          }
-          
 
-          console.log('combinatieLijst :: ', finalCombinations);
 
-          init();
 
-        } else {
-          //remove current combination rows / hide will cause fields to be submitted...
-          //$('.combination-row').hide();
-          $('.combination-row:not(:first)').remove();
-          $('.combination-row:first').attr('data-combination-key', '');
-          $('.combination-row:first').find('.combination_quantity_input').val('0');
-          $('.combination-row:first').hide();
-          $('.quantity-row').show();
+              $('.combination-row:last').find('.combination_price_sale_input').val(oldPriceSale);
+              $('.combination-row:last').find('.combination_price_sale_input').attr('name', 'combinations['+finalCombinations[i].key+'][price][sale]');
+              $('.combination-row:last').find('.combination_price_sale_input').attr('data-combination-key', finalCombinations[i].key);
 
-          init();
+              $('.combination-row:last').find('.combination_price_final_input').val(oldPriceFinal);
+              $('.combination-row:last').find('.combination_price_final_input').attr('name', 'combinations['+finalCombinations[i].key+'][price][final]');
+              $('.combination-row:last').find('.combination_price_final_input').attr('data-combination-key', finalCombinations[i].key);
+
+              $('.combination-row:last').find('.combination_price_discount_input').val(oldPriceDiscount);
+              $('.combination-row:last').find('.combination_price_discount_input').attr('name', 'combinations['+finalCombinations[i].key+'][price][discount]');
+
+
+              $('.combination-row:last').find('.combination_width_input').val(oldWidth);
+              $('.combination-row:last').find('.combination_width_input').attr('name', 'combinations['+finalCombinations[i].key+'][dimensions][width]');
+              $('.combination-row:last').find('.combination_height_input').val(oldHeight);
+              $('.combination-row:last').find('.combination_height_input').attr('name', 'combinations['+finalCombinations[i].key+'][dimensions][height]');
+              $('.combination-row:last').find('.combination_depth_input').val(oldDepth);
+              $('.combination-row:last').find('.combination_depth_input').attr('name', 'combinations['+finalCombinations[i].key+'][dimensions][depth]');
+              $('.combination-row:last').find('.combination_weight_input').val(oldWeight);
+              $('.combination-row:last').find('.combination_weight_input').attr('name', 'combinations['+finalCombinations[i].key+'][dimensions][weight]');
+
+
+
+
+              $('.combination-row:last').find('.combination_name_input').attr('value', finalCombinations[i].name);
+              
+              for (var k = 0; k < langs.length; k++) {
+                $('.combination-row:last').find('.combination_display_name_'+langs[k]).attr('name', 'combinations['+finalCombinations[i].key+'][display_name]['+langs[k]+']');
+                $('.combination-row:last').find('.combination_display_name_'+langs[k]).attr('value', finalCombinations[i].display_name[langs[k]]);
+              };
+              $('.combination-row:last').find('input.combination_slug').attr('value', finalCombinations[i].key);
+
+              $('.combination-row:last').show();
+              
+          };
+          $('.old-combination-row').remove();
         }
-      });
 
-    }
+        //console.log('combinatieLijst :: ', finalCombinations);
 
+        init();
 
-			
-		});
-	</script>
+      } else {
+        //remove current combination rows / hide will cause fields to be submitted...
+        //$('.combination-row').hide();
+        $('.combination-row:not(:first)').remove();
+        $('.combination-row:first').attr('data-combination-key', '');
+        $('.combination-row:first').find('.combination_quantity_input').val('0');
+        $('.combination-row:first').hide();
+        $('.quantity-row').show();
+
+        init();
+      }
+    });
+
+  }
+    
+  });
+</script>
 @endsection
