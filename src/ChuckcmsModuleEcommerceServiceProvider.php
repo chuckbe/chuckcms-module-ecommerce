@@ -26,8 +26,11 @@ class ChuckcmsModuleEcommerceServiceProvider extends ServiceProvider
         $this->publishes([__DIR__.'/resources' => public_path('chuckbe/chuckcms-module-ecommerce'),
         ], 'chuckcms-module-ecommerce-public');
 
-        $this->publishes([__DIR__ . '/../config/chuckcms-module-ecommerce.php' => config_path('chuckcms-module-ecommerce.php'),
-        ], 'chuckcms-module-ecommerce-config');
+        $this->publishes(
+            [
+                __DIR__ . '/../config/chuckcms-module-ecommerce.php' => config_path('chuckcms-module-ecommerce.php'),
+                __DIR__ . '/../config/cart.php' => config_path('cart.php'),
+            ], 'chuckcms-module-ecommerce-config');
 
         if ($this->app->runningInConsole()) {
             $this->commands([
@@ -54,6 +57,7 @@ class ChuckcmsModuleEcommerceServiceProvider extends ServiceProvider
         $this->app->register('Chuckbe\ChuckcmsModuleEcommerce\Providers\ChuckCustomerServiceProvider');
         $this->app->register('Chuckbe\ChuckcmsModuleEcommerce\Providers\ChuckProductServiceProvider');
         $this->app->register('Chuckbe\ChuckcmsModuleEcommerce\Providers\ChuckEventServiceProvider');
+        $this->app->register('Chuckbe\ChuckcmsModuleEcommerce\Providers\ChuckCartServiceProvider');
 
         $loader = \Illuminate\Foundation\AliasLoader::getInstance();
 
@@ -61,7 +65,9 @@ class ChuckcmsModuleEcommerceServiceProvider extends ServiceProvider
         $loader->alias('ChuckCollection', 'Chuckbe\ChuckcmsModuleEcommerce\Facades\Collection');
         $loader->alias('ChuckCustomer', 'Chuckbe\ChuckcmsModuleEcommerce\Facades\Customer');
         $loader->alias('ChuckProduct', 'Chuckbe\ChuckcmsModuleEcommerce\Facades\Product');
+        $loader->alias('ChuckCart', 'Chuckbe\ChuckcmsModuleEcommerce\Facades\Cart');
 
         $this->mergeConfigFrom(__DIR__ . '/../config/chuckcms-module-ecommerce.php', 'chuckcms-module-ecommerce');
+        $this->mergeConfigFrom(__DIR__ . '/../config/cart.php', 'cart');
     }
 }
