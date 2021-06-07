@@ -31,39 +31,35 @@
         			<thead>
         				<tr>
         					<th scope="col">#</th>
-        					<th scope="col">Titel</th>
-        					<th scope="col">Collectie</th>
-        					<th scope="col" class="pr-5">Prijs</th>
-        					<th scope="col">Status</th>
-        					<th scope="col">Hvl</th>
+        					<th scope="col">Naam</th>
+        					<th scope="col">Code</th>
+        					<th scope="col">Type</th>
         					<th scope="col" style="min-width:170px">Acties</th>
         				</tr>
         			</thead>
         			<tbody>
-        				{{-- 
-        				@foreach($products as $product)
-        				<tr class="product_line" data-id="{{ $product->id }}">
-        					<th scope="row">{{ $product->id }}</th>
-        					<td>{{ $product->json['title'][ChuckSite::getFeaturedLocale()] }}</td>
-        					<td>{{ is_null(ChuckProduct::collection($product)) ? '' : ChuckProduct::collection($product)->json['name']}}</td>
-        					<td>{{ChuckProduct::lowestPrice($product)}}</td>
-        					<td class="text-center">{!!ChuckProduct::isBuyable($product) ? '✓' : '✕'!!}</td>
-        					<td>{{ChuckProduct::quantity($product, ChuckProduct::defaultSku($product)) }}</td>
+        				
+        				@foreach($discounts as $discount)
+        				<tr class="discount_line" data-id="{{ $discount->id }}">
+        					<th scope="row">{{ $discount->id }}</th>
+                            <td>{{ $discount->json['name'] }}</td>
+                            <td>{{ $discount->json['code'] }}</td>
+        					<td class="text-center">{!!'-'.$discount->value.($discount->type == 'percentage' ? '%' : '€')!!}</td>
         					<td>
         						@can('edit forms')
-					    		<a href="{{ route('dashboard.module.ecommerce.products.edit', ['product' => $product->id]) }}" class="btn btn-sm btn-outline-secondary rounded d-inline-block">
+					    		<a href="{{ route('dashboard.module.ecommerce.discounts.edit', ['discount' => $discount->id]) }}" class="btn btn-sm btn-outline-secondary rounded d-inline-block">
 					    			<i class="fa fa-pen"></i> edit 
 					    		</a>
 					    		@endcan
 					    		@can('delete forms')
-					    		<a href="#" class="btn btn-sm btn-outline-danger rounded d-inline-block form_delete" data-id="{{ $product->id }}">
+					    		<a href="#" class="btn btn-sm btn-outline-danger rounded d-inline-block discount_delete" data-id="{{ $discount->id }}">
 					    			<i class="fa fa-trash"></i> delete 
 					    		</a>
 					    		@endcan
         					</td>
         				</tr>
         				@endforeach
-        				 --}}
+        				
         			</tbody>
         		</table>
         	</div>
@@ -80,8 +76,8 @@
 <script src="https://cdn.chuck.be/assets/plugins/sweetalert2.all.js"></script>
 <script>
 $( document ).ready(function (){
-	$('.product_delete').each(function(){
-		var form_id = $(this).attr("data-id");
+	$('.discount_delete').each(function(){
+		var discount_id = $(this).attr("data-id");
 		var token = '{{ Session::token() }}';
 	  	$(this).click(function (event) {
 	  		event.preventDefault();
@@ -97,15 +93,15 @@ $( document ).ready(function (){
 			  	if (result.value) { 
 			  		$.ajax({
                         method: 'POST',
-                        url: "{{ route('dashboard.forms.delete') }}",
+                        url: "{{ route('dashboard.module.ecommerce.discounts.delete') }}",
                         data: { 
-                        	form_id: form_id, 
+                        	discount_id: discount_id, 
                         	_token: token
                         }
                     }).done(function (data) {
-                    	if(data == 'success'){
-                    		$(".product_line[data-id='"+product_id+"']").first().remove();
-                    		swal('Deleted!','The product has been deleted.','success')
+                    	if(data.status == 'success'){
+                    		$(".discount_line[data-id='"+discount_id+"']").first().remove();
+                    		swal('Deleted!','The discount has been deleted.','success')
                     	} else {
                     		swal('Oops!','Something went wrong...','danger')
                     	}

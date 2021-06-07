@@ -7,7 +7,7 @@
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb mt-3">
                     <li class="breadcrumb-item"><a href="{{ route('dashboard.module.ecommerce.discounts.index') }}">Kortingen & Coupons</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Nieuwe Korting</li>
+                    <li class="breadcrumb-item active" aria-current="page">Korting Bewerken</li>
                 </ol>
             </nav>
         </div>
@@ -33,24 +33,25 @@
         <div class="row tab-content bg-light shadow-sm rounded p-3 mb-3 mx-1" id="pageTabContent">
             
             <div class="col-sm-12 tab-pane fade show active" id="d_general" role="tabpanel" aria-labelledby="d_general-tab">
-              @include('chuckcms-module-ecommerce::backend.discounts.create._tab_general')
+              @include('chuckcms-module-ecommerce::backend.discounts.edit._tab_general')
             </div>
 
 
             <div class="col-sm-12 tab-pane fade" id="d_conditions" role="tabpanel" aria-labelledby="d_conditions-tab">
-              @include('chuckcms-module-ecommerce::backend.discounts.create._tab_conditions')
+              @include('chuckcms-module-ecommerce::backend.discounts.edit._tab_conditions')
             </div>
 
 
             <div class="col-sm-12 tab-pane fade" id="d_actions" role="tabpanel" aria-labelledby="d_actions-tab">
-              @include('chuckcms-module-ecommerce::backend.discounts.create._tab_actions')  
+              @include('chuckcms-module-ecommerce::backend.discounts.edit._tab_actions')  
             </div>
 
         </div>
         <div class="row">
             <div class="col-sm-12 text-right">
                 <input type="hidden" name="_token" value="{{ Session::token() }}">
-                <button class="btn btn-outline-success" value="1" name="create" type="submit">Aanmaken</button>
+                <input type="hidden" name="id" value="{{ $discount->id }}">
+                <button class="btn btn-outline-success" value="1" name="update" type="submit">Bewerken</button>
             </div>
         </div>
     </form>
@@ -58,7 +59,7 @@
 @endsection
 
 @section('css')
-	<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
   <link href="//cdn.chuck.be/assets/plugins/summernote/css/summernote.css" rel="stylesheet" media="screen">
 @endsection
 
@@ -132,7 +133,7 @@ console.log('new type and value : ',new_type,' - ', new_value);
 </script>
 
 <script>
-	$( document ).ready(function() { 
+    $( document ).ready(function() { 
 
     $('body').on('change', '.boolean_checkbox_input', function() {
         if($(this).is(':checked')) {
@@ -147,11 +148,11 @@ console.log('new type and value : ',new_type,' - ', new_value);
   init(); 
 
   function init() {
-		$(".product_slug_input").keyup(function(){
-		    var text = $(this).val();
-		    slug_text = text.toLowerCase().replace(/[^\w ]+/g,'-').replace(/ +/g,'-');
-		    $(".product_slug_input").val(slug_text);   
-		});
+        $(".product_slug_input").keyup(function(){
+            var text = $(this).val();
+            slug_text = text.toLowerCase().replace(/[^\w ]+/g,'-').replace(/ +/g,'-');
+            $(".product_slug_input").val(slug_text);   
+        });
 
     //Autonumeric plug-in - automatic addition of dollar signs,etc controlled by tag attributes
     $('.autonumeric').autoNumeric('init');
@@ -174,7 +175,7 @@ console.log('new type and value : ',new_type,' - ', new_value);
     });
 
   }
-		
-	});
+        
+    });
 </script>
 @endsection
