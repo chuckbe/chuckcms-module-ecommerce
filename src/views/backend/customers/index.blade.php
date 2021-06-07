@@ -22,7 +22,7 @@
         </div>
     </div>
     <div class="row bg-light shadow-sm rounded py-3 mb-3 mx-1">
-    	<div class="col-sm-12 text-right">
+    	<div class="col-sm-12 text-right d-none">
     		<a href="{{ route('dashboard.module.ecommerce.products.create') }}" class="btn btn-sm btn-outline-success">Nieuwe Klant</a>
     	</div>
         <div class="col-sm-12 my-3">
@@ -43,7 +43,7 @@
 						<tr class="customer_line" data-id="{{ $customer->id }}">
 							<td class="v-align-middle semi-bold">{{ $customer->id }}</td>
 					    	<td class="v-align-middle semi-bold">{{ $customer->surname.' '.$customer->name }}  <br> <a href="mailto:{{ $customer->email }}">{{ $customer->email }}</a> <br> @if(!is_null($customer->tel)) <a href="tel:{{ $customer->tel }}">{{ $customer->tel }}</a> <br> @endif</td>
-					    	<td class="v-align-middle">{{ array_key_exists('address', $customer->json) ? $customer->json['address']['billing']['street'] .' '. $customer->json['address']['billing']['street'] .', '. $customer->json['address']['billing']['postalcode'] .' '. $customer->json['address']['billing']['city'] : '' }} </td>
+					    	<td class="v-align-middle">{{ array_key_exists('address', $customer->json) ? $customer->json['address']['billing']['street'] .' '. $customer->json['address']['billing']['housenumber'] .', '. $customer->json['address']['billing']['postalcode'] .' '. $customer->json['address']['billing']['city'] : '' }} </td>
 					    	<td class="v-align-middle">{{ array_key_exists('address', $customer->json) ? $customer->json['address']['billing']['country'] : '' }}</td>
 					    	<td class="v-align-middle semi-bold">
 								<span class="badge badge-info">{{ array_key_exists('group', $customer->json) ? ChuckEcommerce::getSetting('customer.groups.'.$customer->json['group'].'.name') : ChuckEcommerce::getSetting('customer.groups.'.ChuckEcommerce::getDefaultGroup().'.name') }}</span>

@@ -29,6 +29,11 @@ class CustomerRepository
         return $this->customer->get();
     }
 
+    public function findByUserId($user_id)
+    {
+        $this->customer->where('user_id', $user_id)->first();
+    }
+
     public function createFromUser($user, $request)
     {
         $json = [];
