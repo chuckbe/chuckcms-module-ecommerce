@@ -279,6 +279,99 @@
         </div>
       </div>
       <br><br>
+    @if(array_key_exists('_price', array_values($order->json['products'])[0]))
+      <table border="0" cellspacing="0" cellpadding="0">
+        <thead>
+        <tr>
+          <th class="no">#</th>
+          <th class="desc">BESCHRIJVING</th>
+          <th class="unit">PRIJS</th>
+          <th class="qty">HVL.</th>
+          @if($order->hasDiscount)
+          <th class="qty">NETTO</th>
+          <th class="qty">KORTING</th>
+          @endif
+          <th class="unit">BELASTBAAR</th>
+          <th class="total">SUBTOTAAL</th>
+        </tr>
+        </thead>
+
+
+        <tbody>
+            @foreach($order->json['products'] as $sku => $product)
+            <tr>
+              <td class="no">{{ $loop->index + 1 }}</td>
+              <td class="desc">
+                <h3 style="color:#000;">{{ $product['title'] }}</h3>
+                <span class="beschrijving">{{ $product['options_text'] }}  </span>
+                @if( isset($product['extras']) && count($product['extras']) > 0 )
+                @foreach($product['extras'] as $eKey => $eValue)
+                {!! ($loop->first ? '<br>' : '').$eValue['qty'].'x '.$eKey.': '.ChuckEcommerce::formatPrice((float)$eValue['final'] * (int)$eValue['qty']) !!}{!! !$loop->last ? '<br>' : '' !!}
+                @endforeach 
+                @endif
+              </td>
+              <td class="unit">{{ ChuckEcommerce::formatPrice($product['_price']['_unit']) }}</td>
+              <td class="qty">{{ $product['quantity'] }}</td>
+              @if($order->hasDiscount)
+              <td class="qty">{{ ChuckEcommerce::formatPrice($product['_price']['_total']) }}</td>
+              <td class="qty">-{{ ChuckEcommerce::formatPrice(($product['_price']['_discount'] ?? 0)) }}</td>
+              @endif
+              <td class="unit">
+                <small>
+                  @foreach($product['_price']['taxes'] as $taxes)
+                  {!! $loop->first ? '' : '<br>' !!}{{ ChuckEcommerce::formatPrice($taxes['taxable']) }}<sup>{{ (int)$taxes['rate'] }}%</sup>
+                  @endforeach
+                </small></td>
+              
+              <td class="total">{{ ChuckEcommerce::formatPrice($product['_price']['_final']) }}</td>
+            </tr>
+            @endforeach
+        </tbody>
+        
+        <tfoot class="page-break">
+
+          <tr>  
+            <td colspan="{{ $order->hasDiscount ? '3' : '2' }}"></td>
+            <td colspan="{{ $order->hasDiscount ? '4' : '3' }}">SUBTOTAAL</td>
+            <td>{{ ChuckEcommerce::formatPrice($order->subtotal + ($order->isTaxed ? 0 : $order->subtotal_tax)) }}</td>
+          </tr>
+
+          
+          @if($order->hasDiscount)
+          <tr>  
+            <td colspan="3"></td>
+            <td colspan="4">KORTING</td>
+            <td>-{{ ChuckEcommerce::formatPrice($order->discount + $order->discount_tax) }}</td>
+          </tr>
+          @endif
+
+          <tr>  
+            <td colspan="{{ $order->hasDiscount ? '3' : '2' }}"></td>
+            <td colspan="{{ $order->hasDiscount ? '4' : '3' }}">VERZENDING</td>
+            <td>{{ (float)$order->shipping > 0 ? ChuckEcommerce::formatPrice($order->shipping + $order->shipping_tax) : 'gratis' }}{!! (float)$order->shipping > 0 ? ('<small><sup>'.(array_key_exists('shipping_tax_rate', $order->json) ? $order->json['shipping_tax_rate'] : '21').'%</sup></small>') : '' !!}</td>
+          </tr>
+
+          
+          @foreach($order->taxRates() as $rate)
+          <tr>  
+            <td colspan="{{ $order->hasDiscount ? '3' : '2' }}"></td>
+            <td colspan="{{ $order->hasDiscount ? '4' : '3' }}">BTW {{ $rate }}%</td>
+            @if($rate == ChuckEcommerce::defaultVatRate())
+            <td>{{ ChuckEcommerce::formatPrice($order->taxForRate($rate) + $order->shipping_tax) }}</td>
+            @else
+            <td>{{ ChuckEcommerce::formatPrice($order->taxForRate($rate)) }}</td>
+            @endif
+          </tr>
+          @endforeach
+          
+          <tr>
+            <td colspan="{{ $order->hasDiscount ? '3' : '2' }}"></td>
+            <td style="color:#000;" colspan="{{ $order->hasDiscount ? '4' : '3' }}">TOTAALPRIJS</td>
+            <td style="color:#000;">{{ ChuckEcommerce::formatPrice($order->final) }}</td>
+          </tr>
+        </tfoot>
+      </table>
+    @else
       <table border="0" cellspacing="0" cellpadding="0">
         <thead>
         <tr>
@@ -342,6 +435,7 @@
           </tr>
         </tfoot>
       </table>
+    @endif
 
       <div class="page-break">
         <div style="color:#000;" id="thanks">Bedankt voor uw aankoop!</div>
