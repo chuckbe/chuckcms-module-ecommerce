@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Product;
 use App\Model;
 use Auth;
-use Cart;
+use ChuckCart;
 use Illuminate\Http\Request;
 
 class WishlistController extends Controller
@@ -25,16 +25,16 @@ class WishlistController extends Controller
     	}
 
         if(Auth::user()) {
-            Cart::instance('wishlist')->restore('wishlist_'.Auth::user()->id);
+            ChuckCart::instance('wishlist')->restore('wishlist_'.Auth::user()->id);
         }
     	
-    	Cart::instance('wishlist')->add($product, 1, ['model' => $model->base_spec_code]);
+    	ChuckCart::instance('wishlist')->add($product, 1, ['model' => $model->base_spec_code]);
 
         if(Auth::user()) {
-            Cart::instance('wishlist')->store('wishlist_'.Auth::user()->id);
+            ChuckCart::instance('wishlist')->store('wishlist_'.Auth::user()->id);
         }
 
-        $count = Cart::instance('wishlist')->count();
+        $count = ChuckCart::instance('wishlist')->count();
 
     	return response()->json(['status' => 'success', 'notification' => __('wishlist.added', ['item' => $product->accessory_name]), 'wishlist_count' => $count, 'product_id' => $product->id]);
     }
@@ -42,14 +42,14 @@ class WishlistController extends Controller
     public function removeFromWishlist(Request $request)
     {
         if(Auth::user()) {
-            Cart::instance('wishlist')->restore('wishlist_'.Auth::user()->id);
+            ChuckCart::instance('wishlist')->restore('wishlist_'.Auth::user()->id);
         }
 
-        $product_id = Cart::instance('wishlist')->get($request->row_id)->model->id;
-    	Cart::instance('wishlist')->remove($request->row_id);
+        $product_id = ChuckCart::instance('wishlist')->get($request->row_id)->model->id;
+    	ChuckCart::instance('wishlist')->remove($request->row_id);
 
         if(Auth::user()) {
-            Cart::instance('wishlist')->store('wishlist_'.Auth::user()->id);
+            ChuckCart::instance('wishlist')->store('wishlist_'.Auth::user()->id);
         }
 
     	return response()->json(['status' => 'success', 'notification' => __('wishlist.removed'), 'product_id' => $product_id]);
@@ -58,15 +58,15 @@ class WishlistController extends Controller
     public function updateWishlist(Request $request)
     {
         if(Auth::user()) {
-            Cart::instance('wishlist')->restore('wishlist_'.Auth::user()->id);
+            ChuckCart::instance('wishlist')->restore('wishlist_'.Auth::user()->id);
         }
 
     	$view = view('wishlist._wishlist_table')->render();
 
-        $count = Cart::instance('wishlist')->count();
+        $count = ChuckCart::instance('wishlist')->count();
 
         if(Auth::user()) {
-            Cart::instance('wishlist')->store('wishlist_'.Auth::user()->id);
+            ChuckCart::instance('wishlist')->store('wishlist_'.Auth::user()->id);
         }
     	
     	return response()->json(['status' => 'success', 'html_table' => $view, 'wishlist_count' => $count]);
@@ -83,18 +83,18 @@ class WishlistController extends Controller
     public function updateWishlistItem(Request $request)
     {
         if(Auth::user()) {
-            Cart::instance('shopping')->restore('shopping_'.Auth::user()->id);
+            ChuckCart::instance('shopping')->restore('shopping_'.Auth::user()->id);
         }
 
     	if($request->add == "addition"){
-    		$qty = Cart::instance('wishlist')->get($request->row_id)->qty + 1;
+    		$qty = ChuckCart::instance('wishlist')->get($request->row_id)->qty + 1;
     	} else {
-    		$qty = Cart::instance('wishlist')->get($request->row_id)->qty - 1;
+    		$qty = ChuckCart::instance('wishlist')->get($request->row_id)->qty - 1;
     	}
-    	Cart::instance('wishlist')->update($request->row_id, $qty);
+    	ChuckCart::instance('wishlist')->update($request->row_id, $qty);
 
         if(Auth::user()) {
-            Cart::instance('wishlist')->store('wishlist_'.Auth::user()->id);
+            ChuckCart::instance('wishlist')->store('wishlist_'.Auth::user()->id);
         }
 
     	return response()->json(['status' => 'success', 'notification' => __('wishlist.updated')]);
