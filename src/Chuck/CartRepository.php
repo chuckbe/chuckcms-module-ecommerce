@@ -6,7 +6,7 @@ use Chuckbe\Chuckcms\Models\Repeater;
 use Chuckbe\ChuckcmsModuleEcommerce\Chuck\ProductRepository;
 use ChuckSite;
 use Auth;
-use Cart;
+use ChuckCart;
 use Illuminate\Http\Request;
 
 class CartRepository
@@ -38,23 +38,69 @@ class CartRepository
                 if ($this->productRepository->hasSKU($productItem, $cartItem->id)) {
                     $product_array[$cartItem->id]['options'] = $this->productRepository->getOptions($productItem, $cartItem->id, $cartItem->options);
                     $product_array[$cartItem->id]['options_text'] = $this->productRepository->getOptionsText($productItem, $cartItem->id, $cartItem->options);
-                    $product_array[$cartItem->id]['price_object'] = $this->productRepository->priceObject($productItem, $cartItem->id);
+                    $product_array[$cartItem->id]['extras'] = $this->productRepository->getExtras($productItem, $cartItem->id, $cartItem->extras);
+                    $product_array[$cartItem->id]['extras_text'] = $this->productRepository->getExtrasText($productItem, $cartItem->id, $cartItem->extras);
+                    $product_array[$cartItem->id]['discounts'] = $cartItem->discounts->toArray();
+                    
+                    $product_array[$cartItem->id]['_price'] = $this->priceObject($cartItem);
+                    
                     $product_array[$cartItem->id]['sku'] = $cartItem->id;
                     $product_array[$cartItem->id]['title'] = $this->productRepository->title($productItem);
-                    $product_array[$cartItem->id]['quantity'] = $cartItem->qty;
+
                     $product_array[$cartItem->id]['price'] = $cartItem->price;
-                    $product_array[$cartItem->id]['price_tax'] = $cartItem->priceTax;
                     $product_array[$cartItem->id]['tax_rate'] = $cartItem->taxRate;
-                    $product_array[$cartItem->id]['tax'] = $cartItem->tax;
-                    $product_array[$cartItem->id]['tax_total'] = $cartItem->taxTotal;
-                    $product_array[$cartItem->id]['subtotal'] = $cartItem->subtotal;
+                    $product_array[$cartItem->id]['quantity'] = $cartItem->qty;
                     $product_array[$cartItem->id]['total'] = $cartItem->total;
+                    $product_array[$cartItem->id]['discount'] = $cartItem->_discount;
+                    $product_array[$cartItem->id]['tax'] = $cartItem->tax;
+                    $product_array[$cartItem->id]['final'] = $cartItem->final;
+
                     break;
                 }
             }
         }
         
         return $product_array;
+    }
+
+    public function priceObject($cartItem)
+    {
+        $array = [];
+
+        $array['_unit_base']        = $cartItem->_unit_base;
+        $array['_unit_extras']      = $cartItem->_unit_extras;
+        $array['_unit_raw']         = $cartItem->_unit_raw;
+        $array['_unit']             = $cartItem->_unit;
+
+        $array['_total_base']       = $cartItem->_total_base;
+        $array['_total_extras']     = $cartItem->_total_extras;
+        $array['_total_raw']        = $cartItem->_total_raw;
+        $array['_total']            = $cartItem->_total;
+
+        $array['_discount_base']    = $cartItem->_discount_base;
+        $array['_discount_extras']  = $cartItem->_discount_extras;
+        $array['_discount_raw']     = $cartItem->_discount_raw;
+        $array['_discount']         = $cartItem->_discount;
+
+        $array['_final_base']       = $cartItem->_final_base;
+        $array['_final_extras']     = $cartItem->_final_extras;
+        $array['_final_raw']        = $cartItem->_final;
+        $array['_final']            = $cartItem->_final;
+
+        $array['_tax_base']         = $cartItem->_tax_base;
+        $array['_tax_base_raw']     = $cartItem->_tax_base_raw;
+        $array['_tax_extras']       = $cartItem->_tax_extras;
+        $array['_tax_extras_raw']   = $cartItem->_tax_extras_raw;
+        $array['_tax_raw']          = $cartItem->_tax_raw;
+        $array['_tax']              = $cartItem->_tax;
+
+        $array['taxRates']          = $cartItem->taxRates;
+        $array['taxes']             = [];
+        foreach($cartItem->taxRates as $taxRate) {
+            $array['taxes'][]       = array('rate' => $taxRate, 'value' => $cartItem->taxForRate((int)$taxRate), 'taxable' => $cartItem->taxableForRate((int)$taxRate));
+        } 
+        
+        return $array;
     }
 
     public function allItemsInStock($products, $cart)
@@ -146,13 +192,13 @@ class CartRepository
     public function clear($cart)
     {
         if(Auth::check()) {
-            Cart::instance('shopping')->restore('shopping_'.Auth::user()->id);
+            ChuckCart::instance('shopping')->restore('shopping_'.Auth::user()->id);
         }
-        Cart::instance('shopping')->destroy();
+        ChuckCart::instance('shopping')->destroy();
         $cart->destroy();
 
         if(Auth::check()) {
-            Cart::instance('shopping')->store('shopping_'.Auth::user()->id);
+            ChuckCart::instance('shopping')->store('shopping_'.Auth::user()->id);
         }
     }
 
@@ -167,6 +213,63 @@ class CartRepository
         }
 
         return $cart;
+    }
+
+    /**
+     * is a collection present in the cart
+     *
+     * @var ChuckCart $cart
+     * @var string $collectionId
+     *
+     * @return bool
+     **/
+    public function isCollectionPresent($cart, string $collectionId)
+    {
+        foreach( $cart->content() as $cartItem ) {
+            if($this->productRepository->hasCollectionBySKU($collectionId, $cartItem->id)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * is a brand present in the cart
+     *
+     * @var ChuckCart $cart
+     * @var string $brandId
+     *
+     * @return bool
+     **/
+    public function isBrandPresent($cart, string $brandId)
+    {
+        foreach( $cart->content() as $cartItem ) {
+            if($this->productRepository->hasBrandBySKU($brandId, $cartItem->id)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * is a product present in the cart
+     *
+     * @var ChuckCart $cart
+     * @var string $productId
+     *
+     * @return bool
+     **/
+    public function isProductPresent($cart, string $productId)
+    {
+        foreach( $cart->content() as $cartItem ) {
+            if($productId == $cartItem->id) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private function concatOptions($options)
