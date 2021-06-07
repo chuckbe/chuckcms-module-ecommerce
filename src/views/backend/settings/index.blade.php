@@ -8,7 +8,7 @@ Instellingen
 @php
 $lang = \LaravelLocalization::getCurrentLocale();
 @endphp
-<div class="container">
+<div class="container min-height">
     <div class="row">
         <div class="col-sm-12">
             <nav aria-label="breadcrumb">
@@ -45,10 +45,10 @@ $lang = \LaravelLocalization::getCurrentLocale();
                     <li class="nav-item" role="presentation">
                         <a class="nav-link{{ $tab == 'shipping' ? ' active' : '' }}" id="s_shipping-tab" href="{{ route('dashboard.module.ecommerce.settings.index.shipping') }}">Verzending</a>
                     </li>
-                    <li class="nav-item" role="presentation">
+                    <li class="nav-item d-none" role="presentation">
                         <a class="nav-link{{ $tab == 'products' ? ' active' : '' }}" id="s_products-tab" data-toggle="tab" href="#s_products" role="tab" aria-controls="s_products" aria-selected="false">Producten</a>
                     </li>
-                    <li class="nav-item" role="presentation">
+                    <li class="nav-item d-none" role="presentation">
                         <a class="nav-link{{ $tab == 'customers' ? ' active' : '' }}" id="s_customers-tab" href="#s_customers">Klanten</a>
                     </li>
                     <li class="nav-item" role="presentation">
@@ -131,7 +131,7 @@ function deleteCarrierModal(id, name){
 </script>
 
 
-  @if (session('notification'))
-      @include('chuckcms::backend.includes.notification')
-  @endif
+@if (session('notification'))
+@include('chuckcms::backend.includes.notification')
+@endif
 @endsection
