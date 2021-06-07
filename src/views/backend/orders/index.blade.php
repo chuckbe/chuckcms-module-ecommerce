@@ -6,7 +6,7 @@
 
 @section('add_record')
 	@can('create forms')
-	<a href="{{ route('dashboard.module.ecommerce.products.create') }}" class="btn btn-link text-primary m-l-20 hidden-md-down">Nieuwe Bestelling</a>
+	<a href="{{ route('dashboard.module.ecommerce.orders.create') }}" class="btn btn-link text-primary m-l-20 hidden-md-down">Nieuwe Bestelling</a>
 	@endcan
 @endsection
 
@@ -25,8 +25,8 @@
         </div>
     </div>
     <div class="row bg-light shadow-sm rounded py-3 mb-3 mx-1">
-    	<div class="col-sm-12 text-right">
-    		<a href="{{ route('dashboard.module.ecommerce.products.create') }}" class="btn btn-sm btn-outline-success">Nieuwe Bestelling</a>
+    	<div class="col-sm-12 text-right d-none">
+    		<a href="{{ route('dashboard.module.ecommerce.orders.create') }}" class="btn btn-sm btn-outline-success">Nieuwe Bestelling</a>
     	</div>
         <div class="col-sm-12 my-3">
         	<div class="table-responsive">

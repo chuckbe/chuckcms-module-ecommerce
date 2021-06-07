@@ -86,38 +86,121 @@
         		<table class="table" style="width:100%">
         			<thead>
         				<tr>
-        					<th scope="col">#</th>
 							<th scope="col">Product</th>
 							<th scope="col">Hvl</th>
 							<th scope="col" class="pr-5">Prijs</th>
 							<th scope="col">Totaal</th>
         				</tr>
         			</thead>
+        			@if(!array_key_exists('_price', array_values($order->json['products'])[0]))
         			<tbody>
 						@foreach($order->json['products'] as $sku => $product)
 						<tr class="order_line" data-id="{{ $sku }}">
-							<td class="v-align-middle semi-bold">{{ $loop->iteration }}</td>
-							<td class="v-align-middle semi-bold">{{ $product['title'] }}</td>
+							<td class="v-align-middle semi-bold">
+								{{ $product['title'] }}
+								@if($product['options'])
+	                            <br>
+	                            <small>{{ $product['options_text'] }}</small>
+	                            @endif
+	                            @isset($product['extras'])
+	                            <br>
+	                            <small>{{ $product['extras_text'] }}</small>
+	                            @endisset
+							</td>
 							<td class="v-align-middle">{{ $product['quantity'] }}</td>
 							<td class="v-align-middle">{{ ChuckEcommerce::formatPrice($product['price_tax'])  }} </td>
 							<td class="v-align-middle semi-bold">{{ ChuckEcommerce::formatPrice($product['total'])  }}</td>
 						</tr>
 						@endforeach
+						<tr class="total_line">
+							<td class="v-align-middle semi-bold"></td>
+							<td class="v-align-middle"></td>
+							<td class="v-align-middle">Subtotaal </td>
+							<td class="v-align-middle semi-bold">{{ ChuckEcommerce::formatPrice($order->subtotal + $order->subtotal_tax) }}</td>
+						</tr>
+
+
+						@if($order->hasDiscount)
+						<tr class="total_line">
+							<td class="v-align-middle semi-bold"></td>
+							<td class="v-align-middle"></td>
+							<td class="v-align-middle">Korting 
+								@foreach($order->json['discounts'] as $discountKey => $discount)
+								<br><small><b>{{ $discount['code'] }}</b>: -{{ $discount['value'] }}{{ $discount['type'] == 'percentage' ? '%' : '€' }}</small>
+								@endforeach
+							</td>
+							<td class="v-align-middle semi-bold">{{ ChuckEcommerce::formatPrice($order->discount + $order->discount_tax) }}</td>
+						</tr>
+						@endif
+
 						<tr class="shipping_line">
-							<td class="v-align-middle semi-bold">{{ count($order->json['products']) + 1 }}</td>
 							<td class="v-align-middle semi-bold"></td>
 							<td class="v-align-middle"></td>
 							<td class="v-align-middle">Verzending </td>
 							<td class="v-align-middle semi-bold">{{ $order->shipping > 0 ? ChuckEcommerce::formatPrice($order->shipping + $order->shipping_tax) : 'gratis' }}</td>
 						</tr>
 						<tr class="total_line">
-							<td class="v-align-middle semi-bold">{{ count($order->json['products']) + 2 }}</td>
 							<td class="v-align-middle semi-bold"></td>
 							<td class="v-align-middle"></td>
 							<td class="v-align-middle">Totaal </td>
 							<td class="v-align-middle semi-bold">{{ ChuckEcommerce::formatPrice($order->final) }}</td>
 						</tr>
         			</tbody>
+        			@else
+        			<tbody>
+						@foreach($order->json['products'] as $sku => $product)
+						<tr class="order_line" data-id="{{ $sku }}">
+							<td class="v-align-middle semi-bold">
+								{{ $product['title'] }}
+								@if($product['options'])
+	                            <br>
+	                            <small>{{ $product['options_text'] }}</small>
+	                            @endif
+	                            @isset($product['extras'])
+	                            <br>
+	                            <small>{{ $product['extras_text'] }}</small>
+	                            @endisset
+							</td>
+							<td class="v-align-middle">{{ $product['quantity'] }}</td>
+							<td class="v-align-middle">{{ ChuckEcommerce::formatPrice($product['_price']['_unit'])  }} </td>
+							<td class="v-align-middle semi-bold">{{ ChuckEcommerce::formatPrice($product['_price']['_total'])  }}</td>
+						</tr>
+						@endforeach
+						<tr class="total_line">
+							<td class="v-align-middle semi-bold"></td>
+							<td class="v-align-middle"></td>
+							<td class="v-align-middle">Subtotaal </td>
+							<td class="v-align-middle semi-bold">{{ ChuckEcommerce::formatPrice($order->subtotal + ($order->isTaxed ? 0 : $order->subtotal_tax)) }}</td>
+						</tr>
+
+
+						@if($order->hasDiscount)
+						<tr class="total_line">
+							<td class="v-align-middle semi-bold"></td>
+							<td class="v-align-middle"></td>
+							<td class="v-align-middle">Korting 
+								@foreach($order->json['discounts'] as $discountKey => $discount)
+								<br><small><b>{{ $discount['code'] }}</b>: -{{ $discount['value'] }}{{ $discount['type'] == 'percentage' ? '%' : '€' }}</small>
+								@endforeach
+							</td>
+							<td class="v-align-middle semi-bold">-{{ ChuckEcommerce::formatPrice($order->discount + $order->discount_tax) }}</td>
+						</tr>
+						@endif
+
+						<tr class="shipping_line">
+							<td class="v-align-middle semi-bold"></td>
+							<td class="v-align-middle"></td>
+							<td class="v-align-middle">Verzending </td>
+							<td class="v-align-middle semi-bold">{{ $order->shipping > 0 ? ChuckEcommerce::formatPrice($order->shipping + $order->shipping_tax) : 'gratis' }}</td>
+						</tr>
+						<tr class="total_line">
+							<td class="v-align-middle semi-bold"></td>
+							<td class="v-align-middle"></td>
+							<td class="v-align-middle">Totaal </td>
+							<td class="v-align-middle semi-bold">{{ ChuckEcommerce::formatPrice($order->final) }}</td>
+						</tr>
+        			</tbody>
+        			@endif
         		</table>
         	</div>
         </div>
