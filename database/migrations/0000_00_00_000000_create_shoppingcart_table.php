@@ -11,10 +11,10 @@ class CreateShoppingcartTable extends Migration
      */
     public function up()
     {
-        if(Schema::has(config('cart.database.table'))) {
-            Schema::table(config('cart.database.table'), function Blueprint $table) {
+        if(Schema::hasTable(config('cart.database.table'))) {
+            Schema::table(config('cart.database.table'), function (Blueprint $table) {
                 $table->longText('discounts')->after('content');
-            }
+            });
         } else {
             Schema::create(config('cart.database.table'), function (Blueprint $table) {
                 $table->string('identifier');
@@ -32,7 +32,7 @@ class CreateShoppingcartTable extends Migration
      */
     public function down()
     {
-        if(Schema::has(config('cart.database.table'))) {
+        if(Schema::hasTable(config('cart.database.table'))) {
             Schema::table(config('cart.database.table'), function(Blueprint $table) {
                 $table->dropColumn('discounts');
             });
