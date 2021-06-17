@@ -53,14 +53,12 @@ class Ecommerce
     public function getSetting($var)
     {
         $setting = $this->resolveSetting($var, $this->moduleSettings);
-        return $setting ? $setting : null;
+        return $setting !== 'undefined' ? $setting : null;
     }
 
     public function setSetting($var, $value)
     {
-        if($this->resolveSetting($var, $this->moduleSettings) !== 'undefined') {
-            $this->updateSetting($var, $this->moduleSettings, $value);
-        }
+        $this->updateSetting($var, $this->moduleSettings, $value);    
     }
 
     private function resolveSetting($var, $settings)

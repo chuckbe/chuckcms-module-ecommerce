@@ -19,13 +19,16 @@ class OrderRepository
 {
     private $customerRepository;
     private $cartRepository;
+    private $order;
 
 	public function __construct(
         CustomerRepository $customerRepository, 
-        CartRepository $cartRepository)
+        CartRepository $cartRepository,
+        Order $order)
     {
         $this->customerRepository = $customerRepository;
         $this->cartRepository = $cartRepository;
+        $this->order = $order;
     }
 
     public function followup($order_number)
@@ -67,7 +70,8 @@ class OrderRepository
 
         $json = [];
 
-        $json['order_number'] = str_random(12); // check if already exists (not so important cus this is not the main identifier)
+        $json['order_number'] = $this->generateOrderNumber();
+        $json['reference'] = $this->generateOrderReference();
         $json['payment_method'] = $request->get('payment_method');
         $json['products'] = $this->cartRepository->formatProducts($products, $cart);
         $json['shipping'] = ChuckEcommerce::getCarrier($request->get('shipping_method'));
@@ -379,6 +383,32 @@ class OrderRepository
         $invoice_number = ChuckEcommerce::getSetting('invoice.number') + 1;
         ChuckEcommerce::setSetting('invoice.number', $invoice_number);
         return $invoice_number;
+    }
+
+    private function generateOrderNumber()
+    {
+        $order_number = (Order::count() + 1);
+        
+        if(!is_null(ChuckEcommerce::getSetting('order.number'))) {
+            $order_number = (int)ChuckEcommerce::getSetting('order.number') + 1;
+        }
+
+        $order_number = str_pad($order_number, 3, '0', STR_PAD_LEFT);
+        
+        ChuckEcommerce::setSetting('order.number', $order_number);
+
+        return $order_number;
+    }
+
+    private function generateOrderReference()
+    {
+        $uid = str_random(8);
+        $uids = $this->order->where('json->order_reference', $uid)->get();
+        if (count($uids) > 0) {
+            $this->generateOrderReference();
+        } else {
+            return $uid;
+        }
     }
 
     public function totalSales()

@@ -4,6 +4,10 @@
 <div class="row column-seperation">
     <div class="col-lg-12">
         <div class="form-group form-group-default required">
+          <label>Bestelling volgnummer</label>
+          <input type="text" data-a-dec="." data-a-sep="" data-m-dec="6" data-a-pad=true class="autonumeric form-control" name="order[number]" value="{{ array_key_exists('order', $module->json['settings']) ? $module->json['settings']['order']['number'] : '0' }}" placeholder="Bestelling volgnummer" required>
+        </div>
+        <div class="form-group form-group-default required">
           <label>Minimum bestelbedrag</label>
           <input type="text" data-a-dec="." data-a-sep="" data-m-dec="6" data-a-pad=true class="autonumeric form-control" name="order[minimum]" value="{{ array_key_exists('order', $module->json['settings']) ? $module->json['settings']['order']['minimum'] : '0' }}" placeholder="Minimum bestelbedrag" required>
         </div>

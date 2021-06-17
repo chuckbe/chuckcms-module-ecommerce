@@ -187,6 +187,7 @@ class InstallModuleEcommerce extends Command
         $json['settings']['invoice']['prefix'] = '';
         $json['settings']['invoice']['number'] = 0;
 
+        $json['settings']['order']['number'] = 0;
         $json['settings']['order']['minimum'] = 0;
         $json['settings']['order']['countries'] = ['BE', 'NL', 'LU'];
 
