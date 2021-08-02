@@ -8,6 +8,7 @@ use Chuckbe\ChuckcmsModuleEcommerce\Chuck\CollectionRepository;
 use Chuckbe\ChuckcmsModuleEcommerce\Chuck\ProductRepository;
 
 use Chuckbe\ChuckcmsModuleEcommerce\Requests\StoreProductRequest;
+use Chuckbe\ChuckcmsModuleEcommerce\Requests\DeleteProductRequest;
 
 use Chuckbe\ChuckcmsModuleEcommerce\Models\Product;
 use Chuckbe\Chuckcms\Models\Repeater;
@@ -74,6 +75,17 @@ class ProductController extends Controller
         $product = $this->productRepository->update($request);
 
         return redirect()->route('dashboard.module.ecommerce.products.index');
+    }
+
+    public function delete(DeleteProductRequest $request)
+    {
+        $product = Product::where('id', $request->get('product_id'))->first();
+
+        if ($product->delete()) {
+            return response()->json(['status' => 'success']);
+        } else {
+            return response()->json(['status' => 'error']);
+        }
     }
 
     public function getCombination(Request $request)

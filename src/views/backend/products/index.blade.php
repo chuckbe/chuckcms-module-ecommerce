@@ -62,7 +62,7 @@
 					    		</a>
 					    		@endcan
 					    		@can('delete forms')
-					    		<a href="#" class="btn btn-sm btn-outline-danger rounded d-inline-block form_delete" data-id="{{ $product->id }}">
+					    		<a href="#" class="btn btn-sm btn-outline-danger rounded d-inline-block product_delete" data-id="{{ $product->id }}">
 					    			<i class="fa fa-trash"></i> delete 
 					    		</a>
 					    		@endcan
@@ -85,40 +85,39 @@
 <script src="https://cdn.chuck.be/assets/plugins/sweetalert2.all.js"></script>
 <script>
 $( document ).ready(function (){
-	$('.product_delete').each(function(){
-		var form_id = $(this).attr("data-id");
-		var token = '{{ Session::token() }}';
-	  	$(this).click(function (event) {
-	  		event.preventDefault();
-	  		swal({
-				title: 'Are you sure?',
-				text: "You won't be able to revert this!",
-				type: 'warning',
-				showCancelButton: true,
-				confirmButtonColor: '#3085d6',
-				cancelButtonColor: '#d33',
-				confirmButtonText: 'Yes, delete it!'
-			}).then((result) => {
-			  	if (result.value) { 
-			  		$.ajax({
-                        method: 'POST',
-                        url: "{{ route('dashboard.forms.delete') }}",
-                        data: { 
-                        	form_id: form_id, 
-                        	_token: token
-                        }
-                    }).done(function (data) {
-                    	if(data == 'success'){
-                    		$(".product_line[data-id='"+product_id+"']").first().remove();
-                    		swal('Deleted!','The product has been deleted.','success')
-                    	} else {
-                    		swal('Oops!','Something went wrong...','danger')
-                    	}
-                    });
-			  	}
-			})
-	    });
-	});
+    $('body').on('click', '.product_delete', function (event) {
+        event.preventDefault();
+        var product_id = $(this).attr("data-id");
+        var token = '{{ Session::token() }}';
+
+        swal({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.value) { 
+                $.ajax({
+                    method: 'POST',
+                    url: "{{ route('dashboard.module.ecommerce.products.delete') }}",
+                    data: { 
+                        product_id: product_id, 
+                        _token: token
+                    }
+                }).done(function (data) {
+                    if(data.status == 'success'){
+                        $(".product_line[data-id='"+product_id+"']").first().remove();
+                        swal('Deleted!','The product has been deleted.','success')
+                    } else {
+                        swal('Oops!','Something went wrong...','danger')
+                    }
+                });
+            }
+        })
+    });
 });
 </script>
 @endsection

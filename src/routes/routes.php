@@ -20,6 +20,7 @@ Route::group(['middleware' => ['web']], function() {
 			Route::get('/dashboard/ecommerce/products/{product}/edit', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\ProductController@edit')->name('dashboard.module.ecommerce.products.edit');
 			Route::post('/dashboard/ecommerce/products/save', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\ProductController@save')->name('dashboard.module.ecommerce.products.save');
 			Route::post('/dashboard/ecommerce/products/update', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\ProductController@update')->name('dashboard.module.ecommerce.products.update');
+			Route::post('/dashboard/ecommerce/products/delete', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\ProductController@delete')->name('dashboard.module.ecommerce.products.delete');
 			//END OF: PRODUCTS ROUTES
 			
 			//START OF: COLLECTIONS ROUTES
