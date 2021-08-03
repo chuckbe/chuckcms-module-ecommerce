@@ -549,6 +549,7 @@ class InstallModuleEcommerce extends Command
             'min_cart' => "0.000000",
             'cost' => "0.000000",
             'max_cart' => "0.000000",
+            'min_weight' => "0.000",
             'max_weight' => "0.000",
             'free_from' => null,
             'countries' => ['BE', 'LU'],

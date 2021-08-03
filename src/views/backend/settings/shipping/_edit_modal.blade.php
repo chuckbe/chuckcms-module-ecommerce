@@ -73,8 +73,16 @@
             <div class="row">
               <div class="col-md-12">
                 <div class="form-group form-group-default required">
+                  <label>Min Gewicht </label>
+                  <input type="text" data-a-dec="." data-a-sep="" data-m-dec="3" data-a-pad=true class="autonumeric form-control" name="min_weight" value="{{ !array_key_exists('min_weight', $carrier) ? '0.000' : $carrier['min_weight'] }}" placeholder="Min Gewicht" required>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group form-group-default required">
                   <label>Max Gewicht </label>
-                  <input type="text" data-a-dec="." data-a-sep="" data-m-dec="3" data-a-pad=true class="autonumeric form-control" name="max_weight" value="{{ !array_key_exists('max_weight', $carrier) ? '0.000' : $carrier['max_weight'] }}" placeholder="Gewicht">
+                  <input type="text" data-a-dec="." data-a-sep="" data-m-dec="3" data-a-pad=true class="autonumeric form-control" name="max_weight" value="{{ !array_key_exists('max_weight', $carrier) ? '0.000' : $carrier['max_weight'] }}" placeholder="Max Gewicht" required>
                 </div>
               </div>
             </div>

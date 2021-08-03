@@ -66,7 +66,7 @@
             <div class="row">
               <div class="col-md-12">
                 <div class="form-group form-group-default required">
-                  <label>Max Prijs Winkelwagen (Vul 0 in om te negeren)</label>
+                  <label>Max Prijs Winkelwagen (Vul 0.000000 in om te negeren)</label>
                   <input type="text" data-a-dec="." data-a-sep="" data-m-dec="6" data-a-pad=true class="autonumeric form-control" name="max_cart" value="0.000000" placeholder="Maximum waarde winkelwagen" required>
                 </div>
               </div>
@@ -74,15 +74,23 @@
             <div class="row">
               <div class="col-md-12">
                 <div class="form-group form-group-default required">
-                  <label>Max Gewicht </label>
-                  <input type="text" data-a-dec="." data-a-sep="" data-m-dec="3" data-a-pad=true class="autonumeric form-control" name="max_weight" value="0.000" placeholder="Gewicht" required>
+                  <label>Min Gewicht (Vul 0.000 om te negeren)</label>
+                  <input type="text" data-a-dec="." data-a-sep="" data-m-dec="3" data-a-pad=true class="autonumeric form-control" name="min_weight" value="0.000" placeholder="Min Gewicht" required>
                 </div>
               </div>
             </div>
             <div class="row">
               <div class="col-md-12">
                 <div class="form-group form-group-default required">
-                  <label>Gratis vanaf (Vul 0 in om te negeren)</label>
+                  <label>Max Gewicht (Vul 0.000 om te negeren)</label>
+                  <input type="text" data-a-dec="." data-a-sep="" data-m-dec="3" data-a-pad=true class="autonumeric form-control" name="max_weight" value="0.000" placeholder="Max Gewicht" required>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group form-group-default required">
+                  <label>Gratis vanaf (Vul 0.00 in om te negeren)</label>
                   <input type="text" data-a-dec="." data-a-sep="" data-m-dec="2" data-a-pad=true class="autonumeric form-control" name="free_from" value="0.00" placeholder="Gratis vanaf">
                 </div>
               </div>
