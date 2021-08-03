@@ -67,6 +67,8 @@ class StoreProductRequest extends FormRequest
             'height' => 'nullable',
             'depth' => 'nullable',
             'weight' => 'nullable',
+
+            'files' => 'nullable|array',
         ];
     }
 }

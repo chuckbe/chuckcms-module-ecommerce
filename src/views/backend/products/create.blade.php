@@ -40,6 +40,9 @@
                     <li class="nav-item" role="presentation">
                         <a class="nav-link" id="p_dimensions-tab" data-toggle="tab" href="#p_dimensions" role="tab" aria-controls="p_dimensions" aria-selected="false">Dimensies</a>
                     </li>
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link" id="p_files-tab" data-toggle="tab" href="#p_files" role="tab" aria-controls="p_files" aria-selected="false">Bijlagen</a>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -79,6 +82,10 @@
 
             <div class="col-sm-12 tab-pane fade" id="p_dimensions" role="tabpanel" aria-labelledby="p_dimensions-tab">
               @include('chuckcms-module-ecommerce::backend.products.create._tab_dimensions')
+            </div>
+
+            <div class="col-sm-12 tab-pane fade" id="p_files" role="tabpanel" aria-labelledby="p_files-tab">
+              @include('chuckcms-module-ecommerce::backend.products.create._tab_files')
             </div>
         </div>
         <div class="row">
@@ -245,6 +252,7 @@ $(document).ready(function() {
     //init media manager inputs 
     var domain = "{{ URL::to('dashboard/media')}}";
     $('.img_lfm_link').filemanager('image', {prefix: domain});
+    $('.file_lfm_link').filemanager('file', {prefix: domain});
 
     $('.summernote-text-editor').summernote({
       height: 150,

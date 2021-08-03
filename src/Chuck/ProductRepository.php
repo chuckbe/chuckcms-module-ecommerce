@@ -298,6 +298,13 @@ class ProductRepository
         $json['dimensions']['depth'] = $values->get('depth');
         $json['dimensions']['weight'] = $values->get('weight');
 
+        $json['files'] = [];
+        foreach($values->get('files') as $file){
+            $object = [];
+            $object['url'] = $file;
+            $json['files'][] = $object;
+        }
+
         $input['json'] = $json;
 
         $product = $this->repeater->create($input);
@@ -483,6 +490,13 @@ class ProductRepository
         $json['dimensions']['height'] = $values->get('height');
         $json['dimensions']['depth'] = $values->get('depth');
         $json['dimensions']['weight'] = $values->get('weight');
+
+        $json['files'] = [];
+        foreach($values->get('files') as $file){
+            $object = [];
+            $object['url'] = $file;
+            $json['files'][] = $object;
+        }
 
         $input['json'] = $json;
 
