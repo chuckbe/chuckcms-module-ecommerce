@@ -34,6 +34,7 @@ class CarrierController extends Controller
             'min_cart' => 'required',
             'cost' => 'required',
             'max_cart' => 'required',
+            'min_weight' => 'required',
             'max_weight' => 'required',
             'free_from' => 'nullable',
             'countries' => 'array',
@@ -57,6 +58,7 @@ class CarrierController extends Controller
         $carrier['min_cart'] = $request->get('min_cart');
         $carrier['cost'] = $request->get('cost');
         $carrier['max_cart'] = $request->get('max_cart');
+        $carrier['min_weight'] = $request->get('min_weight');
         $carrier['max_weight'] = $request->get('max_weight');
         $carrier['free_from'] = (float)$request->get('free_from') == 0 ? null : (string)$request->get('free_from');
         $carrier['countries'] = $request->get('countries');
