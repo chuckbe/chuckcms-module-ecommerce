@@ -25,6 +25,8 @@ Route::group(['middleware' => ['web']], function() {
 			
 			//START OF: COLLECTIONS ROUTES
 			Route::get('/dashboard/ecommerce/collections', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\CollectionController@index')->name('dashboard.module.ecommerce.collections.index');
+			Route::get('/dashboard/ecommerce/collections/{collection}/sorting', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\CollectionController@sorting')->name('dashboard.module.ecommerce.collections.sorting');
+			Route::post('/dashboard/ecommerce/collections/{collection}/sorting/update', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\CollectionController@updateSort')->name('dashboard.module.ecommerce.collections.update_sort');
 			Route::post('/dashboard/ecommerce/collections/save', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\CollectionController@save')->name('dashboard.module.ecommerce.collections.save');
 			Route::post('/dashboard/ecommerce/collections/delete', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\CollectionController@delete')->name('dashboard.module.ecommerce.collections.delete');
 			//END OF: COLLECTIONS ROUTES

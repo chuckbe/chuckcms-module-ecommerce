@@ -43,6 +43,9 @@
                     <li class="nav-item" role="presentation">
                         <a class="nav-link" id="p_files-tab" data-toggle="tab" href="#p_files" role="tab" aria-controls="p_files" aria-selected="false">Bijlagen</a>
                     </li>
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link" id="p_data-tab" data-toggle="tab" href="#p_data" role="tab" aria-controls="p_data" aria-selected="false">Data</a>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -87,6 +90,10 @@
             <div class="col-sm-12 tab-pane fade" id="p_files" role="tabpanel" aria-labelledby="p_files-tab">
               @include('chuckcms-module-ecommerce::backend.products.edit._tab_files')
             </div>
+
+            <div class="col-sm-12 tab-pane fade" id="p_data" role="tabpanel" aria-labelledby="p_data-tab">
+              @include('chuckcms-module-ecommerce::backend.products.edit._tab_data')
+            </div>
         </div>
         <div class="row">
             <div class="col-sm-12 text-right">
@@ -100,7 +107,7 @@
 @endsection
 
 @section('css')
-	<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
   <link href="//cdn.chuck.be/assets/plugins/summernote/css/summernote.css" rel="stylesheet" media="screen">
 @endsection
 
@@ -239,11 +246,11 @@ $(document).ready(function() {
   init(); 
 
   function init() {
-		$(".product_slug_input").keyup(function(){
-		    var text = $(this).val();
-		    slug_text = text.toLowerCase().replace(/[^\w ]+/g,'-').replace(/ +/g,'-');
-		    $(".product_slug_input").val(slug_text);   
-		});
+    $(".product_slug_input").keyup(function(){
+        var text = $(this).val();
+        slug_text = text.toLowerCase().replace(/[^\w ]+/g,'-').replace(/ +/g,'-');
+        $(".product_slug_input").val(slug_text);   
+    });
 
     //Autonumeric plug-in - automatic addition of dollar signs,etc controlled by tag attributes
     $('.autonumeric').autoNumeric('init');
@@ -256,6 +263,7 @@ $(document).ready(function() {
     $('.summernote-text-editor').summernote({
       height: 150,
       fontNames: ['Arial', 'Arial Black', 'Open Sans', 'Helvetica', 'Helvetica Neue', 'Lato'],
+      fontSizes: ['8', '9', '10', '11', '12', '14', '16', '18', '20', '22', '24', '26', '28', '30', '36'],
       toolbar: [
         // [groupName, [list of button]]
         ['style', ['bold', 'italic', 'underline', 'clear']],
@@ -538,7 +546,61 @@ $(document).ready(function() {
     });
 
   }
-		
-	});
+    
+  });
+</script>
+<script>
+$( document ).ready(function() { 
+initData(); 
+
+function initData() {
+  $(".resource_key").keyup(function(){
+      var text = $(this).val();
+      var iOrder = $(this).attr('data-order');
+      slug_text = text.toLowerCase().replace(/[^\w ]+/g,'').replace(/ +/g,'');
+      $(".resource_key[data-order="+iOrder+"]").val(slug_text);   
+  });
+}
+
+$('.add_resource_field_btn').click(function(){
+  $('.resource_field_row:first').clone().appendTo('.resource_field_wrapper');
+
+  $('.resource_field_wrapper').each(function() {
+    var lang = $(this).attr('data-lang');
+    var order = $(this).find('.resource_field_row').attr('data-order') + 1;
+
+    $( this ).find('#resource_key').attr('name', 'resource_key[' + lang + '][]');
+    $( this ).find('#resource_value').attr('name', 'resource_value[' + lang + '][]');
+
+    $( this ).find('.resource_field_row').attr('data-order', order);
+    $( this ).find('.resource_key:last').attr('data-order', order);
+    $( this ).find('.resource_value:last').attr('data-order', order);
+    
+  });
+
+  if( $('.resource_field_row').length > 1){
+    $('.remove_resource_field_btn').show();
+  }
+
+  initData();
+});
+
+$('.remove_resource_field_btn').click(function(){
+  
+  $('.resource_field_wrapper').each(function() {
+    
+    if($( this ).find('.resource_field_row').length > 1){
+      
+      $( this ).find('.resource_field_row:last').remove();
+      if($( this ).find('.resource_field_row').length == 1){
+        $('.remove_resource_field_btn').hide();
+      }
+    }
+
+  });
+
+});
+
+});
 </script>
 @endsection

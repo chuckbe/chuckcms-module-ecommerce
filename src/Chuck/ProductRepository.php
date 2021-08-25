@@ -83,7 +83,7 @@ class ProductRepository
                     ->get();
     }
 
-    public function forCollection($collection, $parent = null)
+    public function forCollection($collection, $parent = null, $count = false, $sort = false)
     {
         $query = $this->collection->where('json->name', $collection);
         
@@ -94,13 +94,22 @@ class ProductRepository
         $collection = $query->first();
 
         if ($collection == null) {
-            return array();
+            return !$count ? array() : 0;
         }
 
-        return $this->product
-                    ->where('json->collection', ''.$collection->id.'')
-                    ->orWhereJsonContains('json->collection', ''.$collection->id.'')
-                    ->get();
+        $productQuery = $this->product
+                            ->where('json->collection', ''.$collection->id.'')
+                            ->orWhereJsonContains('json->collection', ''.$collection->id.'');
+
+        if ($count) {
+            return $productQuery->count();
+        }
+
+        if ($sort) {
+            $productQuery = $productQuery->orderBy('json->sort->collection->_'.$collection->id, 'asc');
+        }
+
+        return $productQuery->get();
     }
 
     public function forBrand($brand)
@@ -198,12 +207,7 @@ class ProductRepository
                 foreach ($values->get('combination_slugs') as $combinationKey) {
                 	$combinations[$combinationKey] = [];
                 	$combinations[$combinationKey]['display_name'] = [];
-
-                    if($q == 0) {
-                        $combinations[$combinationKey]['is_default'] = true;
-                    } else {
-                        $combinations[$combinationKey]['is_default'] = false;
-                    }
+                    $combinations[$combinationKey]['is_default'] = $q == 0;
 
                 	foreach ($langs as $langKey => $langValue) {
                 		$combinations[$combinationKey]['display_name'][$langKey] = $values->get('combinations')[$combinationKey]['display_name'][$langKey];
@@ -300,9 +304,25 @@ class ProductRepository
 
         $json['files'] = [];
         foreach($values->get('files') as $file){
+            if (is_null($file)) {
+                continue;
+            }
+
             $object = [];
             $object['url'] = $file;
             $json['files'][] = $object;
+        }
+
+        $json['data'] = [];
+        foreach(ChuckSite::getSupportedLocales() as $langKey => $langValue){
+            if (!is_array($values->get('resource_key')[$langKey])) {
+                continue;
+            }
+
+            $count = count($values->get('resource_key')[$langKey]);
+            for ($i=0; $i < $count; $i++) { 
+                $json['data'][$langKey][$values->get('resource_key')[$langKey][$i]] = $values->get('resource_value')[$langKey][$i];
+            }
         }
 
         $input['json'] = $json;
@@ -384,12 +404,7 @@ class ProductRepository
                 foreach ($values->get('combination_slugs') as $combinationKey) {
                 	$combinations[$combinationKey] = [];
                 	$combinations[$combinationKey]['display_name'] = [];
-                    
-                    if($q == 0) {
-                        $combinations[$combinationKey]['is_default'] = true;
-                    } else {
-                        $combinations[$combinationKey]['is_default'] = false;
-                    }
+                    $combinations[$combinationKey]['is_default'] = $q == 0;
                     
                 	foreach ($langs as $langKey => $langValue) {
                 		$combinations[$combinationKey]['display_name'][$langKey] = $values->get('combinations')[$combinationKey]['display_name'][$langKey];
@@ -493,16 +508,49 @@ class ProductRepository
 
         $json['files'] = [];
         foreach($values->get('files') as $file){
+            if (is_null($file)) {
+                continue;
+            }
+            
             $object = [];
             $object['url'] = $file;
             $json['files'][] = $object;
         }
 
+        if (array_key_exists('sort', $product->json)) {
+            $json['sort'] = $product->json['sort']; //@TODO: add newly added collections / rmv removed collections
+        }  
+
+        $json['data'] = [];
+        foreach(ChuckSite::getSupportedLocales() as $langKey => $langValue){
+            if (!is_array($values->get('resource_key')[$langKey])) {
+                continue;
+            }
+
+            $count = count($values->get('resource_key')[$langKey]);
+            for ($i=0; $i < $count; $i++) { 
+                $json['data'][$langKey][$values->get('resource_key')[$langKey][$i]] = $values->get('resource_value')[$langKey][$i];
+            }
+        }      
+
         $input['json'] = $json;
 
-        $product->update($input); // change to update
+        $product->update($input);
 
         return $product;
+    }
+
+    public function sortForCollection(Repeater $collection, array $sort)
+    {
+        $products = $this->forCollection($collection->json['name'], $collection->json['parent']);
+
+        for ($q=0; $q < count($sort); $q++) { 
+            $product = $products->where('id', $sort[$q])->first();
+            $json = $product->json;
+            $json['sort']['collection']['_'.$collection->id] = (int)($q + 1);
+            $product->json = $json;
+            $product->update();
+        }
     }
 
     public function generateSingleSku()

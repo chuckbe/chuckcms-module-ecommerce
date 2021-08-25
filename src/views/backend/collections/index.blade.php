@@ -63,6 +63,7 @@ function deleteModal(id, name){
         				<tr>
         					<th scope="col">#</th>
 							<th scope="col">Naam</th>
+							<th scope="col">Producten</th>
 							<th scope="col">Hoofdcollectie</th>
 							<th scope="col" style="min-width:190px">Actions</th>
         				</tr>
@@ -72,17 +73,22 @@ function deleteModal(id, name){
 						<tr>
 							<td class="v-align-middle">{{ $collection->id }}</td>
 							<td class="v-align-middle">{{$collection->json['name'] }}</td>
+							<td class="v-align-middle">{{ ChuckProduct::forCollection($collection->json['name'], $collection->json['parent'], true) }}</td>
 							<td class="v-align-middle">{{$collections->where('id', $collection->json['parent'])->first() ? $collections->where('id', $collection->json['parent'])->first()->json['name'] : '' }}</td>
 							<td class="v-align-middle semi-bold">
+								<a href="{{ route('dashboard.module.ecommerce.collections.sorting', ['collection' => $collection->id]) }}" class="btn btn-primary btn-sm btn-rounded m-r-20">
+									<i class="fa fa-eye"></i>
+								</a>
+
 								@can('edit redirects')
-								<a href="#" onclick="editModal({{ $collection->id }}, '{{ $collection->json['name'] }}', '{{ $collection->json['parent'] }}', '{{ $collection->json['image'] }}')" class="btn btn-default btn-sm btn-rounded m-r-20">
-									<i data-feather="edit-2"></i> edit
+								<a href="#" onclick="editModal({{ $collection->id }}, '{{ $collection->json['name'] }}', '{{ $collection->json['parent'] }}', '{{ $collection->json['image'] }}')" class="btn btn-secondary btn-sm btn-rounded m-r-20">
+									<i class="fa fa-edit"></i>
 								</a>
 								@endcan
 
 								@can('delete redirects')
 								<a href="#" onclick="deleteModal({{ $collection->id }}, '{{ $collection->json['name'] }}')" class="btn btn-danger btn-sm btn-rounded m-r-20">
-									<i data-feather="trash"></i> delete
+									<i class="fa fa-trash"></i>
 								</a>
 								@endcan
 							</td>

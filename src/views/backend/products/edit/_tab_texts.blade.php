@@ -1,7 +1,7 @@
-<ul class="nav nav-tabs nav-tabs-linetriangle" data-init-reponsive-tabs="dropdownfx">
+<ul class="nav nav-tabs justify-content-start" data-init-reponsive-tabs="dropdownfx">
   @foreach(ChuckSite::getSupportedLocales() as $langKey => $langValue)
     <li class="nav-item">
-      <a href="#" @if($loop->iteration == 1) class="active" @endif data-toggle="tab" data-target="#tab_product_{{ $langKey }}"><span>{{ $langValue['name'] }} ({{ $langValue['native'] }})</span></a>
+      <a href="#" class="nav-link{{ $loop->iteration == 1 ? ' active' : '' }}" data-toggle="tab" data-target="#tab_product_{{ $langKey }}"><span>{{ $langValue['name'] }} ({{ $langValue['native'] }})</span></a>
     </li>
   @endforeach
 </ul>

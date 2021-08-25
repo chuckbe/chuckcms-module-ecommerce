@@ -6,9 +6,10 @@ use Chuckbe\ChuckcmsModuleEcommerce\Chuck\ProductRepository;
 use Chuckbe\ChuckcmsModuleEcommerce\Chuck\CollectionRepository;
 use Chuckbe\ChuckcmsModuleEcommerce\Chuck\BrandRepository;
 
-use Illuminate\Http\Request;
 use App\Http\Requests;
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Chuckbe\Chuckcms\Models\Repeater;
 
 class CollectionController extends Controller
 {
@@ -39,6 +40,12 @@ class CollectionController extends Controller
         return view('chuckcms-module-ecommerce::backend.collections.index', compact('products', 'collections', 'brands'));
     }
 
+    public function sorting(Repeater $collection)
+    {
+        $products = $this->productRepository->forCollection($collection->name, $collection->parent, false, true);
+        return view('chuckcms-module-ecommerce::backend.collections.sorting', compact('collection', 'products'));
+    }
+
     public function save(Request $request)
     {
         $this->validate($request, [ 
@@ -58,6 +65,17 @@ class CollectionController extends Controller
         } else {
             return 'error';//add ThrowNewException
         }
+    }
+
+    public function updateSort(Request $request, Repeater $collection)
+    {
+        $this->validate($request, [ 
+            'products' => 'required|array'
+        ]);
+
+        $this->productRepository->sortForCollection($collection, $request->products);
+
+        return response()->json(['status' => 'success']);
     }
 
     public function delete(Request $request)

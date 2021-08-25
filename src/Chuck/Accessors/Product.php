@@ -44,9 +44,9 @@ class Product
         return $this->productRepository->getFeatured();
     }
 
-    public function forCollection(string $collection, $parent = null)
+    public function forCollection(string $collection, $parent = null, $count = false, $sort = false)
     {
-        return $this->productRepository->forCollection($collection, $parent);
+        return $this->productRepository->forCollection($collection, $parent, $count, $sort);
     }
 
     public function forBrand(string $brand)
