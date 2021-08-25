@@ -106,7 +106,8 @@ class ProductRepository
         }
 
         if ($sort) {
-            return $productQuery->get()->sortBy('json->sort->collection->_'.$collection->id);
+            $statement = "cast(json->'$.sort.collection._".$collection->id."' as unsigned) asc";
+            $productQuery = $productQuery->orderByRaw($statement);
         }
 
         return $productQuery->get();
