@@ -14,9 +14,9 @@ class ChuckcmsModuleEcommerceServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        // config([
-        //     'auth.providers.users.model' => \Chuckbe\ChuckcmsModuleEcommerce\Models\User::class
-        // ]);
+        config([
+            'auth.providers.users.model' => \Chuckbe\ChuckcmsModuleEcommerce\Models\User::class
+        ]);
 
         $this->loadRoutesFrom(__DIR__.'/routes/routes.php');
         

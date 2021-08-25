@@ -106,7 +106,7 @@ class ProductRepository
         }
 
         if ($sort) {
-            $productQuery = $productQuery->orderBy('json->sort->collection->_'.$collection->id, 'asc');
+            return $productQuery->get()->sortBy('json->sort->collection->_'.$collection->id);
         }
 
         return $productQuery->get();
