@@ -13,7 +13,7 @@
         <div>
         <p class="p-b-10">Collectie: '<span id="delete_collection_name"></span>' verwijderen?</p>
         </div>
-        <form role="form" method="POST" action="{{ route('dashboard.module.ecommerce.brands.delete') }}">
+        <form role="form" method="POST" action="{{ route('dashboard.module.ecommerce.collections.delete') }}">
           <div class="row">
             <div class="col-md-12">
               <input type="hidden" id="delete_collection_id" name="id" value="">

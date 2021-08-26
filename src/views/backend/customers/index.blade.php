@@ -23,7 +23,7 @@
     </div>
     <div class="row bg-light shadow-sm rounded py-3 mb-3 mx-1">
     	<div class="col-sm-12 text-right d-none">
-    		<a href="{{ route('dashboard.module.ecommerce.products.create') }}" class="btn btn-sm btn-outline-success">Nieuwe Klant</a>
+    		<a href="#" class="btn btn-sm btn-outline-success">Nieuwe Klant</a>
     	</div>
         <div class="col-sm-12 my-3">
         	<div class="table-responsive">
