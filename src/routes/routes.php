@@ -100,8 +100,17 @@ Route::group(['middleware' => ['web']], function() {
 
 	Route::post('/fetch-combination', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\ProductController@getCombination')->name('module.ecommerce.product.get_combination');
 
-	Route::get('/shopping-cart', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\CartController@overview')->name('module.ecommerce.cart.overview');
-	Route::get('/checkout', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\CheckoutController@index')->name('module.ecommerce.checkout.index');
+	Route::group([
+	    'prefix' => LaravelLocalization::setLocale(),
+	        'middleware' => [ 
+	            'Mcamara\LaravelLocalization\Middleware\LaravelLocalizationRedirectFilter', 
+	            'Mcamara\LaravelLocalization\Middleware\LaravelLocalizationViewPath'
+	            ]
+	    ], function() {
+	    Route::get('/shopping-cart', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\CartController@overview')->name('module.ecommerce.cart.overview');
+		Route::get('/checkout', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\CheckoutController@index')->name('module.ecommerce.checkout.index');
+	});
+
 	Route::post('/place-order', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\CheckoutController@placeOrder')->name('module.ecommerce.checkout.finalize');
 	Route::post('/order/get-status', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\CheckoutController@orderStatus')->name('module.ecommerce.checkout.status');
 

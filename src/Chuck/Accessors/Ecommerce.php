@@ -228,12 +228,14 @@ class Ecommerce
                     continue;
                 }
             }
-
+            
             if(array_key_exists('max_weight', $carrier) && (float)$carrier['max_weight'] > 0) {
-                if($this->getCartTotalWeight($instance) <= (!array_key_exists('max_weight', $carrier) ? 0.000 : (float)$carrier['max_weight'])) {
-                    $object[$key] = $carrier;
+                if($this->getCartTotalWeight($instance) > (!array_key_exists('max_weight', $carrier) ? 0.000 : (float)$carrier['max_weight'])) {
+                    continue;
                 }
             }            
+
+            $object[$key] = $carrier;
         }
         
         return $object;

@@ -145,7 +145,7 @@ class CheckoutController extends Controller
         if($order == null) {
             return abort(404);
         } else {
-            return redirect(URL::to(config('chuckcms-module-ecommerce.order.redirect_url')), 303)->with('order_number', $order_number);
+            return redirect(URL::to(config('chuckcms-module-ecommerce.order.redirect_url.'$order->json['lang'])), 303)->with('order_number', $order_number);
         }
 
     }

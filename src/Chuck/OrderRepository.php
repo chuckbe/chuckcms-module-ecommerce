@@ -72,6 +72,7 @@ class OrderRepository
 
         $json['order_number'] = $this->generateOrderNumber();
         $json['reference'] = $this->generateOrderReference();
+        $json['lang'] = app()->getLocale();
         $json['payment_method'] = $request->get('payment_method');
         $json['products'] = $this->cartRepository->formatProducts($products, $cart);
         $json['shipping'] = ChuckEcommerce::getCarrier($request->get('shipping_method'));
@@ -175,7 +176,7 @@ class OrderRepository
     private function prepareEmailData(Order $order, array $email)
     {
         $data = [];
-        $locale = app()->getLocale();
+        $locale = $order->json['lang'];
 
         foreach($email['data'] as $emailDataKey => $emailData) {
             $data[$emailDataKey] = $this->replaceEmailVariables($order, $emailData['value'][$locale]);

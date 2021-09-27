@@ -12,7 +12,10 @@ return [
 
     'order' => [
         'payment_description' => 'Bestelling #',
-        'redirect_url' => 'bedankt'
+        'redirect_url' => [
+            'nl' => 'bedankt',
+            'en' => 'thanks'
+        ]
     ],
 
 	'pages' => [
