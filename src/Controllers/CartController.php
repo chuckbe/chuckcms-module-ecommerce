@@ -40,11 +40,15 @@ class CartController extends Controller
 
     public function addToCart(Request $request)
     {
+        if ($request->has('lang')) {
+            app()->setLocale($request->lang);
+        }
+
     	$product = $this->productRepository->get($request->product_id);
 
         //TODO: check if prod already in cart and check if still enough in stock
     	if($product == null || $this->productRepository->quantity($product, $request->sku) < $request->quantity ) {
-    		$notification = $this->makeNotificationArray('error', ChuckProduct::title($product), 'kan niet worden toegevoegd!', 'icon-ban');
+    		$notification = $this->makeNotificationArray('error', ChuckProduct::title($product), __('kan niet worden toegevoegd!'), 'icon-ban');
             return response()->json(['status' => 'error', 'notification' => $notification]);
     	}
     	
@@ -58,7 +62,7 @@ class CartController extends Controller
             }
 
             if($this->productRepository->quantity($product, $request->sku) < ($request->quantity + $item->qty)) {
-                $notification = $this->makeNotificationArray('error', ChuckProduct::title($product), 'te weinig stock beschikbaar!', 'icon-ban');
+                $notification = $this->makeNotificationArray('error', ChuckProduct::title($product), __('te weinig stock beschikbaar!'), 'icon-ban');
                 return response()->json(['status' => 'error', 'notification' => $notification]);
             }
 
@@ -71,7 +75,7 @@ class CartController extends Controller
 
                 $count = ChuckCart::instance('shopping')->count();
         
-                $notification = $this->makeNotificationArray('success', ChuckProduct::title($product), 'succesvol toegevoegd!', 'icon-circle-check');
+                $notification = $this->makeNotificationArray('success', ChuckProduct::title($product), __('succesvol toegevoegd!'), 'icon-circle-check');
                 return response()->json(['status' => 'success', 'notification' => $notification, 'cart_count' => $count]);
             }
         }
@@ -92,12 +96,16 @@ class CartController extends Controller
     	}
 
     	$count = ChuckCart::instance('shopping')->count();
-        $notification = $this->makeNotificationArray('success', ChuckProduct::title($product), 'succesvol toegevoegd!', 'icon-circle-check');
+        $notification = $this->makeNotificationArray('success', ChuckProduct::title($product), __('succesvol toegevoegd!'), 'icon-circle-check');
     	return response()->json(['status' => 'success', 'notification' => $notification, 'cart_count' => $count]);
     }
 
     public function addCoupon(Request $request)
     {
+        if ($request->has('lang')) {
+            app()->setLocale($request->lang);
+        }
+
         $discount = $this->discountRepository->code($request->coupon);
         $user = Auth::user();
 
@@ -117,7 +125,7 @@ class CartController extends Controller
             $cart->store('shopping_'.$user->id);
         }
 
-        $notification = $this->makeNotificationArray('success', 'Coupon: '.$discount->code, 'succesvol toegevoegd!', 'icon-circle-check');
+        $notification = $this->makeNotificationArray('success', 'Coupon: '.$discount->code, __('succesvol toegevoegd!'), 'icon-circle-check');
 
         $template = ChuckEcommerce::getTemplate();
         $view_detail = view($template->hintpath . '::templates.' . $template->slug . '.ecommerce.' . config('chuckcms-module-ecommerce.blade_layouts.cart_detail'))->render();
@@ -128,10 +136,14 @@ class CartController extends Controller
 
     public function removeCoupon(Request $request)
     {
+        if ($request->has('lang')) {
+            app()->setLocale($request->lang);
+        }
+
         $discount = $this->discountRepository->code($request->coupon);
 
         if(is_null($discount)) {
-            return response()->json(['status' => 'undefined', 'status_text' => 'Coupon bestaat niet.']);
+            return response()->json(['status' => 'undefined', 'status_text' => __('Coupon bestaat niet.')]);
         }
 
         if(Auth::user()) {
@@ -146,7 +158,7 @@ class CartController extends Controller
             $cart->store('shopping_'.Auth::user()->id);
         }
 
-        $notification = $this->makeNotificationArray('warning', 'Coupon: '.$discount->code, 'verwijderd!', 'icon-circle-check');
+        $notification = $this->makeNotificationArray('warning', 'Coupon: '.$discount->code, __('verwijderd!'), 'icon-circle-check');
 
         $template = ChuckEcommerce::getTemplate();
 
@@ -158,6 +170,10 @@ class CartController extends Controller
 
     public function removeFromCart(Request $request)
     {
+        if ($request->has('lang')) {
+            app()->setLocale($request->lang);
+        }
+
         $product = $this->productRepository->sku($request->sku);
 
     	if(Auth::user()) {
@@ -170,7 +186,7 @@ class CartController extends Controller
     		ChuckCart::instance('shopping')->store('shopping_'.Auth::user()->id);
     	}
 
-        $notification = $this->makeNotificationArray('info', ChuckProduct::title($product), 'uit winkelwagen gehaald!', 'icon-circle-check');
+        $notification = $this->makeNotificationArray('info', ChuckProduct::title($product), __('uit winkelwagen gehaald!'), 'icon-circle-check');
 
         $template = ChuckEcommerce::getTemplate();
 
@@ -182,6 +198,10 @@ class CartController extends Controller
 
     public function detailHtml(Request $request)
     {
+        if ($request->has('lang')) {
+            app()->setLocale($request->lang);
+        }
+
         if(Auth::user()) {
             ChuckCart::instance('shopping')->restore('shopping_'.Auth::user()->id);
         }
@@ -201,6 +221,10 @@ class CartController extends Controller
 
     public function updateCart(Request $request)
     {
+        if ($request->has('lang')) {
+            app()->setLocale($request->lang);
+        }
+
     	if(Auth::user()) {
     		ChuckCart::instance('shopping')->restore('shopping_'.Auth::user()->id);
     	}
@@ -218,13 +242,17 @@ class CartController extends Controller
 
     public function updateCartItem(Request $request)
     {
+        if ($request->has('lang')) {
+            app()->setLocale($request->lang);
+        }
+
     	if(Auth::user()) {
     		ChuckCart::instance('shopping')->restore('shopping_'.Auth::user()->id);
     	}
 
     	ChuckCart::instance('shopping')->update($request->row_id, $request->quantity);
 
-        $notification = $this->makeNotificationArray('info', ChuckProduct::title(ChuckProduct::sku(ChuckCart::instance('shopping')->get($request->row_id)->id)), 'gewijzigd!', 'icon-circle-check');
+        $notification = $this->makeNotificationArray('info', ChuckProduct::title(ChuckProduct::sku(ChuckCart::instance('shopping')->get($request->row_id)->id)), __('gewijzigd!'), 'icon-circle-check');
 
     	if(Auth::user()) {
     		ChuckCart::instance('shopping')->store('shopping_'.Auth::user()->id);
