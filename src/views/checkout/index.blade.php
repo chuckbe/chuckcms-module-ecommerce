@@ -266,6 +266,7 @@ $(document).ready(function() {
                 
                 legal_approval: $('input[name=legal_approval]').val(),
                 promo_approval: promo,
+                lang: "{{ app()->getLocale() }}",
                 
                 _token: a_token
             }

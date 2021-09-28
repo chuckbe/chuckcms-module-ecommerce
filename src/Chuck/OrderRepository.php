@@ -72,7 +72,7 @@ class OrderRepository
 
         $json['order_number'] = $this->generateOrderNumber();
         $json['reference'] = $this->generateOrderReference();
-        $json['lang'] = app()->getLocale();
+        $json['lang'] = $request->has('lang') ? $request->get('lang') : app()->getLocale();
         $json['payment_method'] = $request->get('payment_method');
         $json['products'] = $this->cartRepository->formatProducts($products, $cart);
         $json['shipping'] = ChuckEcommerce::getCarrier($request->get('shipping_method'));
