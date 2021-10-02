@@ -11,10 +11,10 @@ use Illuminate\Http\Request;
 
 class CartRepository
 {
-	private $repeater;
+    private $repeater;
     private $productRepository;
 
-	public function __construct(Repeater $repeater, ProductRepository $productRepository)
+    public function __construct(Repeater $repeater, ProductRepository $productRepository)
     {
         $this->repeater = $repeater;
         $this->productRepository = $productRepository;
@@ -22,38 +22,44 @@ class CartRepository
 
     public function getProducts($cart)
     {
-        $sku = [];
+        if (count($cart->content()) == 1) {
+            $sku = $cart->content()->first()->id;
+            return $this->productRepository->sku($sku);
+        }
+
+        $products = collect();
         foreach($cart->content() as $cartItem) {
-            $sku[] = $cartItem->id;
+            $products->push($this->productRepository->sku($cartItem->id));
         }
         
-        return $this->productRepository->sku($sku);
+        return $products;
     }
 
     public function formatProducts($products, $cart)
     {
         $product_array = [];
-        foreach($cart->content() as $cartItem) {
+        $cartItems = $cart->content();
+        foreach($cartItems as $cartKey => $cartItem) {
             foreach($products as $productItem) {
                 if ($this->productRepository->hasSKU($productItem, $cartItem->id)) {
-                    $product_array[$cartItem->id]['options'] = $this->productRepository->getOptions($productItem, $cartItem->id, $cartItem->options);
-                    $product_array[$cartItem->id]['options_text'] = $this->productRepository->getOptionsText($productItem, $cartItem->id, $cartItem->options);
-                    $product_array[$cartItem->id]['extras'] = $this->productRepository->getExtras($productItem, $cartItem->id, $cartItem->extras);
-                    $product_array[$cartItem->id]['extras_text'] = $this->productRepository->getExtrasText($productItem, $cartItem->id, $cartItem->extras);
-                    $product_array[$cartItem->id]['discounts'] = $cartItem->discounts->toArray();
+                    $product_array[$cartItem->rowId]['options'] = $this->productRepository->getOptions($productItem, $cartItem->id, $cartItem->options);
+                    $product_array[$cartItem->rowId]['options_text'] = $this->productRepository->getOptionsText($productItem, $cartItem->id, $cartItem->options);
+                    $product_array[$cartItem->rowId]['extras'] = $this->productRepository->getExtras($productItem, $cartItem->id, $cartItem->extras);
+                    $product_array[$cartItem->rowId]['extras_text'] = $this->productRepository->getExtrasText($productItem, $cartItem->id, $cartItem->extras);
+                    $product_array[$cartItem->rowId]['discounts'] = $cartItem->discounts->toArray();
                     
-                    $product_array[$cartItem->id]['_price'] = $this->priceObject($cartItem);
+                    $product_array[$cartItem->rowId]['_price'] = $this->priceObject($cartItem);
                     
-                    $product_array[$cartItem->id]['sku'] = $cartItem->id;
-                    $product_array[$cartItem->id]['title'] = $this->productRepository->title($productItem);
+                    $product_array[$cartItem->rowId]['sku'] = $cartItem->id;
+                    $product_array[$cartItem->rowId]['title'] = $this->productRepository->title($productItem);
 
-                    $product_array[$cartItem->id]['price'] = $cartItem->price;
-                    $product_array[$cartItem->id]['tax_rate'] = $cartItem->taxRate;
-                    $product_array[$cartItem->id]['quantity'] = $cartItem->qty;
-                    $product_array[$cartItem->id]['total'] = $cartItem->total;
-                    $product_array[$cartItem->id]['discount'] = $cartItem->_discount;
-                    $product_array[$cartItem->id]['tax'] = $cartItem->tax;
-                    $product_array[$cartItem->id]['final'] = $cartItem->final;
+                    $product_array[$cartItem->rowId]['price'] = $cartItem->price;
+                    $product_array[$cartItem->rowId]['tax_rate'] = $cartItem->taxRate;
+                    $product_array[$cartItem->rowId]['quantity'] = $cartItem->qty;
+                    $product_array[$cartItem->rowId]['total'] = $cartItem->total;
+                    $product_array[$cartItem->rowId]['discount'] = $cartItem->_discount;
+                    $product_array[$cartItem->rowId]['tax'] = $cartItem->tax;
+                    $product_array[$cartItem->rowId]['final'] = $cartItem->final;
 
                     break;
                 }
@@ -132,9 +138,11 @@ class CartRepository
 
     public function subtractItemsFromStock($products, $cart) :bool
     {
-        foreach($products as $product) {
-            $json = $product->json;
-            foreach($cart->content() as $cartItem) {
+        $cartItems = $cart->content();
+        foreach($cartItems as $cartKey => $cartItem) {
+            foreach($products as $product) {
+                $json = $product->json;
+                
                 if(!$this->productRepository->hasSKU($product, $cartItem->id)) {
                     continue;
                 }
@@ -142,21 +150,23 @@ class CartRepository
                 if(!$this->productRepository->isCombination($product, $cartItem->id)) {
                     //subtract quantity from stock
                     $json['quantity'] = $json['quantity'] - $cartItem->qty;
-                    continue;
+                    $product->json = $json;
+                    $product->update();
+                    break;
                 }
 
                 $combination = $this->productRepository->combinationForSKU($product, $cartItem->id);
                 $combinationKey = $this->productRepository->combinationKeyForSKU($product, $cartItem->id);
 
                 $json['combinations'][$combinationKey]['quantity'] = $combination['quantity'] - $cartItem->qty;
-            }
 
-            $product->json = $json;
-            if($product->update()) {
-                continue;
-            } else {
-                //account for products' stock that was already updated
-                return false;
+                $product->json = $json;
+                if($product->update()) {
+                    break;
+                } else {
+                    //account for products' stock that was already updated
+                    return false;
+                }
             }
         }
 
@@ -164,10 +174,12 @@ class CartRepository
     }
 
     public function addItemsToStock($products, $cart) 
-    {
-        foreach($products as $product) {
-            $json = $product->json;
-            foreach($cart->content() as $cartItem) {
+{
+        $cartItems = $cart->content();
+        foreach($cartItems as $cartKey => $cartItem) {
+            foreach($products as $product) {
+                $json = $product->json;
+                
                 if(!$this->productRepository->hasSKU($product, $cartItem->id)) {
                     continue;
                 }
@@ -175,17 +187,19 @@ class CartRepository
                 if(!$this->productRepository->isCombination($product, $cartItem->id)) {
                     //subtract quantity from stock
                     $json['quantity'] = $json['quantity'] + $cartItem->qty;
-                    continue;
+                    $product->json = $json;
+                    $product->update();
+                    break;
                 }
 
                 $combination = $this->productRepository->combinationForSKU($product, $sku);
                 $combinationKey = $this->productRepository->combinationKeyForSKU($product, $sku);
 
                 $json['combinations'][$combinationKey]['quantity'] = $combination['quantity'] + $cartItem->qty;
+                $product->json = $json;
+                $product->update();
+                break;
             }
-
-            $product->json = $json;
-            $product->update();
         }
     }
 

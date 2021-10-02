@@ -65,7 +65,7 @@ class CheckoutController extends Controller
         }
 
         $template = ChuckEcommerce::getTemplate();
-    	return view('chuckcms-module-ecommerce::checkout.index', compact('template'));
+        return view('chuckcms-module-ecommerce::checkout.index', compact('template'));
     }
 
     public function placeOrder(PlaceOrderRequest $request)
@@ -91,7 +91,7 @@ class CheckoutController extends Controller
 
         $in_stock = $this->cartRepository->allItemsInStock($products, $cart);
         
-        if (is_array($in_stock) && count($in_stock) > 0) { // check if all items are in stock and available for order
+        if (is_array($in_stock) && $in_stock !== true && count($in_stock) > 0) { // check if all items are in stock and available for order
             $cart = $this->cartRepository->updateUnavailableItemsInCart($cart, $in_stock);
             if ($user) {
                 $cart->store('shopping_'.$user->id);
@@ -104,7 +104,6 @@ class CheckoutController extends Controller
         if (!$this->cartRepository->subtractItemsFromStock($products, $cart)) { // subtract products quantity from stock
             return response()->json(['status' => 'subtraction']);
         }
-
 
         $order = $this->orderRepository->new($request, $cart, $products, $customer); // save order in the database
         
