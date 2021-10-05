@@ -22,17 +22,17 @@ class CartRepository
 
     public function getProducts($cart)
     {
+        $sku = [];
         if (count($cart->content()) == 1) {
             $sku = $cart->content()->first()->id;
             return $this->productRepository->sku($sku);
         }
 
-        $products = collect();
         foreach($cart->content() as $cartItem) {
-            $products->push($this->productRepository->sku($cartItem->id));
+            $sku[] = $cartItem->id;
         }
         
-        return $products;
+        return $this->productRepository->sku($sku);
     }
 
     public function formatProducts($products, $cart)
