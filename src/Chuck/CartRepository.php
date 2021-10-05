@@ -25,7 +25,7 @@ class CartRepository
         $sku = [];
         if (count($cart->content()) == 1) {
             $sku = $cart->content()->first()->id;
-            return $this->productRepository->sku($sku);
+            return $this->productRepository->sku([$sku]);
         }
 
         foreach($cart->content() as $cartItem) {
