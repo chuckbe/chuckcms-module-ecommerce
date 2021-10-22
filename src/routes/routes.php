@@ -78,6 +78,9 @@ Route::group(['middleware' => ['web']], function() {
 			Route::get('/dashboard/ecommerce/settings/integrations', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\SettingController@integrations')->name('dashboard.module.ecommerce.settings.index.integrations');
 			Route::post('/dashboard/ecommerce/settings/integrations/update', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\Settings\IntegrationsController@update')->name('dashboard.module.ecommerce.settings.index.integrations.update');
 			//END OF: SETTINGS ROUTES
+
+			// STARTOF: POS ROUTES
+			Route::get('/dashboard/ecommerce/pos', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\POSController@index')->name('dashboard.module.ecommerce.pos.index');
 		});
 		
 		//START OF: FRONT_END ACCOUNT ROUTES
