@@ -3,13 +3,13 @@
     <div class="col-lg-6 text-start h-100">
         <h4 class="bestelHeaderTitle">Bestelling</h4>
     </div>
-    <div class="col-6 text-end bestelHeaderInstellingen h-100">
+    <div class="col-lg-6 text-end bestelHeaderInstellingen h-100">
         <button type="button" class="btn shadow-sm deletealles"><i class="fas fa-trash"></i></button>
     </div>
 </div>{{-- bestelheader ends --}}
 {{-- bestelTabheader starts --}}
 <div class="bestelTabHandler row">
-    <nav class="nav nav-pills flex-column flex-sm-row cof_cartTabList" id="bestelNavigationTab" role="tablist">       
+    <nav class="nav nav-pills flex-row cof_cartTabList" id="bestelNavigationTab" role="tablist">       
         <a class="flex-sm-fill text-sm-center nav-link" id="cof_cartTabListNewOrderLink" href="#">
             <span><i class="fas fa-plus"></i><span>
         </a>
@@ -25,7 +25,7 @@
         <div class="cof_cartTab tab-pane fade show active" id="cart_0123"  role="tabpanel" aria-labelledby="cart_0123Tab" data-cart-id="cart_0123">
             <div class="cof_CartProductList">
                 <div class="bestelOrder cof_cartProductListItem row align-items-center" data-product-id="0" data-product-name="" data-attribute-name="" data-quantity="0" data-unit-price="0" data-total-price="0">
-                    <div class="col-lg-5 bestelOrderDetails">
+                    <div class="col-5 bestelOrderDetails">
                         <div class="bestelOrderTitle cof_cartProductListDetails">
                             <span class="cof_cartProductListItemFullName">Product Naam</span>
                             <small class="text-muted d-block"><span class="cof_cartProductListItemQuantity">1</span> x <span class="cof_cartProductListItemUnitPrice">€ 0,00</span></small>
@@ -37,7 +37,7 @@
                             </small>
                         </div> 
                     </div> 
-                    <div class="col-lg-4 bestelOrderQuantity">
+                    <div class="col-4 bestelOrderQuantity">
                         <div class="bestelOrderQuantityControl trash cof_cartProductListItemSubtraction">
                             <div class="cof_deleteProductFromListButton" style="cursor:pointer;">
                                 <i class="fas fa-trash"></i>
@@ -71,7 +71,7 @@
                             <p id="cof_selectedCustomerEmail">guest@guest.com</p>
                         </div>
                     </div>
-                    <div class="col-lg-3 klantKoppeler">
+                    <div class="col-3 klantKoppeler">
                         <button class="btn btn-sm w-100" id="cof_selectCustomerAccount" data-guest="1"><small><i class="fas fa-cog"></i></small></button>
                     </div>
                 </div>

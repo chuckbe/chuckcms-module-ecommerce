@@ -1,9 +1,9 @@
 <div class="container px-3 bg-dark text-white">
     <div class="header row">
-        <div class="col-lg-3 d-flex">
+        <div class="col-3 d-flex">
             <img class="logo my-auto w-auto" alt="logo" src="{{ URL::to('/') }}{{ ChuckSite::getSetting('logo.href') }}"/>
         </div>
-        <div class="col-lg-9 headerSearchArea d-flex justify-content-end">
+        <div class="col-9 headerSearchArea d-flex justify-content-end">
             <div class="text-end d-flex justify-content-end align-items-center h-100">
                 <div class="locationTypeSwitcherWrapper delivery">
                     <div class="locationTypeSwitcherWrapper">
