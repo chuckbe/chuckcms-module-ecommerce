@@ -611,7 +611,7 @@ $(document).ready(function() {
             @foreach(ChuckEcommerce::getCarriersForCart('shopping') as $carrierKey => $carrier)
             <div class="custom-control custom-radio">
                 <input id="{{ $carrierKey }}" name="shippingMethod" value="{{ $carrierKey }}" type="radio" class="custom-control-input" data-carrier-key="{{ $carrierKey }}" data-carrier-cost="{{ ChuckEcommerce::getCarrierTotalForCart($carrierKey, 'shopping') }}" data-carrier-min-weight="{{ array_key_exists('min_weight', $carrier) ? $carrier['min_weight'] : '0.000' }}" data-carrier-max-weight="{{ array_key_exists('max_weight', $carrier) ? $carrier['max_weight'] : '0.000' }}" data-carrier-countries="{{ implode('|',$carrier['countries']) }}" data-carrier-cost-tax="{{ ChuckEcommerce::taxFromPrice(ChuckEcommerce::getCarrierTotalForCart($carrierKey, 'shopping'), 21) }}" {{ $carrier['default'] || $loop->count == 1 ? 'checked' : '' }} required>
-                <label class="custom-control-label" for="{{ $carrierKey }}">{{ $carrier['name'] }} ({{ $carrier['transit_time'] }}) — {{ (float)ChuckEcommerce::getCarrierTotalForCart($carrierKey, 'shopping') > 0 ? ChuckEcommerce::formatPrice(ChuckEcommerce::getCarrierTotalForCart($carrierKey, 'shopping')) : 'free' }}</label>
+                <label class="custom-control-label" for="{{ $carrierKey }}">{{ $carrier['name'][app()->getLocale()] }} ({{ $carrier['transit_time'][app()->getLocale()] }}) — {{ (float)ChuckEcommerce::getCarrierTotalForCart($carrierKey, 'shopping') > 0 ? ChuckEcommerce::formatPrice(ChuckEcommerce::getCarrierTotalForCart($carrierKey, 'shopping')) : 'free' }}</label>
             </div>
             @endforeach
           

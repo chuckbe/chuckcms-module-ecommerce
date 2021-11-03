@@ -541,8 +541,8 @@ class InstallModuleEcommerce extends Command
         ];
 
         $json['settings']['shipping']['carriers']['default'] = [
-            'name' => 'Standaard',
-            'transit_time' => 'levering binnen 48u',
+            'name' => ['nl' => 'Standaard', 'en' => 'Standard'],
+            'transit_time' => ['nl' => 'levering binnen 48u', 'en' => 'delivery within 48h'],
             'image' => null,
             'price' => "0.000000",
             'tax_rate' => 21,
