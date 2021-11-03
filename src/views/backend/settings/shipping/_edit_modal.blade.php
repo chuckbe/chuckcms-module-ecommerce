@@ -34,13 +34,13 @@
                           <div class="col-sm-6">
                             <div class="form-group form-group-default required">
                               <label>Naam</label>
-                              <input type="text" id="create_collection_name" name="name" value="{{ $carrier['name'][$langKey] }}" class="form-control" required>
+                              <input type="text" id="create_collection_name" name="name[{{ $langKey }}]" value="{{ $carrier['name'][$langKey] }}" class="form-control" required>
                             </div>
                           </div>
                           <div class="col-sm-6">
                             <div class="form-group form-group-default required">
                               <label>Verzendtijd </label>
-                              <input type="text" id="carrier_transit_time" name="transit_time" value="{{ $carrier['transit_time'][$langKey] }}" class="form-control" required>
+                              <input type="text" id="carrier_transit_time" name="transit_time[{{ $langKey }}]" value="{{ $carrier['transit_time'][$langKey] }}" class="form-control" required>
                             </div>
                           </div>
                         </div>

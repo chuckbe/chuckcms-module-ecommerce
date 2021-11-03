@@ -18,19 +18,40 @@
         <form role="form" method="POST" action="{{ route('dashboard.module.ecommerce.settings.shipping.carrier.save') }}">
           <div class="form-group-attached">
             <div class="row">
-              <div class="col-sm-6">
-                <div class="form-group form-group-default required">
-                  <label>Naam</label>
-                  <input type="text" id="create_collection_name" name="name" class="form-control" required>
-                </div>
-              </div>
-              <div class="col-sm-6">
-                <div class="form-group form-group-default required">
-                  <label>Verzendtijd </label>
-                  <input type="text" id="carrier_transit_time" name="transit_time" class="form-control" required>
+              <div class="col-sm-12">
+                <ul class="nav nav-tabs justify-content-start mb-1"  role="tablist">
+                  @foreach(ChuckSite::getSupportedLocales() as $langKey => $langValue)
+                    <li class="nav-item" role="presentation">
+                      <a href="#" class="nav-link{{ $loop->iteration == 1 ? ' active' : '' }}" @if($loop->iteration == 1) class="active" @endif data-toggle="tab" data-target="#tab_product_{{ $langKey }}"><span>{{ $langValue['name'] }} ({{ $langValue['native'] }})</span></a>
+                    </li>
+                  @endforeach
+                </ul>
+                <!-- Tab panes -->
+                <div class="tab-content">
+
+                  @foreach(ChuckSite::getSupportedLocales() as $langKey => $langValue)
+                  <div class="tab-pane fade show @if($loop->iteration == 1) active @endif" id="tab_product_{{ $langKey }}">
+                        <div class="row">
+                          <div class="col-sm-6">
+                            <div class="form-group form-group-default required">
+                              <label>Naam</label>
+                              <input type="text" id="create_collection_name" name="name[{{ $langKey }}]" class="form-control" required>
+                            </div>
+                          </div>
+                          <div class="col-sm-6">
+                            <div class="form-group form-group-default required">
+                              <label>Verzendtijd </label>
+                              <input type="text" id="carrier_transit_time" name="transit_time[{{ $langKey }}]" class="form-control" required>
+                            </div>
+                          </div>
+                        </div>
+                  </div>
+                  @endforeach
+
                 </div>
               </div>
             </div>
+
             <div class="row">
               <div class="col-md-12">
                 <div class="form-group form-group-default">
