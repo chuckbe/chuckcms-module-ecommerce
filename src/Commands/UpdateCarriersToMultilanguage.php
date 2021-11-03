@@ -51,11 +51,11 @@ class UpdateCarriersToMultilanguage extends Command
         $ecommerce = $this->moduleRepository->get('chuckcms-module-ecommerce');
         $json = $ecommerce->json;
 
-        $carriers = $json['settings']['carriers'];
-
+        $carriers = $json['settings']['shipping']['carriers'];
+        
         foreach ($carriers as $carrierKey => $carrier) {
-            $name = $carrier[$carrierKey]['name'];
-            $transit_time = $carrier[$carrierKey]['transit_time'];
+            $name = $carrier['name'];
+            $transit_time = $carrier['transit_time'];
 
             $carriers[$carrierKey]['name'] = [];
             $carriers[$carrierKey]['transit_time'] = [];
@@ -65,7 +65,7 @@ class UpdateCarriersToMultilanguage extends Command
             }
         }
 
-        $json['settings']['carriers'] = $carriers;
+        $json['settings']['shipping']['carriers'] = $carriers;
         $ecommerce->json = $json;
         $ecommerce->update();
         
