@@ -17,12 +17,17 @@ function statusOrder () {
         }
     })
     .done(function(data) {
+        if (data.key = "awaiting_transfer") {
+            return;
+        }
+
         if (data.status.paid == "1"){
         	$('.order-success').removeClass('d-none');
+            $('.order-canceled').remove();
         } else { 
-        	$('.order-canceled').removeClass('d-none');
+            $('.order-canceled').removeClass('d-none');	
+            $('.order-success').remove();
         } 
     });
 }
-
 </script>

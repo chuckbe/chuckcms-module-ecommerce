@@ -210,6 +210,81 @@ class InstallModuleEcommerce extends Command
                 'delivery' => false,
                 'paid' => false
             ],
+            'awaiting_transfer' => [
+                'display_name' => ['nl' => 'In afwachting van overschrijving', 'en' => 'Awaiting wire transfer'],
+                'short' => ['nl' => 'Afwachting overschrijving', 'en' => 'Awaiting wire transfer'],
+                'send_email' => true,
+                'email' => [
+                    'customer' => [
+                        'to' => '[%ORDER_EMAIL%]',
+                        'to_name' => '[%ORDER_SURNAME%] [%ORDER_NAME%]',
+                        'cc' => null,
+                        'bcc' => null,
+                        'template' => 'chuckcms-module-ecommerce::emails.default',
+                        'logo' => true,
+                        'send_delivery_note' => false,
+                        'data' => [
+                            'subject' => [
+                                'type' => 'text',
+                                'value' => [
+                                    'nl' => 'Uw bestelling #[%ORDER_NUMBER%] wacht op uw overschrijving',
+                                    'en' => 'Your order #[%ORDER_NUMBER%] awaits your wire transfer'
+                                ],
+                                'required' => true,
+                                'validation' => 'required'
+                            ],
+                            'hidden_preheader' => [
+                                'type' => 'text',
+                                'value' => [
+                                    'nl' => 'Uw bestelling met bestelnummer #[%ORDER_NUMBER%] wacht op uw overschrijving. In deze mail vindt u meer informatie terug.',
+                                    'en' => 'Your order #[%ORDER_NUMBER%] awaits your wire transfer. You can find more information in this email.'
+                                ],
+                                'required' => true,
+                                'validation' => 'required'
+                            ],
+                            'intro' => [
+                                'type' => 'textarea',
+                                'value' => [
+                                    'nl' => 'Beste [%ORDER_SURNAME%] [%ORDER_NAME%]<br><br>Bedankt voor uw bestelling. Om deze te vervolledigen vragen u om de volgende overschrijving uit te voeren. <br><br>[%ORDER_WIRE_TRANSFER%]',
+                                    'en' => 'Dear [%ORDER_SURNAME%] [%ORDER_NAME%]<br><br>Thank you for your order. To complete this order we ask you to wire transfer us with the following details. <br><br>[%ORDER_WIRE_TRANSFER%]'
+                                ],
+                                'required' => true,
+                                'validation' => 'required'
+                            ],
+                            'body_title' => [
+                                'type' => 'text',
+                                'value' => [
+                                    'nl' => 'Uw Bestelling',
+                                    'en' => 'Your Order'
+                                ],
+                                'required' => true,
+                                'validation' => 'required'
+                            ],
+                            'body' => [
+                                'type' => 'textarea',
+                                'value' => [
+                                    'nl' => 'Hieronder vind je nogmaals een overzicht terug van jouw bestelling. <br><br> <b>Verzending:</b> [%ORDER_CARRIER_NAME%] <br> <b>Verzendtijd:</b> [%ORDER_CARRIER_TRANSIT_TIME%] <br><br> <b>Overzicht: </b> <br> [%ORDER_PRODUCTS%] <br> <b>Verzendkosten</b>: [%ORDER_SHIPPING_TOTAL%] <br><br> <b>Totaal</b>: [%ORDER_FINAL%] <br><br> <b>Facturatie adres: </b> <br> Naam: [%ORDER_SURNAME%] [%ORDER_NAME%] <br> E-mail: [%ORDER_EMAIL%] <br> Tel: [%ORDER_TELEPHONE%] <br> Bedrijf: [%ORDER_COMPANY%] <br> BTW: [%ORDER_COMPANY_VAT%] <br> Adres: <br>[%ORDER_BILLING_STREET%] [%ORDER_BILLING_HOUSENUMBER%], <br>[%ORDER_BILLING_POSTALCODE%] [%ORDER_BILLING_CITY%], [%ORDER_BILLING_COUNTRY%] <br><br> <b>Verzendadres:</b><br>Naam: [%ORDER_SURNAME%] [%ORDER_NAME%] <br>Adres:<br>[%ORDER_SHIPPING_STREET%] [%ORDER_SHIPPING_HOUSENUMBER%], <br>[%ORDER_SHIPPING_POSTALCODE%] [%ORDER_SHIPPING_CITY%], [%ORDER_SHIPPING_COUNTRY%]',
+                                    'en' => 'Below you will find another summary of your order. <br><br> <b>Shipping:</b> [%ORDER_CARRIER_NAME%] <br> <b>Transit time:</b> [%ORDER_CARRIER_TRANSIT_TIME%] <br><br> <b>Order: </b> <br> [%ORDER_PRODUCTS%] <br> <b>Shipping fees</b>: [%ORDER_SHIPPING_TOTAL%] <br><br> <b>Total</b>: [%ORDER_FINAL%] <br><br> <b>Invoice address: </b> <br> Name: [%ORDER_SURNAME%] [%ORDER_NAME%] <br> E-mail: [%ORDER_EMAIL%] <br> Tel: [%ORDER_TELEPHONE%] <br> Company: [%ORDER_COMPANY%] <br> VAT: [%ORDER_COMPANY_VAT%] <br> Address: <br>[%ORDER_BILLING_STREET%] [%ORDER_BILLING_HOUSENUMBER%], <br>[%ORDER_BILLING_POSTALCODE%] [%ORDER_BILLING_CITY%], [%ORDER_BILLING_COUNTRY%] <br><br> <b>Shipping address:</b><br>Name: [%ORDER_SURNAME%] [%ORDER_NAME%] <br>Address:<br>[%ORDER_SHIPPING_STREET%] [%ORDER_SHIPPING_HOUSENUMBER%], <br>[%ORDER_SHIPPING_POSTALCODE%] [%ORDER_SHIPPING_CITY%], [%ORDER_SHIPPING_COUNTRY%]'
+                                ],
+                                'required' => true,
+                                'validation' => 'required'
+                            ],
+                            'footer' => [
+                                'type' => 'textarea',
+                                'value' => [
+                                    'nl' => 'Heeft u vragen over uw bestelling? U kan ons steeds contacteren.<br><br><a href="mailto:' . config('chuckcms-module-ecommerce.company.email') . '">' . config('chuckcms-module-ecommerce.company.email') . '</a><br><br>' . config('chuckcms-module-ecommerce.company.name'),
+                                    'en' => 'Do you have any other questions about this order? You can always reach us.<br><br><a href="mailto:' . config('chuckcms-module-ecommerce.company.email') . '">' . config('chuckcms-module-ecommerce.company.email') . '</a><br><br>' . config('chuckcms-module-ecommerce.company.name')
+                                ],
+                                'required' => true,
+                                'validation' => 'required'
+                            ],
+                        ]
+                    ]
+                ],
+                'invoice' => false,
+                'delivery' => false,
+                'paid' => false
+            ],
             'canceled' => [
                 'display_name' => ['nl' => 'Bestelling geannuleerd', 'en' => 'Order canceled'],
                 'short' => ['nl' => 'Geannuleerd', 'en' => 'Canceled'],
@@ -377,8 +452,8 @@ class InstallModuleEcommerce extends Command
                             'subject' => [
                                 'type' => 'text',
                                 'value' => [
-                                    'nl' => 'Uw bestelling #[%ORDER_NUMBER%] is verzonden',
-                                    'en' => 'Your order #[%ORDER_NUMBER%] was shipped'
+                                    'nl' => 'Bevestiging van betaling voor bestelling #[%ORDER_NUMBER%]',
+                                    'en' => 'Confirmation of payment for order #[%ORDER_NUMBER%]'
                                 ],
                                 'required' => true,
                                 'validation' => 'required'
@@ -386,8 +461,8 @@ class InstallModuleEcommerce extends Command
                             'hidden_preheader' => [
                                 'type' => 'text',
                                 'value' => [
-                                    'nl' => 'Uw bestelling met bestelnummer #[%ORDER_NUMBER%] is onderweg. In deze mail vindt u meer informatie over uw bestelling terug.',
-                                    'en' => 'Your order #[%ORDER_NUMBER%] was shipped'
+                                    'nl' => 'Uw bestelling met bestelnummer #[%ORDER_NUMBER%] is betaald. In deze mail vindt u meer informatie over uw bestelling terug.',
+                                    'en' => 'Your order with number #[%ORDER_NUMBER%] was paid. In this email you will find more information on your order.'
                                 ],
                                 'required' => true,
                                 'validation' => 'required'
@@ -395,8 +470,8 @@ class InstallModuleEcommerce extends Command
                             'intro' => [
                                 'type' => 'textarea',
                                 'value' => [
-                                    'nl' => 'Beste [%ORDER_SURNAME%] [%ORDER_NAME%]<br><br>Uw bestelling is onderweg. Uw bestelling wordt volgende werkdag geleverd tussen 9:00u en 19:00u. Is er niemand thuis? Dan proberen we het de dag erna nog eens, maak u geen zorgen. Heeft u nog vragen? Neem gerust contact met ons op.',
-                                    'en' => 'Order is shipped'
+                                    'nl' => 'Beste [%ORDER_SURNAME%] [%ORDER_NAME%]<br><br>Bedankt voor uw bestelling. We hebben uw betaling ontvangen en beginnen met het verwerken van uw bestelling. Heeft u nog vragen? Neem gerust contact met ons op.',
+                                    'en' => 'Dear [%ORDER_SURNAME%] [%ORDER_NAME%]<br><br>Thank you for your order. We have received your payment and will begin processing your order.'
                                 ],
                                 'required' => true,
                                 'validation' => 'required'
@@ -414,7 +489,7 @@ class InstallModuleEcommerce extends Command
                                 'type' => 'textarea',
                                 'value' => [
                                     'nl' => 'Hieronder vind je nogmaals een overzicht terug van jouw bestelling. <br><br> <b>Verzending:</b> [%ORDER_CARRIER_NAME%] <br> <b>Verzendtijd:</b> [%ORDER_CARRIER_TRANSIT_TIME%] <br><br> <b>Overzicht: </b> <br> [%ORDER_PRODUCTS%] <br> <b>Verzendkosten</b>: [%ORDER_SHIPPING_TOTAL%] <br><br> <b>Totaal</b>: [%ORDER_FINAL%] <br><br> <b>Facturatie adres: </b> <br> Naam: [%ORDER_SURNAME%] [%ORDER_NAME%] <br> E-mail: [%ORDER_EMAIL%] <br> Tel: [%ORDER_TELEPHONE%] <br> Bedrijf: [%ORDER_COMPANY%] <br> BTW: [%ORDER_COMPANY_VAT%] <br> Adres: <br>[%ORDER_BILLING_STREET%] [%ORDER_BILLING_HOUSENUMBER%], <br>[%ORDER_BILLING_POSTALCODE%] [%ORDER_BILLING_CITY%], [%ORDER_BILLING_COUNTRY%] <br><br> <b>Verzendadres:</b><br>Naam: [%ORDER_SURNAME%] [%ORDER_NAME%] <br>Adres:<br>[%ORDER_SHIPPING_STREET%] [%ORDER_SHIPPING_HOUSENUMBER%], <br>[%ORDER_SHIPPING_POSTALCODE%] [%ORDER_SHIPPING_CITY%], [%ORDER_SHIPPING_COUNTRY%]',
-                                    'en' => 'Your order is shipped and on its way to you.'
+                                    'en' => 'Below you will find another summary of your order. <br><br> '
                                 ],
                                 'required' => true,
                                 'validation' => 'required'
@@ -559,6 +634,12 @@ class InstallModuleEcommerce extends Command
         $json['settings']['integrations']['mollie'] = [];
         $json['settings']['integrations']['mollie']['key'] = null;
         $json['settings']['integrations']['mollie']['methods'] = ['bancontact', 'belfius', 'creditcard', 'ideal', 'inghomepay', 'kbc', 'paypal'];
+
+        $json['settings']['integrations']['banktransfer'] = [];
+        $json['settings']['integrations']['banktransfer']['active'] = false;
+        $json['settings']['integrations']['banktransfer']['name'] = 'ChuckCMS';
+        $json['settings']['integrations']['banktransfer']['iban'] = 'BE00 0000 0000 0000';
+        $json['settings']['integrations']['banktransfer']['bank'] = 'Bank of Belgium';
 
         // create the module
         $module = $this->moduleRepository->createFromArray([

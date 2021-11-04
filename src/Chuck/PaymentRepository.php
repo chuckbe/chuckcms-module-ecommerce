@@ -2,10 +2,13 @@
 
 namespace Chuckbe\ChuckcmsModuleEcommerce\Chuck;
 
-use Chuckbe\ChuckcmsModuleEcommerce\Models\Order;
-use Chuckbe\ChuckcmsModuleEcommerce\Events\OrderWasPaid;
+use Chuckbe\ChuckcmsModuleEcommerce\Events\OrderStatusWasUpdated;
 use Chuckbe\ChuckcmsModuleEcommerce\Chuck\OrderRepository;
+use Chuckbe\ChuckcmsModuleEcommerce\Events\OrderWasPaid;
+use Chuckbe\ChuckcmsModuleEcommerce\Payment\Payment;
+use Chuckbe\ChuckcmsModuleEcommerce\Models\Order;
 use Illuminate\Http\Request;
+use ChuckEcommerce;
 use ChuckSite;
 use Mollie;
 
@@ -25,6 +28,11 @@ class PaymentRepository
      **/
     public function initiate(Order $order)
     {
+        if ( $order->json['payment_method'] == 'banktransfer' 
+            && ChuckEcommerce::getSetting('integrations.banktransfer.active') ) {
+            return new Payment($order);
+        }
+
         config(['mollie.key' => ChuckSite::module('chuckcms-module-ecommerce')->getSetting('integrations.mollie.key')]);
 
         $payment = Mollie::api()->payments()->create([
@@ -55,11 +63,22 @@ class PaymentRepository
 
     public function check(Order $order)
     {
-        config(['mollie.key' => ChuckSite::module('chuckcms-module-ecommerce')->getSetting('integrations.mollie.key')]);
-        
-        if($order->isPaid()) {
+        if( $order->isPaid() ) {
             return;
         }
+
+        if ( $order->status == Order::STATUS_AWAITING_TRANSFER ) {
+            return;
+        }
+
+        if ( $order->json['payment_method'] == 'banktransfer' 
+            && ChuckEcommerce::getSetting('integrations.banktransfer.active')
+            && $order->status !== Order::STATUS_AWAITING_TRANSFER) {
+            event(new OrderStatusWasUpdated($order, Order::STATUS_AWAITING_TRANSFER));
+            return;
+        }
+
+        config(['mollie.key' => ChuckSite::module('chuckcms-module-ecommerce')->getSetting('integrations.mollie.key')]);
 
         $total = 0;
         $json = $order->json;

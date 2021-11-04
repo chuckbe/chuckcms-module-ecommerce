@@ -3,6 +3,7 @@
 namespace Chuckbe\ChuckcmsModuleEcommerce;
 
 use Chuckbe\ChuckcmsModuleEcommerce\Commands\InstallModuleEcommerce;
+use Chuckbe\ChuckcmsModuleEcommerce\Commands\AddAwaitingTransferStatus;
 use Chuckbe\ChuckcmsModuleEcommerce\Commands\UpdateCarriersToMultilanguage;
 use Illuminate\Support\ServiceProvider;
 
@@ -36,6 +37,7 @@ class ChuckcmsModuleEcommerceServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->commands([
                 InstallModuleEcommerce::class,
+                AddAwaitingTransferStatus::class,
                 UpdateCarriersToMultilanguage::class,
             ]);
         }
