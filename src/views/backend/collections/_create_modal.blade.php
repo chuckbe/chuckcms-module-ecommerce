@@ -60,7 +60,14 @@
               <div class="col-md-12">
                 <div class="form-group form-group-default required">
                   <label>Google Product Categorie</label>
-                  <input type="text" id="create_google_product_category" name="google_product_category" class="form-control" required>
+                  <select class="custom-select" name="google_product_category" data-init-plugin="select2" data-minimum-results-for-search="Infinity" data-placeholder="Selecteer een fb collectie" data-allow-clear="true">
+                    <option></option>
+                    @if(count(ChuckRepeater::for('google_product_category')) > 0)
+                      @foreach(ChuckRepeater::for('google_product_category') as $gpc)
+                        <option value="{{$gpc->category_id}}">{{$gpc->category}}</option>
+                      @endforeach
+                    @endif
+                  </select>
                 </div>
               </div>
             </div>

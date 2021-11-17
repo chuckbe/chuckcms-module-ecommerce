@@ -9,13 +9,6 @@ use Maatwebsite\Excel\Facades\Excel;
 use Chuckbe\ChuckcmsModuleEcommerce\Imports\FbImport;
 
 
-use Illuminate\Http\Request;
-use Maatwebsite\Excel\Concerns\ToCollection;
-use ChuckEcommerce;
-use ChuckCollection;
-use ChuckSite;
-use Str;
-
 class ImportFacebookCategories extends Command
 {
     /**
@@ -30,7 +23,7 @@ class ImportFacebookCategories extends Command
      *
      * @var string
      */
-    protected $description = 'This command imports the ChuckCMS Ecommerce Module.';
+    protected $description = 'This command creates a repeater and imports the Facebook product categories in that repeater.';
 
     /**
      * The module repository implementation.
