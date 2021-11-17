@@ -6,7 +6,6 @@ use Chuckbe\ChuckcmsModuleEcommerce\Chuck\ProductRepository;
 use Chuckbe\ChuckcmsModuleEcommerce\Chuck\CollectionRepository;
 use Chuckbe\ChuckcmsModuleEcommerce\Chuck\BrandRepository;
 
-use App\Http\Requests;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Chuckbe\Chuckcms\Models\Repeater;
@@ -37,8 +36,30 @@ class CollectionController extends Controller
         $products = $this->productRepository->get();
         $collections = $this->collectionRepository->get();
         $brands = $this->brandRepository->get();
+        // $fb_categories = $this->csvToArray(public_path('chuckbe/chuckcms-module-ecommerce/fb_product_categories_nl_NL.csv'));
         return view('chuckcms-module-ecommerce::backend.collections.index', compact('products', 'collections', 'brands'));
     }
+
+    // public function csvToArray($filename = '', $delimiter = ',') {
+    //     if (!file_exists($filename) || !is_readable($filename))
+    //        return false;
+     
+    //     $header = null;
+    //     $data = array();
+    //     if (($handle = fopen($filename, 'r')) !== false) {
+    //        while (($row = fgetcsv($handle, 1000, $delimiter)) !== false) {
+    //           if (!$header)
+    //              $header = $row;
+    //           else
+    //              $data[] = array_combine($header, $row);
+    //        }
+    //        fclose($handle);
+    //     }
+     
+    //     return $data;
+    //  }
+
+
 
     public function sorting(Repeater $collection)
     {

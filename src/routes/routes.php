@@ -3,6 +3,7 @@
 Route::group(['middleware' => ['web']], function() {
 	Route::group(['middleware' => 'auth'], function () {
 		Route::group(['middleware' => ['role:super-admin|administrator|moderator']], function () {
+			
 			Route::get('/dashboard/ecommerce', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\EcommerceController@dashboard')->name('dashboard.module.ecommerce.index');
 			
 			//START OF: ORDERS ROUTES
