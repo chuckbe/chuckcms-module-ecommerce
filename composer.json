@@ -8,7 +8,8 @@
         "laravel/framework": "~5.8||^6.18.35||^7.30.4",
         "barryvdh/laravel-dompdf": "^0.8.1",
         "chuckbe/chuckcms": "~0.1",
-        "mollie/laravel-mollie": "^2.0"
+        "mollie/laravel-mollie": "^2.0",
+        "maatwebsite/excel": "^3.1"
     },
     "authors": [
         {
@@ -24,14 +25,16 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Chuckbe\\ChuckcmsModuleEcommerce\\ChuckcmsModuleEcommerceServiceProvider"
+                "Chuckbe\\ChuckcmsModuleEcommerce\\ChuckcmsModuleEcommerceServiceProvider",
+                "Maatwebsite\\Excel\\ExcelServiceProvider"
             ],
             "aliases": {
                 "ChuckCart": "Chuckbe\\ChuckcmsModuleEcommerce\\Facades\\Cart", 
                 "ChuckCollection": "Chuckbe\\ChuckcmsModuleEcommerce\\Facades\\Collection", 
                 "ChuckCustomer": "Chuckbe\\ChuckcmsModuleEcommerce\\Facades\\Customer", 
                 "ChuckEcommerce": "Chuckbe\\ChuckcmsModuleEcommerce\\Facades\\Ecommerce", 
-                "ChuckProduct": "Chuckbe\\ChuckcmsModuleEcommerce\\Facades\\Product"
+                "ChuckProduct": "Chuckbe\\ChuckcmsModuleEcommerce\\Facades\\Product",
+                "Excel": "Maatwebsite\\Excel\\Facades\\Excel"
             }
         }
     },
