@@ -102,10 +102,10 @@ class ImportGoogleCategories extends Command
         $this->info('hold on tight!');
         // Excel::import(new GpcImport, public_path('chuckbe/chuckcms-module-ecommerce/google_categories/taxonomy-with-ids.'.$choosen_lang.'.xls'));
 
-        $csv = file_get_contents('https://cdn.chuck.be/chuckcms-module-ecommerce/google_categories/taxonomy-with-ids.'.$choosen_lang.'.xls');
-        file_put_contents(public_path('chuckbe/chuckcms-module-ecommerce/gpc.csv'), $csv);
-        Excel::import(new GpcImport, public_path('chuckbe/chuckcms-module-ecommerce/gpc.csv'));
-        File::delete(public_path('chuckbe/chuckcms-module-ecommerce/gpc.csv'));
+        $xls = file_get_contents('https://cdn.chuck.be/chuckcms-module-ecommerce/google_categories/taxonomy-with-ids.'.$choosen_lang.'.xls');
+        file_put_contents(public_path('chuckbe/chuckcms-module-ecommerce/gpc.xls'), $xls);
+        Excel::import(new GpcImport, public_path('chuckbe/chuckcms-module-ecommerce/gpc.xls'));
+        File::delete(public_path('chuckbe/chuckcms-module-ecommerce/gpc.xls'));
 
 
         $this->info('.         .');
