@@ -5,6 +5,7 @@ namespace Chuckbe\ChuckcmsModuleEcommerce\Commands;
 
 use Illuminate\Console\Command;
 use Chuckbe\Chuckcms\Models\Repeater;
+use Illuminate\Support\Facades\File; 
 use Maatwebsite\Excel\Facades\Excel;
 use Chuckbe\ChuckcmsModuleEcommerce\Imports\GpcImport;
 
@@ -51,19 +52,61 @@ class ImportGoogleCategories extends Command
     public function handle()
     {
         $lang_codes = [
+            'cs-CZ',
+            'da-DK',
+            'de-CH',
+            'de-DE',
+            'el-GR',
             'en-GB',
-            'nl-NL'
+            'es-ES',
+            'fi-FI',
+            'fr-CH',
+            'fr-FR',
+            'it-CH',
+            'it-IT',
+            'ja-JP',
+            'nl-NL',
+            'no-NO',
+            'pl-PL',
+            'pt-BR',
+            'ru-RU',
+            'sv-SE',
+            'tr-TR'
         ];
         $languages = [
+            'čeština',
+            'Dansk',
+            'Deutsch (Schweiz)',
+            'Deutsch (Deutschland)',
+            'Ελληνικά',
             'English [GB]',
-            'Nederlands'
+            'Español (España)',
+            'Suomalainen',
+            'Français (Suisse)',
+            'Français (France)',
+            'Italiano (Svizzera)',
+            'Italiano (Italia)',
+            '日本',
+            'Nederlands',
+            'Norsk',
+            'Polskie',
+            'Portuguese',
+            'Русский',
+            'Svenska',
+            'Türk',
         ];
         $choice = $this->choice("Choose a language", $languages);
         $index = array_search($choice, $languages);
         $choosen_lang = $lang_codes[$index];
         $this->info('working on creating repeater');
         $this->info('hold on tight!');
-        Excel::import(new GpcImport, public_path('chuckbe/chuckcms-module-ecommerce/google_categories/taxonomy-with-ids.'.$choosen_lang.'.xls'));
+        // Excel::import(new GpcImport, public_path('chuckbe/chuckcms-module-ecommerce/google_categories/taxonomy-with-ids.'.$choosen_lang.'.xls'));
+
+        $csv = file_get_contents('https://cdn.chuck.be/chuckcms-module-ecommerce/google_categories/taxonomy-with-ids.'.$choosen_lang.'.xls');
+        file_put_contents(public_path('chuckbe/chuckcms-module-ecommerce/gpc.csv'), $csv);
+        Excel::import(new GpcImport, public_path('chuckbe/chuckcms-module-ecommerce/gpc.csv'));
+        File::delete(public_path('chuckbe/chuckcms-module-ecommerce/gpc.csv'));
+
 
         $this->info('.         .');
         $this->info('..         ..');
