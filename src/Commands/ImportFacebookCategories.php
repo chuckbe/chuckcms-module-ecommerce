@@ -5,6 +5,7 @@ namespace Chuckbe\ChuckcmsModuleEcommerce\Commands;
 
 use Illuminate\Console\Command;
 use Chuckbe\Chuckcms\Models\Repeater;
+use Illuminate\Support\Facades\File; 
 use Maatwebsite\Excel\Facades\Excel;
 use Chuckbe\ChuckcmsModuleEcommerce\Imports\FbImport;
 
@@ -152,9 +153,11 @@ class ImportFacebookCategories extends Command
         $choosen_lang = $lang_codes[$index];
         $this->info('working on creating repeater');
         $this->info('hold on tight!');
-        // Excel::import(new FbImport, public_path('chuckbe/chuckcms-module-ecommerce/fb_categories/fb_product_categories'.$choosen_lang.'.csv'));
-        Excel::import(new FbImport, file_get_contents('https://cdn.chuck.be/chuckcms-module-ecommerce/fb_categories/fb_product_categories'.$choosen_lang.'.csv'));
-        // $this->info('https://cdn.chuck.be/chuckcms-module-ecommerce/fb_categories/fb_product_categories'.$choosen_lang.'.csv');
+    
+        $csv = file_get_contents('https://cdn.chuck.be/chuckcms-module-ecommerce/fb_categories/fb_product_categories'.$choosen_lang.'.csv');
+        file_put_contents(public_path('chuckbe/chuckcms-module-ecommerce/fb.csv'), $csv);
+        Excel::import(new FbImport, public_path('chuckbe/chuckcms-module-ecommerce/fb.csv'));
+        File::delete(public_path('chuckbe/chuckcms-module-ecommerce/fb.csv'));
 
         $this->info('.         .');
         $this->info('..         ..');
