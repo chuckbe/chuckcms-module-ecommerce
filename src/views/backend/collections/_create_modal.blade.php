@@ -34,6 +34,9 @@
                   <label>Hoofdcollectie </label>
                   <select class="custom-select" name="parent" data-init-plugin="select2" data-minimum-results-for-search="Infinity" data-placeholder="Selecteer een collectie" data-allow-clear="true">
                     <option></option>
+                      @foreach ($collections as $collection)
+                        <option value="{{$collection->id}}">{{$collection->json['name']}}</option>
+                      @endforeach
                   </select>
                 </div>
               </div>
