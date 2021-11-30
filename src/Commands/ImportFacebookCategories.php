@@ -94,7 +94,7 @@ class ImportFacebookCategories extends Command
             '_th_TH',
             '_tl_PH',
             '_tr_TR',
-            'ur_PK',
+            '_ur_PK',
             '_vi_VN',
             '_zh_CN'
         ];
@@ -152,7 +152,9 @@ class ImportFacebookCategories extends Command
         $choosen_lang = $lang_codes[$index];
         $this->info('working on creating repeater');
         $this->info('hold on tight!');
-        Excel::import(new FbImport, public_path('chuckbe/chuckcms-module-ecommerce/fb_categories/fb_product_categories'.$choosen_lang.'.csv'));
+        // Excel::import(new FbImport, public_path('chuckbe/chuckcms-module-ecommerce/fb_categories/fb_product_categories'.$choosen_lang.'.csv'));
+        Excel::import(new FbImport, file_get_contents('https://cdn.chuck.be/chuckcms-module-ecommerce/fb_categories/fb_product_categories'.$choosen_lang.'.csv'));
+        // $this->info('https://cdn.chuck.be/chuckcms-module-ecommerce/fb_categories/fb_product_categories'.$choosen_lang.'.csv');
 
         $this->info('.         .');
         $this->info('..         ..');
