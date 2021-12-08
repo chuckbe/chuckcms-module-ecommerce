@@ -1,5 +1,9 @@
 <div class="menuItemArea container ps-4 pr-4 ps-md-5 pe-md-5 d-flex">
     <div class="tab-content" id="navigationTabContent">
+        @foreach(ChuckCollection::all() as $collection)
+            <div class="tab-pane fade" id="category-{{$collection->id}}-Tab" role="tabpanel" aria-labelledby="category-{{$collection->id}}-Tab">
+            </div>
+        @endforeach
         <div class="tab-pane fade show active" id="category55Tab" role="tabpanel" aria-labelledby="category55Tab">
             <div class="row">
                 <div 
