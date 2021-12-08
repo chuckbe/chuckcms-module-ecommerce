@@ -107,15 +107,24 @@ $lang = \LaravelLocalization::getCurrentLocale();
 <script src="{{ URL::to('vendor/laravel-filemanager/js/lfm.js') }}"></script>
 <script>
 $( document ).ready(function() { 
-  init();
+    init();
 
-  function init () {
-    //init media manager inputs 
-    var domain = "{{ URL::to('dashboard/media')}}";
-    $('#lfm').filemanager('image', {prefix: domain});
+    function init () {
+        var domain = "{{ URL::to('dashboard/media')}}";
+        $('#lfm').filemanager('image', {prefix: domain});
 
-    $('.autonumeric').autoNumeric('init');
-  }
+        // $('.autonumeric').autoNumeric('init');
+    }
+
+    $('body').on('change', '.boolean_checkbox_input', function() {
+        if($(this).is(':checked')) {
+            $(this).val(1);
+            $(this).parent('label').siblings('input').prop('disabled', true);
+        } else {
+            $(this).val(0);
+            $(this).parent('label').siblings('input').prop('disabled', false);
+        }
+    });
 });
 </script>
 <script type="text/javascript">

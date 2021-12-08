@@ -155,7 +155,8 @@ class CheckoutController extends Controller
         $order = Order::where('json->order_number', $order_number)->first();
         
         return response()->json([
-            'status' => ChuckEcommerce::getSetting('order.statuses.'.$order->status)
+            'status' => ChuckEcommerce::getSetting('order.statuses.'.$order->status),
+            'key' => $order->status
         ]);     
     }
 

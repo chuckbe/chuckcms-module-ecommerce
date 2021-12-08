@@ -293,8 +293,11 @@ $(document).ready(function() {
       console.log(vat);
       var invat = parseFloat($(this).val());
       var exvat = (invat / vat).toFixed(6);
-      console.log(exvat);
-      $("#sale_price_ex_input").val(exvat).change();
+      if($(this).val() == ''){
+        $("#sale_price_ex_input").val(0.000000).change();
+      }else{
+        $("#sale_price_ex_input").val(exvat).change();
+      }
     });
 
 
@@ -303,7 +306,11 @@ $(document).ready(function() {
       var vat = parseFloat($('#tax-input').find(":selected").attr("data-amount"));
       var exvat = parseFloat($(this).val());
       var invat = (exvat + ((exvat / 100) * vat)).toFixed(6);
-      $(".sale_price_in_input[data-combination-key="+combi_slug+"]").val(invat).change();
+      if($(this).val() == ''){
+        $(".sale_price_in_input[data-combination-key="+combi_slug+"]").val(0.000000).change();
+      }else{
+        $(".sale_price_in_input[data-combination-key="+combi_slug+"]").val(invat).change();
+      }
     });
 
     $(".sale_price_in_input").keyup(function(){
@@ -313,7 +320,11 @@ $(document).ready(function() {
       var invat = parseFloat($(this).val());
       var exvat = (invat / vat).toFixed(6);
       console.log(exvat);
-      $(".sale_price_ex_input[data-combination-key="+combi_slug+"]").val(exvat).change();
+      if($(this).val() == ''){
+        $(".sale_price_ex_input[data-combination-key="+combi_slug+"]").val(0.000000).change();
+      }else{
+        $(".sale_price_ex_input[data-combination-key="+combi_slug+"]").val(exvat).change();
+      }
     });
 
 
@@ -442,11 +453,15 @@ $(document).ready(function() {
               $('.combination-row:first').attr('data-combination-key',finalCombinations[i].key);
               $('.combination-row:first').find('.combination_name_input').attr('value', finalCombinations[i].name);
               //change name attributes of inputs
+               $('.combination-row:first').find('.combination_price_sale_input').attr('data-combination-key', finalCombinations[i].key);
+              $('.combination-row:first').find('.combination_price_final_input').attr('data-combination-key', finalCombinations[i].key);
             } else if(i > 0) {
               $('.combination-row:first').clone().appendTo('.attributes-combinations-block');
               $('.combination-row:last').attr('data-combination-key',finalCombinations[i].key);
               $('.combination-row:last').find('.combination_name_input').attr('value', finalCombinations[i].name);
               //change name attributes of inputs
+              $('.combination-row:last').find('.combination_price_sale_input').attr('data-combination-key', finalCombinations[i].key);
+              $('.combination-row:last').find('.combination_price_final_input').attr('data-combination-key', finalCombinations[i].key);
             }
           };
         } else { // there are previous combinations

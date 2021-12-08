@@ -21,6 +21,36 @@
             </div>
         </div>
     </div>
+
+    <hr>
+
+    <div class="row">
+        <div class="col-sm-12">
+            <h6><b>banktransfer</b></h6>
+        </div>
+        <div class="col-lg-12">
+            <div class="form-group form-group-default">
+                <label class="sr-only" for="">Actief?</label>
+                <div class="w-100 d-block mb-lg-1"></div>
+                <input type="hidden" class="boolean_checkbox_input_hidden" value="0" name="integrations[banktransfer][active]" @if(ChuckEcommerce::getSetting('integrations.banktransfer.active') == true) disabled @endif>
+                <label for="banktransfer_active">
+                    <input type="checkbox" class="boolean_checkbox_input" id="banktransfer_active" value="{{ ChuckEcommerce::getSetting('integrations.banktransfer.active') == true ? 1 : 0 }}" name="integrations[banktransfer][active]" @if(ChuckEcommerce::getSetting('integrations.banktransfer.active') == true) checked @endif /> Actief?
+                </label>
+            </div>
+            <div class="form-group form-group-default">
+                <label>Naam rekeninghouder</label>
+                <input type="text" class="form-control" placeholder="eg ChuckCMS" name="integrations[banktransfer][name]" value="{{ ChuckEcommerce::getSetting('integrations.banktransfer.name') }}">
+            </div>
+            <div class="form-group form-group-default">
+                <label>IBAN</label>
+                <input type="text" class="form-control" placeholder="eg BE00 0000 0000 0000" name="integrations[banktransfer][iban]" value="{{ ChuckEcommerce::getSetting('integrations.banktransfer.iban') }}">
+            </div>
+            <div class="form-group form-group-default">
+                <label>Bank</label>
+                <input type="text" class="form-control" placeholder="eg ChuckCMS" name="integrations[banktransfer][bank]" value="{{ ChuckEcommerce::getSetting('integrations.banktransfer.bank') }}">
+            </div>
+        </div>
+    </div>
     <div class="row">
         <div class="col-sm-12 text-right">
             <input type="hidden" name="_token" value="{{ Session::token() }}">

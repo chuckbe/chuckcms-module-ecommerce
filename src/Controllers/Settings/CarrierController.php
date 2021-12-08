@@ -28,8 +28,8 @@ class CarrierController extends Controller
     public function save(Request $request)
     {
         $this->validate($request, [ 
-            'name' => 'max:185|required',
-            'transit_time' => 'required',
+            'name.*' => 'required',
+            'transit_time.*' => 'required',
             'image' => 'nullable',
             'min_cart' => 'required',
             'cost' => 'required',
@@ -52,8 +52,12 @@ class CarrierController extends Controller
             $carrier = [];
         }
 
-        $carrier['name'] = $request->get('name');
-        $carrier['transit_time'] = $request->get('transit_time');
+        $langs = ChuckSite::getSupportedLocales();
+        foreach ($langs as $langKey => $langValue) {
+            $carrier['name'][$langKey] = $request->get('name')[$langKey];
+            $carrier['transit_time'][$langKey] = $request->get('transit_time')[$langKey];
+        }
+        
         $carrier['image'] = $request->get('image');
         $carrier['min_cart'] = $request->get('min_cart');
         $carrier['cost'] = $request->get('cost');

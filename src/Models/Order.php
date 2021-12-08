@@ -9,6 +9,7 @@ class Order extends Eloquent
 {
     const STATUS_CREATED = 'new';
     const STATUS_AWAITING = 'awaiting';
+    const STATUS_AWAITING_TRANSFER = 'awaiting_transfer';
     const STATUS_CANCELED = 'canceled';
     const STATUS_ERROR = 'error';
     const STATUS_PAYMENT = 'payment';

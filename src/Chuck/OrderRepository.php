@@ -272,10 +272,13 @@ class OrderRepository
                     $value = str_replace('[%ORDER_PRODUCTS%]', $this->formatProducts($order), $value);
                 }
                 if (strpos($foundVariable, 'ORDER_CARRIER_NAME') !== false) {
-                    $value = str_replace('[%ORDER_CARRIER_NAME%]', $order->json['shipping']['name'], $value);
+                    $value = str_replace('[%ORDER_CARRIER_NAME%]', $order->json['shipping']['name'][$order->json['lang']], $value);
                 }
                 if (strpos($foundVariable, 'ORDER_CARRIER_TRANSIT_TIME') !== false) {
-                    $value = str_replace('[%ORDER_CARRIER_TRANSIT_TIME%]', $order->json['shipping']['transit_time'], $value);
+                    $value = str_replace('[%ORDER_CARRIER_TRANSIT_TIME%]', $order->json['shipping']['transit_time'][$order->json['lang']], $value);
+                }
+                if (strpos($foundVariable, 'ORDER_WIRE_TRANSFER') !== false) {
+                    $value = str_replace('[%ORDER_WIRE_TRANSFER%]', $this->getWireTransferHtml($order), $value);
                 }
             }
         }
@@ -431,6 +434,18 @@ class OrderRepository
         $total = Order::where('status', 'payment')->whereDate('created_at', '>', Carbon::today()->subDays(7))->count();
 
         return $total;
+    }
+
+    public function getWireTransferHtml(Order $order)
+    {
+        $string = '';
+
+        $string .= '<b>Naam: </b>'.ChuckEcommerce::getSetting('integrations.banktransfer.name').'<br>';
+        $string .= '<b>IBAN: </b>'.ChuckEcommerce::getSetting('integrations.banktransfer.iban').'<br>';
+        $string .= '<b>Bank: </b>'.ChuckEcommerce::getSetting('integrations.banktransfer.bank').'<br>';
+        $string .= '<b>Bedrag: </b>'.ChuckEcommerce::formatPrice($order->final);
+
+        return $string;
     }
 
 }
