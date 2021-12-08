@@ -64,10 +64,9 @@
                   <label for="is_pos_available">
                       <input type="checkbox" class="boolean_checkbox_input" id="is_pos_available"
                        
-                      value="{{ $collection->json['is_pos_available'] == 'true' ? 1 : 0 }}" 
+                      value="{{ $collection->json['is_pos_available'] === '1' ? 1 : 0 }}" 
                       name="is_pos_available" 
-                      checked
-                      @if($collection->json['is_pos_available'] == 'true') checked @endif 
+                      @if($collection->json['is_pos_available'] === '1') checked="checked" @endif 
                       /> Is beschikbaar in POS?
                   </label>
                 </div>
