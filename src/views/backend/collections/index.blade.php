@@ -82,6 +82,7 @@ function deleteModal(id, name){
 							<th scope="col">Naam</th>
 							<th scope="col">Producten</th>
 							<th scope="col">Hoofdcollectie</th>
+							<th scope="col">POS?</th>
 							<th scope="col" style="min-width:190px">Actions</th>
         				</tr>
         			</thead>
@@ -92,6 +93,11 @@ function deleteModal(id, name){
 							<td class="v-align-middle">{{$collection->json['name'] }}</td>
 							<td class="v-align-middle">{{ ChuckProduct::forCollection($collection->json['name'], $collection->json['parent'], true) }}</td>
 							<td class="v-align-middle">{{$collections->where('id', $collection->json['parent'])->first() ? $collections->where('id', $collection->json['parent'])->first()->json['name'] : '' }}</td>
+							<td class="v-align-middle">
+								<span class="badge badge-{{ $collection->is_pos_available == '1' ? 'success' : 'danger' }}">
+									{!!$collection->is_pos_available == '1' ? '✓' : '✕'!!}
+								</span>
+							</td>
 							<td class="v-align-middle semi-bold">
 								<a href="{{ route('dashboard.module.ecommerce.collections.sorting', ['collection' => $collection->id]) }}" class="btn btn-primary btn-sm btn-rounded m-r-20">
 									<i class="fa fa-eye"></i>
