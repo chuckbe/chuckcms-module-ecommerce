@@ -353,6 +353,7 @@ class ProductRepository
         $json['is_buyable'] = ($values->get('is_buyable') == '1' ? true : false);
         $json['is_download'] = ($values->get('is_download') == '1' ? true : false);
         $json['is_featured'] = ($values->get('is_featured') == '1' ? true : false);
+        $json['is_pos_available'] = ($values->get('is_pos_available') == '1' ? true : false);
 
         $json['price']['unit']['amount'] = $values->get('price')['unit']['amount'];
         $json['price']['unit']['type'] = $values->get('price')['unit']['type'];

@@ -37,14 +37,6 @@ class CollectionController extends Controller
         $products = $this->productRepository->get();
         $collections = $this->collectionRepository->get();
         $brands = $this->brandRepository->get();
-        
-        // foreach($collections as $collection){
-        //     $json = $collection->json;
-        //     $json['is_pos_available'] = FALSE;
-        //     $collection->json = $json;
-
-        // }
-        // dump($collections[0]->json);
         return view('chuckcms-module-ecommerce::backend.collections.index', compact('products', 'collections', 'brands'));
     }
 
