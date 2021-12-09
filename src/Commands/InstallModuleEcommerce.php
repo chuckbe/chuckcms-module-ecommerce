@@ -147,6 +147,14 @@ class InstallModuleEcommerce extends Command
                     'submenu' => null
                 ),
                 'eighth' => array(
+                    'name' => 'Locaties',
+                    'icon' => true,
+                    'icon_data' => 'tag',
+                    'route' => 'dashboard.module.ecommerce.locations.index',
+                    'has_submenu' => false,
+                    'submenu' => null
+                ),
+                'ninth' => array(
                     'name' => 'Instellingen',
                     'icon' => true,
                     'icon_data' => 'cpu',

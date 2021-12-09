@@ -56,6 +56,12 @@ Route::group(['middleware' => ['web']], function() {
 			Route::post('/dashboard/ecommerce/discounts/save', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\DiscountController@save')->name('dashboard.module.ecommerce.discounts.save');
 			Route::post('/dashboard/ecommerce/discounts/delete', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\DiscountController@delete')->name('dashboard.module.ecommerce.discounts.delete');
 			//END OF: DISCOUNTS ROUTES
+
+			//START OF: LOCATIONS ROUTES
+				Route::get('/dashboard/ecommerce/locations', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\LocationController@index')->name('dashboard.module.ecommerce.locations.index');
+				Route::post('/dashboard/ecommerce/locations/save', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\LocationController@save')->name('dashboard.module.ecommerce.locations.save');
+				Route::post('/dashboard/ecommerce/locations/delete', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\LocationController@delete')->name('dashboard.module.ecommerce.locations.delete');
+			//END OF:   LOCATIONS ROUTES
 			
 			//START OF: SETTINGS ROUTES
 			Route::get('/dashboard/ecommerce/settings', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\SettingController@index')->name('dashboard.module.ecommerce.settings.index');
