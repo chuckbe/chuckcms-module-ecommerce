@@ -40,6 +40,11 @@ Locaties
         $('#edit_location_order').val(order);
         $('#editLocationModal').modal('show');
     }
+    function deleteModal(id, name){
+        $('#delete_location_id').val(id);
+        $('#delete_location_name').text(name);
+        $('#deleteLocationModal').modal('show');
+    }
 	
 </script>
 @endsection
@@ -99,5 +104,5 @@ Locaties
 </div>
 @include('chuckcms-module-ecommerce::backend.locations._create_modal')
 @include('chuckcms-module-ecommerce::backend.locations._edit_modal')
-{{--  @include('chuckcms-module-ecommerce::backend.locations._delete_modal')  --}}
+@include('chuckcms-module-ecommerce::backend.locations._delete_modal')
 @endsection

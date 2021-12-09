@@ -116,7 +116,7 @@
                         </div>
                     </form>
                 </div>
-            </div>
-        </div>
+            </div> 
+        </div><!-- /.modal-content -->
     </div>
 </div>
