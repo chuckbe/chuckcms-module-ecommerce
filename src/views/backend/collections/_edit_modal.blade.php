@@ -54,20 +54,10 @@
             </div>
             <div class="row">
               <div class="col-md-12">
-                <div class="form-group form-group-default ml-4">
-                    <input type="hidden" class="boolean_checkbox_input_hidden" value="0" name="is_pos_available" 
-                    @if( $collection->json['is_pos_available'] == true) disabled @endif
-                    >
-                    {{--  <input type="checkbox" class="form-check-input" id="boolean_checkbox_input" name="is_pos_available">
-                    <label>Is beschikbaar in POS?</label>  --}}
-                    
+                <div class="form-group form-group-default">
+                  <input type="hidden" class="edit_collection_checkbox_input_hidden" value="0" name="is_pos_available">
                   <label for="is_pos_available">
-                      <input type="checkbox" class="boolean_checkbox_input" id="is_pos_available"
-                       
-                      value="{{ $collection->json['is_pos_available'] === '1' ? 1 : 0 }}" 
-                      name="is_pos_available" 
-                      @if($collection->json['is_pos_available'] === '1') checked="checked" @endif 
-                      /> Is beschikbaar in POS?
+                      <input type="checkbox" class="edit_collection_checkbox_input" id="is_pos_available" value="0" name="is_pos_available"/> Is beschikbaar in POS?
                   </label>
                 </div>
               </div>

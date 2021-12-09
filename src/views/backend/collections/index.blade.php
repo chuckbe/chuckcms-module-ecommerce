@@ -23,13 +23,30 @@ $( document ).ready(function() {
 		var domain = "{{ URL::to('dashboard/media')}}";
 		$('.img_lfm_link').filemanager('image', {prefix: domain});
 	}
+	$('body').on('click','.edit_collection_checkbox_input', function(){
+		if($(this).val() == 1){
+			$(this).val('0')
+		}else{
+			$(this).val('1')
+		}
+	});
 });
-function editModal(id, name, parent, image){
+function editModal(id, name, parent, image, is_pos_available){
+	console.log(is_pos_available);
 	$('#edit_collection_id').val(id);
 	$('#edit_collection_name').val(name);
 	$('#edit_collection_parent').val(parent).trigger('change');
 	$('#edit_collection_image').val(image);
 	$('#editcollectionimageholder').attr('src', image);
+	if(is_pos_available == 1){
+		$('.edit_collection_checkbox_input_hidden').attr("disabled", true);
+		$('.edit_collection_checkbox_input').val("1");
+		$('.edit_collection_checkbox_input').attr("checked", true);
+	}else{
+		$('.edit_collection_checkbox_input_hidden').attr("disabled", false);
+		$('.edit_collection_checkbox_input').val("0");
+		$('.edit_collection_checkbox_input').attr("checked", false);
+	}
 	$('#editCollectionModal').modal('show');
 }
 
@@ -81,7 +98,7 @@ function deleteModal(id, name){
 								</a>
 
 								@can('edit redirects')
-								<a href="#" onclick="editModal({{ $collection->id }}, '{{ $collection->json['name'] }}', '{{ $collection->json['parent'] }}', '{{ $collection->json['image'] }}')" class="btn btn-secondary btn-sm btn-rounded m-r-20">
+								<a href="#" onclick="editModal({{ $collection->id }}, '{{ $collection->json['name'] }}', '{{ $collection->json['parent'] }}', '{{ $collection->json['image'] }}', '{{$collection->json['is_pos_available']}}')" class="btn btn-secondary btn-sm btn-rounded m-r-20">
 									<i class="fa fa-edit"></i>
 								</a>
 								@endcan
