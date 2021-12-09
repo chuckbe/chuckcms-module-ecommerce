@@ -25,7 +25,22 @@ Locaties
             $('.img_lfm_link').filemanager('image', {prefix: domain});
         }
     });
-    
+    function editModal(id, name, pos_users, pos_name, pos_address1, pos_address2, pos_vat, pos_receipt_title, pos_receipt_footer_line1, pos_receipt_footer_line2, pos_receipt_footer_line3, order){
+        $('#edit_location_id').val(id);
+        $('#edit_location_name').val(name);
+        $('#edit_location_pos_users').val(pos_users);
+        $('#edit_location_pos_name').val(pos_name);
+        $('#edit_location_pos_address1').val(pos_address1);
+        $('#edit_location_pos_address2').val(pos_address2);
+        $('#edit_location_pos_vat').val(pos_vat);
+        $('#edit_location_pos_receipt_title').val(pos_receipt_title);
+        $('#edit_location_pos_receipt_footer_line1').val(pos_receipt_footer_line1);
+        $('#edit_location_pos_receipt_footer_line2').val(pos_receipt_footer_line2);
+        $('#edit_location_pos_receipt_footer_line3').val(pos_receipt_footer_line3);
+        $('#edit_location_order').val(order);
+        $('#editLocationModal').modal('show');
+    }
+	
 </script>
 @endsection
 
@@ -51,7 +66,6 @@ Locaties
         				<tr>
         					<th scope="col">#</th>
 							<th scope="col">Naam</th>
-							<th scope="col">Type</th>
 							<th scope="col">Volgorde</th>
 							<th scope="col" style="min-width:190px">Actions</th>
         				</tr>
@@ -61,15 +75,10 @@ Locaties
                             <tr>
                                 <td class="v-align-middle">{{ $location->id }}</td>
                                 <td class="v-align-middle">{{$location->json['name'] }}</td>
-                                <td class="v-align-middle">
-                                    <span class="badge badge-{{ $location->type == 'takeout' ? 'primary' : 'secondary' }}">
-                                        {{$location->type}}
-                                    </span>
-                                </td>
                                 <td class="v-align-middle">{{$location->order }}</td>
                                 <td class="v-align-middle semi-bold">
                                     @can('edit redirects')
-                                    <a href="#" onclick="editModal({{ $location->id }}, '{{ $location->json['name'] }}', '{{ $location->type }}', '{{ $location->days_of_week_disabled }}', '{{ $location->on_the_spot ? '1' : '0' }}', '{{ $location->dates_disabled }}', '{{ $location->delivery_cost == 0 ? '0' : $location->delivery_cost }}', '{{ $location->delivery_limited_to }}', '{{ $location->delivery_radius == null ? 'null' : $location->delivery_radius }}', '{{ $location->delivery_radius_from }}', '{{ implode(',', array_filter($location->json['delivery_in_postalcodes'])) }}', '{{ $location->time_required ? '1' : '0' }}', '{{ $location->time_min == 0 ? '0' : $location->time_min }}', '{{ $location->time_max }}', '{{ $location->pos_users }}', '{{ $location->pos_name }}', '{{ $location->pos_address1 }}', '{{ $location->pos_address2 }}', '{{ $location->pos_vat }}', '{{ $location->pos_receipt_title }}', '{{ $location->pos_receipt_footer_line1 }}', '{{ $location->pos_receipt_footer_line2 }}', '{{ $location->pos_receipt_footer_line3 }}', '{{ $location->order }}')" class="btn btn-default btn-sm btn-rounded m-r-20">
+                                    <a href="#" onclick="editModal({{ $location->id }}, '{{ $location->json['name'] }}', '{{ $location->pos_users }}', '{{ $location->pos_name }}', '{{ $location->pos_address1 }}', '{{ $location->pos_address2 }}', '{{ $location->pos_vat }}', '{{ $location->pos_receipt_title }}', '{{ $location->pos_receipt_footer_line1 }}', '{{ $location->pos_receipt_footer_line2 }}', '{{ $location->pos_receipt_footer_line3 }}', '{{ $location->order }}')" class="btn btn-default btn-sm btn-rounded m-r-20">
                                         <i data-feather="edit-2"></i> edit
                                     </a>
                                     @endcan
@@ -89,6 +98,6 @@ Locaties
     </div>
 </div>
 @include('chuckcms-module-ecommerce::backend.locations._create_modal')
-{{--  @include('chuckcms-module-ecommerce::backend.locations._edit_modal')
-@include('chuckcms-module-ecommerce::backend.locations._delete_modal')  --}}
+@include('chuckcms-module-ecommerce::backend.locations._edit_modal')
+{{--  @include('chuckcms-module-ecommerce::backend.locations._delete_modal')  --}}
 @endsection
