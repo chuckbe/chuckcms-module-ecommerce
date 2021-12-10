@@ -5,7 +5,7 @@
                 <div class="card-body py-2">
                     <div class="row pb-1 align-items-center">
                         <div class="col-lg-12 m-0 py-1 px-3">
-                            <p class="card-text mb-1"><small>Kassier: <br>{{ucwords(Auth::user()->name)}}</small></p>
+                            <p class="card-text mb-1"><small>Kassier: <strong>{{ucwords(Auth::user()->name)}}</strong></small></p>
                         </div>
                     </div>
                 </div>

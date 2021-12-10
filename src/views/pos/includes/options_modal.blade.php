@@ -136,8 +136,28 @@
                             <small>* Incompatibele coupons zullen automatisch verwijderd worden</small>
                         </div>
                     </div>
+                    <div class="col-12">
+                        <hr>
+                        <small class="d-block text-danger text-end mb-2 d-none" id="cof_couponErrorText"></small>
+                        <div class="w-100 d-block"></div>
+                        <button class="btn btn-secondary" id="cof_cancelSelectCouponBtn">Annuleren</button>
+                        <button class="btn btn-success float-end" id="cof_addSelectedCouponToCartBtn">Coupon Toevoegen</button>
+                    </div>
                 </div>
             </div>
         </div>
+    </div>
+</div>
+
+<div role="alert" aria-live="assertive" aria-atomic="true"  class="toast text-success" id="customerChangedToast" style="position: absolute; bottom: 25px; left: 25px;">
+    <div class="toast-header">
+      <strong class="mr-auto"><b>SCANNER</b></strong>
+      <small>nu</small>
+      <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="toast-body">
+      Klant werd succesvol gewijzigd!
     </div>
 </div>
