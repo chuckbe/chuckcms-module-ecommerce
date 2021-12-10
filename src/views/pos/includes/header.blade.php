@@ -19,9 +19,23 @@
                         <span id="cof_pos_location">Lier</span>
                     </button>
                     <div class="dropdown-menu" aria-labelledby="locationDropdownButton">
-                        <a class="dropdown-item locationDropdownSelect" href="#">Antwerpen</a>
-                        <a class="dropdown-item locationDropdownSelect" href="#">Mechlen</a>
-                        <a class="dropdown-item locationDropdownSelect" href="#">Brussels</a>
+                        @foreach($locations as $location)
+                            <a 
+                                class="dropdown-item locationDropdownSelect" 
+                                href="#" 
+                                data-location-id="{{ $location->id }}" 
+                                data-pos-name="{{ $location->pos_name }}" 
+                                data-pos-address="{{ $location->pos_address1 }}" 
+                                data-pos-address-t="{{ $location->pos_address2 }}" 
+                                data-pos-vat="{{ $location->pos_vat }}" 
+                                data-pos-receipt-title="{{ $location->pos_receipt_title }}" 
+                                data-pos-receipt-footer-line="{{ $location->pos_receipt_footer_line1 }}" 
+                                data-pos-receipt-footer-line-t="{{ $location->pos_receipt_footer_line2 }}"  
+                                data-pos-receipt-footer-line-tt="{{ $location->pos_receipt_footer_line3 }}"
+                                >
+                                {{ $location->name }}
+                            </a>
+                        @endforeach
                     </div>
                 </div>
             </div>

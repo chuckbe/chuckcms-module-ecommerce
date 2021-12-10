@@ -4,6 +4,7 @@ namespace Chuckbe\ChuckcmsModuleEcommerce\Chuck;
 
 use Chuckbe\Chuckcms\Models\Repeater;
 use Illuminate\Http\Request;
+use ChuckRepeater;
 
 class LocationRepository
 {
