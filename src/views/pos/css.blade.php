@@ -178,16 +178,19 @@
 }
 .menuArea ul.nav .nav-item {
     background-color: var(--main-color);
-    border-radius: 5px;
+    border: 1px solid var(--main-color);
+    border-radius: 0 !important;
 }
 .menuArea ul.nav .nav-item .active {
-    background-color: var(--main-color) !important;
+    background-color: #fff !important;
+    color: var(--main-color);
     border: 1px solid var(--main-color);
 }
 
 .menuArea ul.nav .nav-link {
     text-transform: uppercase;
     color: #fff;
+    border-radius: 0 !important;
 }
 .menuItemArea.container .tab-content {
     width: 100%;
