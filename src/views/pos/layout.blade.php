@@ -10,7 +10,6 @@
 </head>
 <body>
     @yield('content')
-
     <script src="https://kit.fontawesome.com/e23a04b30b.js" crossorigin="anonymous"></script>
     <script src="{{asset('chuckbe/chuckcms-module-ecommerce/js/jquery.min.js')}}"></script>
     <script src="{{asset('chuckbe/chuckcms-module-ecommerce/js//bootstrap.bundle.min.js')}}"></script>

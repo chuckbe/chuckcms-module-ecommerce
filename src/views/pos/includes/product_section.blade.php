@@ -1,10 +1,29 @@
 <div class="menuItemArea container ps-4 pr-4 ps-md-5 pe-md-5 d-flex">
     <div class="tab-content" id="navigationTabContent">
         @foreach(ChuckCollection::all() as $collection)
-            <div class="tab-pane fade" id="category-{{$collection->id}}-Tab" role="tabpanel" aria-labelledby="category-{{$collection->id}}-Tab">
+        @if($collection->json['is_pos_available'] == true)
+            <div 
+                class="tab-pane fade{{$loop->index == 0 ? ' show active' : ''}}" 
+                id="category-{{$collection->id}}-Tab" 
+                role="tabpanel" 
+                aria-labelledby="category-{{$collection->id}}-Tab">
+
+                <div class="row">
+                    @foreach (ChuckProduct::forCollection($collection->json['name']) as $product)
+                        @if($product->json['is_pos_available'] == true)
+                            {{$product->json['title'][(string)app()->getLocale()]}}
+                        @endif
+                    @endforeach
+                </div>
             </div>
+            @endif
         @endforeach
-        <div class="tab-pane fade show active" id="category55Tab" role="tabpanel" aria-labelledby="category55Tab">
+        
+        
+        
+        
+        
+        {{-- <div class="tab-pane fade show active" id="category55Tab" role="tabpanel" aria-labelledby="category55Tab">
             <div class="row">
                 <div 
                     class="col-6 col-sm-4 col-md-3 p-1 cof_pos_product_card" 
@@ -40,6 +59,6 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
     </div>
 </div>
