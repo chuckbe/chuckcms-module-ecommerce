@@ -5,7 +5,7 @@
         </div>
         <div class="col-9 headerSearchArea d-flex justify-content-end">
             <div class="text-end d-flex justify-content-end align-items-center h-100">
-                <div class="locationTypeSwitcherWrapper delivery">
+                {{-- <div class="locationTypeSwitcherWrapper delivery">
                     <div class="locationTypeSwitcherWrapper">
                         <div class="custom-control custom-switch mt-2">
                             <label for="locationTypeSwitcher" class="d-inline-block me-4">Afhalen</label>
@@ -13,7 +13,7 @@
                             <label class="custom-control-label ms-3 me-3" for="locationTypeSwitcher">Dine-in</label>
                         </div>
                     </div>
-                </div>
+                </div> --}}
                 <div class="dropdown">
                     <button class="btn btn-sm btn-light align-self-center dropdown-toggle" type="button" id="locationDropdownButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <span id="cof_pos_location">Lier</span>

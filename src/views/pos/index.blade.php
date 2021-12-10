@@ -1,15 +1,11 @@
 @extends('chuckcms-module-ecommerce::pos.layout')
 
 @section('css')
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.0.1/css/bootstrap.min.css" />
-@include('chuckcms-module-ecommerce::pos.css')
-<style>
-    
-</style>
+    @include('chuckcms-module-ecommerce::pos.css')
 @endsection
 
 @section('content')
-<section class="row wrapper gx-0">
+<section class="row wrapper gx-0" id="cof_orderFormGlobalSection" data-site-domain="{{ URL::to('/') }}">
     <div class="main col-lg-8">
         @include('chuckcms-module-ecommerce::pos.includes.header')
         @include('chuckcms-module-ecommerce::pos.includes.category_section')
@@ -20,6 +16,7 @@
         @include('chuckcms-module-ecommerce::pos.includes.cart_section')
     </div>
 </section>
+@include('chuckcms-module-ecommerce::pos.includes.options_modal')
 @endsection
 
 @section('scripts')
