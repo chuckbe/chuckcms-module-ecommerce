@@ -11,7 +11,6 @@
             $('#attributedata').empty();
             let i = 0;
             $.each(json, function(index, item){
-                console.log(item);
                 $('#attributelist').append(`
                     <li class="nav-item">
                         <button 
@@ -32,7 +31,7 @@
                         <div class="options_modal_item_radio">
                             <label for="" class="options_item_name">Kies ${item.key}</label>
                             <div class="form-group cof_options_radio_item_input_group mb-2">
-                                <div class="form-check cof_options_radio_item_input">
+                                <div class="form-check cof_options_radio_item_input py-3">
                                     <label class="form-check-label" for="exampleRadios1">
                                         <input class="form-check-input" type="radio" name="cof_options_radio" id="exampleRadios1" value="option1">
                                         <span> Default radio</span>
@@ -45,20 +44,20 @@
                 $(`#attributedata #${item.key+'-'+index} .options_modal_item_radio .cof_options_radio_item_input_group .cof_options_radio_item_input`).empty();
                 $.each(item.values, function(inx, value){
                     $(`#attributedata #${item.key+'-'+index} .options_modal_item_radio .cof_options_radio_item_input_group .cof_options_radio_item_input`).append(`
-                        <label class="form-check-label d-block" for="${inx}">
-                            <input class="form-check-input" type="radio" name="cof_options_radio_${item.key+'-'+index}" id="${inx}" value="${value.value}">
-                            <span>${inx}</span>
+                        <label class="btn btn-secondary mr-2 mb-3" for="${inx}"                    
+                            <input 
+                                id="${inx}"
+                                type="radio" 
+                                name="cof_options_radio_${item.key+'-'+index}" 
+                                value="${value.value}"> 
+                                <span>${inx}</span>
                         </label>
                     `);
                 });
-                
                 i++;
             });
             $('#optionsModal').modal('show');
         })
 
-        // <label class="btn btn-secondary mr-2 mb-3 attributes_modal_item_button">
-        //                 <input type="radio" name="attributes" id="option1"> <span class="attributes_modal_item_button_text">${item.key}</span>
-        //             </label>
     });
 </script>

@@ -363,4 +363,11 @@
     text-transform: uppercase;
 }
 
+.btn-group-toggle>.btn input[type='radio'],
+#testradio label input[name='option_selector']{
+    position: absolute;
+    clip: rect(0,0,0,0);
+    pointer-events: none;
+}
+
 </style>

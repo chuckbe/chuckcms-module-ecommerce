@@ -12,6 +12,7 @@
                     <div id="attributesModalBody">
                         <div class="row attributes_modal_row">
                             <div class="col-sm-12 mb-3">
+                                <div id="testradio"></div>
                                 <ul class="nav nav-tabs" id="attributelist" role="tablist"></ul>
                                 {{-- <label class="d-block mb-2">Kies attribuut</label> --}}
                                 {{-- <div class="btn-group-horizontal btn-group-toggle attributes_modal_item_button_group" id="attributelist" data-toggle="buttons">
@@ -115,10 +116,11 @@
                         <div class="btn-group-horizontal btn-group-toggle" data-toggle="buttons">
                             @foreach(ChuckRepeater::for(config('chuckcms-module-ecommerce.discounts.slug')) as $discount)
                                 @if($discount->active && \Carbon\Carbon::parse($discount->valid_from) < \Carbon\Carbon::parse(date('Y-m-d', strtotime(now()))) && \Carbon\Carbon::parse($discount->valid_until) > \Carbon\Carbon::parse(date('Y-m-d', strtotime(now()))))
-                                    <label class="btn btn-secondary mr-2 my-3">
-                                        <input 
+                                    <label class="btn btn-secondary mr-2 my-3" for="coupon_selector_{{ $discount->id }}">
+                                        <input
                                             type="radio" 
-                                            name="coupon_selector" 
+                                            id="coupon_selector_{{ $discount->id }}"
+                                            name="coupon_selector_{{ $discount->id }}" 
                                             value="{{ $discount->id }}"
                                             data-name="{{ $discount->name }}" 
                                             data-active="{{ $discount->active }}" 
@@ -131,7 +133,7 @@
                                             data-conditions="{{ json_encode($discount->conditions) }}" 
                                             data-discount-type="{{ $discount->type }}" 
                                             data-discount-value="{{ $discount->value }}"> 
-                                            <span>
+                                            <span style="pointer-events: none;">
                                                 {{ $discount->name.($discount->remove_incompatible ? '*' : '') }}
                                             </span>
                                     </label>
