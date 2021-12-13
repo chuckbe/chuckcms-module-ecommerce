@@ -140,4 +140,8 @@ Route::group(['middleware' => ['web']], function() {
 
 	Route::post('/webhook/chuck-ecommerce-module-mollie', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\OrderController@webhookMollie')->name('module.ecommerce.mollie_webhook');
 
+
+	Route::get('/fbexport', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\CreateExportController@index')->name('module.ecommerce.exportfb');
 });
+
+
