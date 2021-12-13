@@ -10,8 +10,7 @@ use Chuckbe\Chuckcms\Models\Repeater;
 use App\Http\Controllers\Controller;
 use ChuckProduct;
 use ChuckRepeater;
-
-
+use ChuckEcommerce;
 
 class POSController extends Controller
 {
@@ -27,6 +26,17 @@ class POSController extends Controller
     {
         $locations = $this->locationRepository->getForUser(\Auth::user()->id);
         return view('chuckcms-module-ecommerce::pos.index', compact('locations'));
+    }
+
+
+    public function posHandler(Request $request)
+    {
+        if($request->query('variable') == 'get_product_combinations'){
+            $product = ChuckRepeater::for('products')->where('id', $request->product_id)->first();
+            $combinations = $product->json['combinations'];
+            $view = view('chuckcms-module-ecommerce::pos.includes.combinations_modal', compact('combinations'))->render();;
+            return response()->json(['status' => 'success', 'html' => $view]);
+        };
     }
 
     public function convert()

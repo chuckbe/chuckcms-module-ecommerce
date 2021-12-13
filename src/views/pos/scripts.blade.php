@@ -1,63 +1,38 @@
 <script>
-    $(document).ready(function() {
-        $('body').on('click', '#openCouponsModal', function (event) {
+$(document).ready(function() {
+    $('body').on('click', '.cof_pos_product_card', function (event) {
+            event.preventDefault();
+            let productId = $(this).attr('data-product-id');
+            getCombinationsModalBodyFromProductId(productId);
+    });
+
+    $('body').on('click', '#openCouponsModal', function (event) {
             event.preventDefault();
             $('#couponsModal').modal('show');
-        });
-        $('body').on('click', '.cof_pos_product_card', function(event){
-            event.preventDefault();
-            let json = $.parseJSON($(this).attr('data-product-attributes'));
-            $('#attributelist').empty();
-            $('#attributedata').empty();
-            let i = 0;
-            $.each(json, function(index, item){
-                $('#attributelist').append(`
-                    <li class="nav-item">
-                        <button 
-                            class="nav-link${i == 0 ? ' active' : ''}" 
-                            id="${index}-tab" 
-                            data-bs-toggle="tab"
-                            data-bs-target="#${item.key+'-'+index}" 
-                            type="button"
-                            role="tab" 
-                            aria-controls="${item.key+'-'+index}" 
-                            aria-selected="${i == 0 ? 'true' : 'false'}">
-                            ${item.key}
-                        </button>
-                    </li>
-                `)
-                $('#attributedata').append(`
-                    <div class="tab-pane fade${i == 0 ? ' show active' : ''}" id="${item.key+'-'+index}" role="tabpanel" aria-labelledby="${index}-tab">
-                        <div class="options_modal_item_radio">
-                            <label for="" class="options_item_name">Kies ${item.key}</label>
-                            <div class="form-group cof_options_radio_item_input_group mb-2">
-                                <div class="form-check cof_options_radio_item_input py-3">
-                                    <label class="form-check-label" for="exampleRadios1">
-                                        <input class="form-check-input" type="radio" name="cof_options_radio" id="exampleRadios1" value="option1">
-                                        <span> Default radio</span>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `);
-                $(`#attributedata #${item.key+'-'+index} .options_modal_item_radio .cof_options_radio_item_input_group .cof_options_radio_item_input`).empty();
-                $.each(item.values, function(inx, value){
-                    $(`#attributedata #${item.key+'-'+index} .options_modal_item_radio .cof_options_radio_item_input_group .cof_options_radio_item_input`).append(`
-                        <label class="btn btn-secondary mr-2 mb-3" for="${inx}"                    
-                            <input 
-                                id="${inx}"
-                                type="radio" 
-                                name="cof_options_radio_${item.key+'-'+index}" 
-                                value="${value.value}"> 
-                                <span>${inx}</span>
-                        </label>
-                    `);
-                });
-                i++;
-            });
-            $('#optionsModal').modal('show');
-        })
-
     });
+    $('body').on('click', '.btn-group-toggle>.btn input[type="radio"]', function (event) {
+            event.preventDefault();
+            if($(this).prop('checked')){
+                $(this).parent().addClass('active');
+            }
+    });
+});
+function getCombinationsModalBodyFromProductId(productId){
+    let a_token = "{{ Session::token() }}";
+    $.ajax({
+        method: 'POST',
+        url: '{{route("ecommerce_pos_url", ["variable" => "get_product_combinations"])}}',
+        data: { 
+            product_id: productId,
+            _token: a_token,
+        }
+    }).done(function(data) {
+        if (data.status == "success"){
+            console.log(data);
+            $('#cof_orderFormGlobalSection').after(data.html);
+            $('#optionsModal').modal('show');
+        }
+    });
+}
+
 </script>

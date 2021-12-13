@@ -362,12 +362,27 @@
     font-size: 1.5rem;
     text-transform: uppercase;
 }
+.btn-group-toggle>.btn.active {
+    background-color: #000;
+}
 
+#attributedata .options_modal_item_radio .cof_options_radio_item_input_group .cof_options_radio_item_input .form-check {
+    display: inline;
+}
+
+
+#attributedata .options_modal_item_radio .cof_options_radio_item_input_group .cof_options_radio_item_input input[type='radio'],
 .btn-group-toggle>.btn input[type='radio'],
 #testradio label input[name='option_selector']{
     position: absolute;
     clip: rect(0,0,0,0);
     pointer-events: none;
+}
+#attributedata .options_modal_item_radio .cof_options_radio_item_input_group .cof_options_radio_item_input span {
+    pointer-events: none;
+}
+#attributedata .options_modal_item_radio .cof_options_radio_item_input_group .cof_options_radio_item_input label.active {
+    background-color: #000;
 }
 
 </style>
