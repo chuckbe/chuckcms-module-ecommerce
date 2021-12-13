@@ -105,6 +105,8 @@ class CollectionRepository
         $json['name'] = $values->name;
         $json['image'] = $values->image;
         $json['parent'] = $values->parent;
+        $json['fb_product_category'] = $values->fb_product_category;
+        $json['google_product_category'] = $values->google_product_category;
 
         $collection = $this->repeater->where('id', $values->id)->first();
         $collection->slug = $input['slug'];
