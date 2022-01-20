@@ -35,25 +35,17 @@ class FacebookExport implements FromCollection, WithHeadings
         
         foreach(ChuckProduct::all() as $product){
             $brand = ChuckRepeater::for('brands')->where('id', $product->json['brand'])->first();
-            $fb_product_category_id = ChuckRepeater::for('collections')->where('id', $product->json['collection'][0])->first()->json['fb_product_category'];
-            $fb_product_category = '';
-            $google_product_category_id = ChuckRepeater::for('collections')->where('id', $product->json['collection'][0])->first()->json['google_product_category'];
-            $google_product_category = '';
-
-
-            // the part below is not working for some reason
-            // $fb_product_category = $product_category_collection->where('json->category_id', $fb_product_category_id)->first()->json['category'];
-            // $google_product_category = $product_category_collection->where('json->category_id', $google_product_category_id)->first()->json['category'];
+            $fb_pc_id = ChuckRepeater::for('collections')->where('id', $product->json['collection'][0])->first()->json['fb_product_category'];
+            $google_pc_id = ChuckRepeater::for('collections')->where('id', $product->json['collection'][0])->first()->json['google_product_category'];
             
-            foreach($product_category_collection  as $category){
-                if($category->json['category_id'] == $fb_product_category_id){
-                    $fb_product_category = $category->json['category'];
-                }
-                
-                if($category->json['category_id'] == $google_product_category_id){
-                    $google_product_category = $category->json['category'];
-                }
-            }
+            $fb_product_category = $product_category_collection->filter(function($item) use ($fb_pc_id) {
+                return $item->json['category_id'] == $fb_pc_id;
+            })->first()->json['category'];
+
+            $google_product_category = $product_category_collection->filter(function($item) use ($google_pc_id) {
+                return $item->json['category_id'] == $google_pc_id;
+            })->first()->json['category'];
+            
             
             $custom_array[] = [
                 $product->id,
