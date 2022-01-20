@@ -31,22 +31,30 @@ class FacebookExport implements FromCollection, WithHeadings
     public function collection()
     {
         $custom_array = [];
+        $product_category_collection = ChuckRepeater::for('facebook_product_category');
+        
         foreach(ChuckProduct::all() as $product){
             $brand = ChuckRepeater::for('brands')->where('id', $product->json['brand'])->first();
             $fb_product_category_id = ChuckRepeater::for('collections')->where('id', $product->json['collection'][0])->first()->json['fb_product_category'];
             $fb_product_category = '';
-            foreach(ChuckRepeater::for('facebook_product_category') as $fb_category){
-                if($fb_category->json['category_id'] == $fb_product_category_id){
-                    $fb_product_category = $fb_category->json['category'];
-                }
-            }
             $google_product_category_id = ChuckRepeater::for('collections')->where('id', $product->json['collection'][0])->first()->json['google_product_category'];
             $google_product_category = '';
-            foreach(ChuckRepeater::for('facebook_product_category') as $google_category){
-                if($google_category->json['category_id'] == $google_product_category_id){
-                    $google_product_category = $google_category->json['category'];
+
+
+            // the part below is not working for some reason
+            // $fb_product_category = $product_category_collection->where('json->category_id', $fb_product_category_id)->first()->json['category'];
+            // $google_product_category = $product_category_collection->where('json->category_id', $google_product_category_id)->first()->json['category'];
+            
+            foreach($product_category_collection  as $category){
+                if($category->json['category_id'] == $fb_product_category_id){
+                    $fb_product_category = $category->json['category'];
+                }
+                
+                if($category->json['category_id'] == $google_product_category_id){
+                    $google_product_category = $category->json['category'];
                 }
             }
+            
             $custom_array[] = [
                 $product->id,
                 $product->json['title'][\LaravelLocalization::getCurrentLocale()],

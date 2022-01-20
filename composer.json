@@ -25,16 +25,14 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Chuckbe\\ChuckcmsModuleEcommerce\\ChuckcmsModuleEcommerceServiceProvider",
-                "Maatwebsite\\Excel\\ExcelServiceProvider"
+                "Chuckbe\\ChuckcmsModuleEcommerce\\ChuckcmsModuleEcommerceServiceProvider"
             ],
             "aliases": {
                 "ChuckCart": "Chuckbe\\ChuckcmsModuleEcommerce\\Facades\\Cart", 
                 "ChuckCollection": "Chuckbe\\ChuckcmsModuleEcommerce\\Facades\\Collection", 
                 "ChuckCustomer": "Chuckbe\\ChuckcmsModuleEcommerce\\Facades\\Customer", 
                 "ChuckEcommerce": "Chuckbe\\ChuckcmsModuleEcommerce\\Facades\\Ecommerce", 
-                "ChuckProduct": "Chuckbe\\ChuckcmsModuleEcommerce\\Facades\\Product",
-                "Excel": "Maatwebsite\\Excel\\Facades\\Excel"
+                "ChuckProduct": "Chuckbe\\ChuckcmsModuleEcommerce\\Facades\\Product"
             }
         }
     },
