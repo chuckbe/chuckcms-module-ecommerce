@@ -9,7 +9,7 @@
         <hr class="mt-1 mb-0">
     </div>
 </div>
-<div class="options_input_container _input_container" id="options_input_container">
+<div class="options_input_container _input_container" data-options-container>
     @if(is_array(old('options')) && array_key_exists('options', old('options')) && count(old('options')) > 0)
     @foreach(old('options') as $optionKey => $optionValue)
     <div class="form-group row required option_input_line _input_line">
@@ -17,7 +17,7 @@
             <label class="sr-only" for="option_key_{{ $optionKey }}">Key *</label>
             <div class="input-group input-group-sm">
                 <div class="input-group-prepend">
-                    <button class="btn btn-outline-danger remove_line_button" type="button"><i class="fa fa-trash"></i></button>
+                    <button class="btn btn-outline-danger" type="button" data-remove-option><i class="fa fa-trash"></i></button>
                 </div>
                 <input type="text" class="form-control form-control-sm option_key_input" id="option_key_{{ $optionKey }}" name="option_key[]" value="{{ $optionKey }}" required>
             </div>
@@ -38,7 +38,7 @@
             <label class="sr-only" for="option_key_">Key *</label>
             <div class="input-group input-group-sm">
                 <div class="input-group-prepend">
-                    <button class="btn btn-outline-danger remove_line_button" type="button"><i class="fa fa-trash"></i></button>
+                    <button class="btn btn-outline-danger" type="button" data-remove-option><i class="fa fa-trash"></i></button>
                 </div>
                 <input type="text" class="form-control form-control-sm option_key_input" id="option_key_" name="option_key[]" value="" disabled required>
             </div>
@@ -64,7 +64,7 @@
         <input type="text" class="form-control form-control-sm" id="new_option_value">
     </div>
     <div class="col-sm-3">
-        <button class="btn btn-outline-success mt-4 mt-md-2" type="button" id="new_option_button">Toevoegen</button>
+        <button class="btn btn-outline-success mt-4 mt-md-2" type="button" data-add-option>Toevoegen</button>
         <div class="w-100 d-block"></div>
         <small class="d-none text-danger" id="new_option_error">Vul alle velden in</small>
     </div>
