@@ -234,18 +234,31 @@ class CartRepository
      *
      * @var ChuckCart $cart
      * @var string $collectionId
+     * @var bool $bool
      *
-     * @return bool
+     * @return bool|array
      **/
-    public function isCollectionPresent($cart, string $collectionId)
+    public function isCollectionPresent($cart, string $collectionId, $bool = true)
     {
+        $ids = [];
+
         foreach( $cart->content() as $cartItem ) {
             if($this->productRepository->hasCollectionBySKU($collectionId, $cartItem->id)) {
-                return true;
+                for ($q=0; $q < $cartItem->qty; $q++) { 
+                    $ids[] = $cartItem->id;
+                }
+
+                if ($bool) {
+                    return true;
+                }
             }
         }
 
-        return false;
+        if ($bool) {
+            return false;
+        }
+
+        return $ids;
     }
 
     /**
@@ -253,18 +266,31 @@ class CartRepository
      *
      * @var ChuckCart $cart
      * @var string $brandId
+     * @var bool $bool
      *
-     * @return bool
+     * @return bool|array
      **/
-    public function isBrandPresent($cart, string $brandId)
+    public function isBrandPresent($cart, string $brandId, $bool = true)
     {
+        $ids = [];
+
         foreach( $cart->content() as $cartItem ) {
             if($this->productRepository->hasBrandBySKU($brandId, $cartItem->id)) {
-                return true;
+                for ($q=0; $q < $cartItem->qty; $q++) { 
+                    $ids[] = $cartItem->id;
+                }
+
+                if ($bool) {
+                    return true;
+                }
             }
         }
 
-        return false;
+        if ($bool) {
+            return false;
+        }
+
+        return $ids;
     }
 
     /**
@@ -272,18 +298,31 @@ class CartRepository
      *
      * @var ChuckCart $cart
      * @var string $productId
+     * @var bool $bool
      *
-     * @return bool
+     * @return bool|array
      **/
-    public function isProductPresent($cart, string $productId)
+    public function isProductPresent($cart, string $productId, $bool = true)
     {
+        $ids = [];
+
         foreach( $cart->content() as $cartItem ) {
             if($productId == $cartItem->id) {
-                return true;
+                for ($q=0; $q < $cartItem->qty; $q++) { 
+                    $ids[] = $cartItem->id;
+                }
+
+                if ($bool) {
+                    return true;
+                }
             }
         }
 
-        return false;
+        if ($bool) {
+            return false;
+        }
+
+        return $ids;
     }
 
     private function concatOptions($options)

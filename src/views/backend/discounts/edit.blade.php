@@ -71,62 +71,264 @@
 
 <script>
 $(document).ready(function() {
-$( "#options_input_container" ).sortable({revert: true});
+    let token = '{{ Session::token() }}';
 
-$('body').on('change', '.conditions_type_selector', function() {
-    var condition_type = $(this).find('option:selected').first().val();
-    var condition_selector = $(this).attr('data-element-selector');
-    $(condition_selector).find('option[data-type="'+condition_type+'"]').removeClass('d-none').prop('disabled', false).prop('selected', false);
-    $(condition_selector).find('option:not([data-type="'+condition_type+'"])').addClass('d-none').prop('disabled', true).prop('selected', false);
-    $(condition_selector).find('option[data-type="'+condition_type+'"]').first().prop('selected', true);
-});
+    $( "#options_input_container" ).sortable({revert: true});
 
-$('.conditions_type_selector').trigger('change');
+    $('body').on('click', '#discount_code_refresh_button', function (event) {
+        event.preventDefault();
+        button = $(this);
 
-$('body').on('click', '.remove_line_button', function() {
-    checker = $(this).parents('._input_container').find('._input_line').length;
-    if(checker > 1) {
-        $(this).parents('._input_line').remove();
-    } else {
-        $(this).parents('._input_line').addClass('d-none');
-        $(this).parents('._input_line').find('select').prop('disabled', true);
-    }
-});
+        button.find('i').addClass('fa-spin');
+        new_code_str = '';
 
-$('body').on('click', '#new_condition_button', function() {
-    $('#new_condition_error').addClass('d-none');
-    if($('#new_conditions_type').find('option:selected').first().val().length == 0 || $('#new_conditions_value').find('option:selected').first().val().length == 0) {
-        $('#new_condition_error').removeClass('d-none');
-        return;
-    }
+        refreshDiscountCode().done(function (data) {
+            if(data.status == 'success'){
+                new_code_str = data.code;
+            } 
 
-    new_type = $('#new_conditions_type').find('option:selected').first().val();
-    new_value = $('#new_conditions_value').find('option:selected').first().val();
-console.log('new type and value : ',new_type,' - ', new_value);
-    //new_file = $('#new_css_asset').is(':checked');
+            $('#discount_code').val(new_code_str);
+            button.find('i').removeClass('fa-spin');
+        });
+    });
 
-    if($('.conditions_input_line').length > 1) {
-        $('.conditions_input_line:first').clone().appendTo('.conditions_wrapper');
-        //$('.conditions_wrapper').append('<hr>');
-    } else {
-      if($('.conditions_input_line:first').hasClass('d-none')) {
-        $('.conditions_input_line:first').removeClass('d-none');
-        $('.conditions_input_line:first').find('select').prop('disabled', false);
-      } else {
-        $('.conditions_input_line:first').clone().appendTo('.conditions_wrapper');
-        //$('.conditions_wrapper').append('<hr>');
-      }
+    $('body').on('change', '.conditions_type_selector', function() {
+        var condition_type = $(this).find('option:selected').first().val();
+        var condition_selector = $(this).attr('data-element-selector');
+        $(condition_selector).find('option[data-type="'+condition_type+'"]').removeClass('d-none').prop('disabled', false).prop('selected', false);
+        $(condition_selector).find('option:not([data-type="'+condition_type+'"])').addClass('d-none').prop('disabled', true).prop('selected', false);
+        $(condition_selector).find('option[data-type="'+condition_type+'"]').first().prop('selected', true);
+    });
+
+    $('.conditions_type_selector').trigger('change');
+
+    $('body').on('click', '.remove_line_button', function() {
+        checker = $(this).parents('._input_container').find('._input_line').length;
+        if(checker > 1) {
+            $(this).parents('._input_line').remove();
+        } else {
+            $(this).parents('._input_line').addClass('d-none');
+            $(this).parents('._input_line').find('select').prop('disabled', true);
+        }
+    });
+
+    $('body').on('click', '#new_condition_button', function() {
+        $('#new_condition_error').addClass('d-none');
+        if($('#new_conditions_type').find('option:selected').first().val().length == 0 || $('#new_conditions_value').find('option:selected').first().val().length == 0) {
+            $('#new_condition_error').removeClass('d-none');
+            return;
+        }
+
+        new_type = $('#new_conditions_type').find('option:selected').first().val();
+        new_value = $('#new_conditions_value').find('option:selected').first().val();
+    console.log('new type and value : ',new_type,' - ', new_value);
+        //new_file = $('#new_css_asset').is(':checked');
+
+        if($('.conditions_input_line').length > 1) {
+            $('.conditions_input_line:first').clone().appendTo('.conditions_wrapper');
+            //$('.conditions_wrapper').append('<hr>');
+        } else {
+          if($('.conditions_input_line:first').hasClass('d-none')) {
+            $('.conditions_input_line:first').removeClass('d-none');
+            $('.conditions_input_line:first').find('select').prop('disabled', false);
+          } else {
+            $('.conditions_input_line:first').clone().appendTo('.conditions_wrapper');
+            //$('.conditions_wrapper').append('<hr>');
+          }
+            
+        }
+
+        $('.conditions_input_line:last').find('.condition_type_input').first().find('option:not([data-type="'+new_type+'"])').prop('selected', false).prop('disabled', true);
+        $('.conditions_input_line:last').find('.condition_type_input').first().find('option[value="'+new_type+'"]').first().prop('disabled', false).prop('selected', true);
+
+
+        $('.conditions_input_line:last').find('.condition_value_input').first().find('option').addClass('d-none').prop('selected', false).prop('disabled', true);
+        $('.conditions_input_line:last').find('.condition_value_input').first().find('option[data-type="'+new_type+'"]').removeClass('d-none').prop('disabled', false);
+        $('.conditions_input_line:last').find('.condition_value_input').first().find('option[value="'+new_value+'"]').first().removeClass('d-none').prop('disabled', false).prop('selected', true);
+    });
+
+
+
+    $('body').on('change', '.rule_type_selector', function() {
+        var condition_type = $(this).find('option:selected').first().val();
+        var condition_selector = $(this).attr('data-element-selector');
+        $(condition_selector).find('option[data-type="'+condition_type+'"]').removeClass('d-none').prop('disabled', false).prop('selected', false);
+        $(condition_selector).find('option:not([data-type="'+condition_type+'"])').addClass('d-none').prop('disabled', true).prop('selected', false);
+        $(condition_selector).find('option[data-type="'+condition_type+'"]').first().prop('selected', true);
+    });
+
+    $('.rule_type_selector').trigger('change');
+
+    $('body').on('click', '.remove_line_button', function() {
+        let checker = $(this).parents('._input_container').find('._input_line').length;
+        let group_id = $(this).parents('.conditions_wrapper').attr('data-group');
+        if(checker > 1 || group_id !== '1') {
+            $(this).parents('._input_line').remove();
+        } else {
+            $(this).parents('._input_line').addClass('d-none');
+            $(this).parents('._input_line').find('select').prop('disabled', true);
+        }
+    });
+
+    $('body').on('click', '#new_rule_button', function() {
+        $('#new_rule_error').addClass('d-none');
+
+        let group_id = $(this).attr('data-group');
+        if ($('.conditions_wrapper[data-group="'+group_id+'"]').length == 0) {
+            group_id = $('.conditions_wrapper:first').attr('data-group');
+        }
+
+        if($('#new_rule_type').find('option:selected').first().val().length == 0 || $('#new_rule_value').find('option:selected').first().val().length == 0) {
+            $('#new_rule_error').removeClass('d-none');
+            return;
+        }
+
+        new_type = $('#new_rule_type').find('option:selected').first().val();
+        new_value = $('#new_rule_value').find('option:selected').first().val();
+
+        if($('.conditions_input_line').length > 1) {
+            if(group_id == '1' && $('.conditions_input_line:first').hasClass('d-none')) {
+                $('.conditions_input_line:first').removeClass('d-none');
+                $('.conditions_input_line:first').find('select').prop('disabled', false);
+            } else {
+                $('.conditions_input_line:first').clone().appendTo('.conditions_wrapper[data-group="'+group_id+'"]');
+                $('.conditions_wrapper[data-group="'+group_id+'"]')
+                        .find('.conditions_input_line:last')
+                        .removeClass('d-none');
+                $('.conditions_wrapper[data-group="'+group_id+'"]')
+                        .find('.conditions_input_line:last')
+                        .find('select').prop('disabled', false);
+            }
+        } else {
+          if(group_id == '1' && $('.conditions_input_line:first').hasClass('d-none')) {
+            $('.conditions_input_line:first').removeClass('d-none');
+            $('.conditions_input_line:first').find('select').prop('disabled', false);
+          } else {
+            $('.conditions_input_line:first').clone().appendTo('.conditions_wrapper[data-group="'+group_id+'"]');
+            $('.conditions_wrapper[data-group="'+group_id+'"]')
+                    .find('.conditions_input_line:last')
+                    .removeClass('d-none');
+            $('.conditions_wrapper[data-group="'+group_id+'"]')
+                    .find('.conditions_input_line:last')
+                    .find('select').prop('disabled', false);
+          }
+            
+        }
+
+        $('.conditions_wrapper[data-group="'+group_id+'"]')
+            .find('.conditions_input_line:last')
+            .find('.condition_type_input').first()
+                .prop('name', 'condition_type['+group_id+'][]');
+
+        $('.conditions_wrapper[data-group="'+group_id+'"]')
+            .find('.conditions_input_line:last')
+            .find('.condition_type_input').first()
+            .find('option:not([data-type="'+new_type+'"])').prop('selected', false).prop('disabled', true);
         
+        $('.conditions_wrapper[data-group="'+group_id+'"]')
+            .find('.conditions_input_line:last')
+            .find('.condition_type_input').first()
+            .find('option[value="'+new_type+'"]').first().prop('disabled', false).prop('selected', true);
+
+
+        $('.conditions_wrapper[data-group="'+group_id+'"]')
+            .find('.conditions_input_line:last')
+            .find('.condition_value_input').first()
+                .prop('name', 'condition_value['+group_id+'][]');
+
+        $('.conditions_wrapper[data-group="'+group_id+'"]')
+            .find('.conditions_input_line:last')
+            .find('.condition_value_input').first()
+            .find('option').addClass('d-none').prop('selected', false).prop('disabled', true);
+        
+        $('.conditions_wrapper[data-group="'+group_id+'"]')
+            .find('.conditions_input_line:last')
+            .find('.condition_value_input').first()
+            .find('option[data-type="'+new_type+'"]').removeClass('d-none').prop('disabled', false);
+        
+        $('.conditions_wrapper[data-group="'+group_id+'"]')
+            .find('.conditions_input_line:last')
+            .find('.condition_value_input').first()
+            .find('option[value="'+new_value+'"]').first().removeClass('d-none').prop('disabled', false).prop('selected', true);
+
+        $(this).attr('data-group', '0');
+        $('#addNewRuleWrapper').addClass('d-none');
+    });
+
+    $('body').on('click', '#addNewConditionGroupBtn', function (event) {
+        event.preventDefault();
+
+        $('.conditions_wrapper:first').clone().appendTo('.conditions_group_container');
+        
+        if ($('.conditions_wrapper').length > 1) {
+            $('.conditions_wrapper:last').attr('data-group', $('.conditions_wrapper').length);
+            $('.conditions_wrapper:last').find('input[name="condition_min_quantity[]"]').val(1);
+            $('.conditions_wrapper:last').find('.remove_condition_group_btn').removeClass('d-none');
+            $('.conditions_wrapper:last').find('.remove_line_button').trigger('click');
+            $('.conditions_wrapper:last').find('.conditions_input_line:first').remove();
+        }
+    });
+
+    $('body').on('click', '.add_rule_btn', function (event) {
+        event.preventDefault();
+
+        let group_id = $(this).parents('.conditions_wrapper').attr('data-group');
+        $('#new_rule_button').attr('data-group', group_id);
+        $('#addNewRuleWrapper').removeClass('d-none');
+    });
+
+    $('body').on('click', '.remove_condition_group_btn', function (event) {
+        event.preventDefault();
+
+        if ($('.conditions_wrapper').length > 1) {
+            $(this).parents('.conditions_wrapper').remove();
+            $('#new_rule_button').attr('data-group', '0');
+            $('#addNewRuleWrapper').addClass('d-none');
+        }
+    });
+
+    $('body').on('change', '.action_type_input', function (event) {
+        let apply_on = $('input[name="apply_on"]:checked').val();
+        let action_type = $(this).find('option:selected').val();
+        if (action_type == 'gift') {
+            
+            if (apply_on == 'conditions' || apply_on == 'cart') {
+                $('#apply_on_cart').prop('checked', false);
+                $('#apply_on_conditions').prop('checked', false);
+                $('#apply_on_product').prop('checked', true).trigger('change');
+            }
+            
+            $('#apply_on_cart').prop('disabled', true);
+            $('#apply_on_conditions').prop('disabled', true);
+
+        } else {
+
+            $('#apply_on_cart').prop('disabled', false);
+            $('#apply_on_conditions').prop('disabled', false);
+
+        }
+    });
+
+    $('body').on('change', 'input[name="apply_on"]', function (event) {
+        let apply_on = $('input[name="apply_on"]:checked').val();
+        if (apply_on == 'product') {
+            $('#actions_apply_products_row').removeClass('d-none');
+            $('#apply_product').prop('disabled', false);
+        } else {
+            $('#actions_apply_products_row').addClass('d-none');
+            $('#apply_product').prop('disabled', true);
+        }
+    });
+
+    function refreshDiscountCode() {
+        return $.ajax({
+            method: 'POST',
+            url: "{{ route('dashboard.module.ecommerce.discounts.refresh_code') }}",
+            data: { 
+                _token: token
+            }
+        });
     }
-
-    $('.conditions_input_line:last').find('.condition_type_input').first().find('option:not([data-type="'+new_type+'"])').prop('selected', false).prop('disabled', true);
-    $('.conditions_input_line:last').find('.condition_type_input').first().find('option[value="'+new_type+'"]').first().prop('disabled', false).prop('selected', true);
-
-
-    $('.conditions_input_line:last').find('.condition_value_input').first().find('option').addClass('d-none').prop('selected', false).prop('disabled', true);
-    $('.conditions_input_line:last').find('.condition_value_input').first().find('option[data-type="'+new_type+'"]').removeClass('d-none').prop('disabled', false);
-    $('.conditions_input_line:last').find('.condition_value_input').first().find('option[value="'+new_value+'"]').first().removeClass('d-none').prop('disabled', false).prop('selected', true);
-});
 
 
 });

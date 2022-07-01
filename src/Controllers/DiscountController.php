@@ -2,6 +2,7 @@
 
 namespace Chuckbe\ChuckcmsModuleEcommerce\Controllers;
 
+use Chuckbe\ChuckcmsModuleEcommerce\Chuck\CustomerRepository;
 use Chuckbe\ChuckcmsModuleEcommerce\Chuck\DiscountRepository;
 
 use Chuckbe\ChuckcmsModuleEcommerce\Models\Discount;
@@ -13,6 +14,7 @@ use App\Http\Controllers\Controller;
 
 class DiscountController extends Controller
 {
+    private $customerRepository;
     private $discountRepository;
 
     /**
@@ -21,8 +23,12 @@ class DiscountController extends Controller
      * @param  $discountRepository DiscountRepository
      * @return void
      */
-    public function __construct(DiscountRepository $discountRepository)
+    public function __construct(
+        CustomerRepository $customerRepository, 
+        DiscountRepository $discountRepository
+    )
     {
+        $this->customerRepository = $customerRepository;
         $this->discountRepository = $discountRepository;
     }
 
@@ -34,12 +40,16 @@ class DiscountController extends Controller
 
     public function create()
     {
-        return view('chuckcms-module-ecommerce::backend.discounts.create');
+        $customers = $this->customerRepository->get();
+
+        return view('chuckcms-module-ecommerce::backend.discounts.create', compact('customers'));
     }
 
     public function edit(Repeater $discount)
     {
-        return view('chuckcms-module-ecommerce::backend.discounts.edit', compact('discount'));
+        $customers = $this->customerRepository->get();
+
+        return view('chuckcms-module-ecommerce::backend.discounts.edit', compact('customers', 'discount'));
     }
 
     public function save(Request $request)
@@ -59,12 +69,15 @@ class DiscountController extends Controller
             'minimum_shipping_included' => 'required',
             'available_total' => 'required',
             'available_customer' => 'required',
+
+            'customers' => 'sometimes|array',
             'customer_groups' => 'required|array',
 
+            'condition_min_quantity' => 'array|required',
             'condition_type' => 'nullable|array',
             'condition_value' => 'nullable|array',
 
-            'action_type' => 'required|in:percentage,currency',
+            'action_type' => 'required|in:percentage,currency,gift',
             'action_value' => 'required',
 
             'id' => 'required_with:update'
@@ -94,5 +107,10 @@ class DiscountController extends Controller
         if($delete){
             return response()->json(['status' => 'success']);
         }
+    }
+
+    public function refreshCode(Request $request)
+    {
+        return response()->json(['status' => 'success', 'code' => $this->discountRepository->generateCode()]);
     }
 }

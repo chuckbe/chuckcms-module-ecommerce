@@ -13,7 +13,12 @@
 <div class="form-group row required">
     <label for="discount_code" class="col-sm-2 col-form-label">Code *</label>
     <div class="col-sm-10">
-        <input type="text" class="form-control" id="discount_code" name="code" value="{{ old('code', $discount->code) }}" required>
+        <div class="input-group">
+            <input type="text" class="form-control" id="discount_code" name="code" value="{{ old('code', $discount->code) }}" aria-label="Code" aria-describedby="discount_code_refresh_button" required>
+            <div class="input-group-append">
+                <span class="input-group-text" id="discount_code_refresh_button"><i class="fas fa-refresh" style="font-family: 'FontAwesome';font-style: normal;"></i></span>
+            </div>
+        </div>
     </div>
 </div>
 <div class="form-group row required">
