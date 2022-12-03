@@ -93,7 +93,7 @@ class CheckoutController extends Controller
         
         if (is_array($in_stock) && $in_stock !== true && count($in_stock) > 0) { // check if all items are in stock and available for order
             $cart = $this->cartRepository->updateUnavailableItemsInCart($cart, $in_stock);
-            if ($user) {
+            if (isset($user)) {
                 $cart->store('shopping_'.$user->id);
             }
 

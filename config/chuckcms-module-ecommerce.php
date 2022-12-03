@@ -97,76 +97,130 @@ return [
         'mollie' => [
             'methods' => [
                 'applepay' => [
+                    'api' => 'payments',
                     'display_name' => 'Apple Pay',
-                    'logo' => 'chuckbe/chuckcms-module-ecommerce/images/payment-logos/applepay@2x.png'
+                    'logo' => 'chuckbe/chuckcms-module-ecommerce/images/payment-logos/applepay@2x.png',
+                    'method' => 'applepay'
                 ],
                 'bancontact' => [
+                    'api' => 'payments',
                     'display_name' => 'Bancontact (mistercash)',
-                    'logo' => 'chuckbe/chuckcms-module-ecommerce/images/payment-logos/bancontact@2x.png'
+                    'logo' => 'chuckbe/chuckcms-module-ecommerce/images/payment-logos/bancontact@2x.png',
+                    'method' => 'bancontact'
                 ],
                 'banktransfer' => [
+                    'api' => 'payments',
                     'display_name' => 'Banktransfer',
-                    'logo' => 'chuckbe/chuckcms-module-ecommerce/images/payment-logos/banktransfer@2x.png'
+                    'logo' => 'chuckbe/chuckcms-module-ecommerce/images/payment-logos/banktransfer@2x.png',
+                    'method' => 'banktransfer'
                 ],
                 'belfius' => [
+                    'api' => 'payments',
                     'display_name' => 'Belfius',
-                    'logo' => 'chuckbe/chuckcms-module-ecommerce/images/payment-logos/belfius@2x.png'
+                    'logo' => 'chuckbe/chuckcms-module-ecommerce/images/payment-logos/belfius@2x.png',
+                    'method' => 'belfius'
                 ],
                 'creditcard' => [
+                    'api' => 'payments',
                     'display_name' => 'Creditcard (Visa, MasterCard, Amex)',
-                    'logo' => 'chuckbe/chuckcms-module-ecommerce/images/payment-logos/creditcard@2x.png'
+                    'logo' => 'chuckbe/chuckcms-module-ecommerce/images/payment-logos/creditcard@2x.png',
+                    'method' => 'creditcard'
                 ],
                 'directdebit' => [
+                    'api' => 'payments',
                     'display_name' => 'Direct Debit (SEPA)',
-                    'logo' => 'chuckbe/chuckcms-module-ecommerce/images/payment-logos/directdebit@2x.png'
+                    'logo' => 'chuckbe/chuckcms-module-ecommerce/images/payment-logos/directdebit@2x.png',
+                    'method' => 'directdebit'
                 ],
                 'eps' => [
+                    'api' => 'payments',
                     'display_name' => 'EPS',
-                    'logo' => 'chuckbe/chuckcms-module-ecommerce/images/payment-logos/eps@2x.png'
+                    'logo' => 'chuckbe/chuckcms-module-ecommerce/images/payment-logos/eps@2x.png',
+                    'method' => 'eps'
                 ],
                 'giftcard' => [
+                    'api' => 'payments',
                     'display_name' => 'Giftcard',
-                    'logo' => 'chuckbe/chuckcms-module-ecommerce/images/payment-logos/giftcard@2x.png'
+                    'logo' => 'chuckbe/chuckcms-module-ecommerce/images/payment-logos/giftcard@2x.png',
+                    'method' => 'giftcard'
                 ],
                 'giropay' => [
+                    'api' => 'payments',
                     'display_name' => 'Giropay',
-                    'logo' => 'chuckbe/chuckcms-module-ecommerce/images/payment-logos/giropay@2x.png'
+                    'logo' => 'chuckbe/chuckcms-module-ecommerce/images/payment-logos/giropay@2x.png',
+                    'method' => 'giropay'
                 ],
                 'ideal' => [
+                    'api' => 'payments',
                     'display_name' => 'Ideal',
-                    'logo' => 'chuckbe/chuckcms-module-ecommerce/images/payment-logos/ideal@2x.png'
+                    'logo' => 'chuckbe/chuckcms-module-ecommerce/images/payment-logos/ideal@2x.png',
+                    'method' => 'ideal'
                 ],
                 'inghomepay' => [
+                    'api' => 'payments',
                     'display_name' => 'ING',
-                    'logo' => 'chuckbe/chuckcms-module-ecommerce/images/payment-logos/inghomepay@2x.png'
+                    'logo' => 'chuckbe/chuckcms-module-ecommerce/images/payment-logos/inghomepay@2x.png',
+                    'method' => 'inghomepay'
                 ],
                 'kbc' => [
+                    'api' => 'payments',
                     'display_name' => 'KBC',
-                    'logo' => 'chuckbe/chuckcms-module-ecommerce/images/payment-logos/kbc@2x.png'
+                    'logo' => 'chuckbe/chuckcms-module-ecommerce/images/payment-logos/kbc@2x.png',
+                    'method' => 'kbc'
                 ],
                 'klarna' => [
+                    'api' => 'orders',
                     'display_name' => 'Klarna',
-                    'logo' => 'chuckbe/chuckcms-module-ecommerce/images/payment-logos/klarna@2x.png'
+                    'logo' => 'chuckbe/chuckcms-module-ecommerce/images/payment-logos/klarna@2x.png',
+                    'method' => 'klarna'
                 ],
                 'mybank' => [
+                    'api' => 'payments',
                     'display_name' => 'Mybank',
-                    'logo' => 'chuckbe/chuckcms-module-ecommerce/images/payment-logos/mybank@2x.png'
+                    'logo' => 'chuckbe/chuckcms-module-ecommerce/images/payment-logos/mybank@2x.png',
+                    'method' => 'mybank'
                 ],
                 'paypal' => [
+                    'api' => 'payments',
                     'display_name' => 'Paypal',
-                    'logo' => 'chuckbe/chuckcms-module-ecommerce/images/payment-logos/paypal@2x.png'
+                    'logo' => 'chuckbe/chuckcms-module-ecommerce/images/payment-logos/paypal@2x.png',
+                    'method' => 'paypal'
                 ],
                 'paysafecard' => [
+                    'api' => 'payments',
                     'display_name' => 'Paysafecard',
-                    'logo' => 'chuckbe/chuckcms-module-ecommerce/images/payment-logos/paysafecard@2x.png'
+                    'logo' => 'chuckbe/chuckcms-module-ecommerce/images/payment-logos/paysafecard@2x.png',
+                    'method' => 'paysafecard'
                 ],
                 'przelewy24' => [
+                    'api' => 'payments',
                     'display_name' => 'Przelewy24',
-                    'logo' => 'chuckbe/chuckcms-module-ecommerce/images/payment-logos/przelewy24@2x.png'
+                    'logo' => 'chuckbe/chuckcms-module-ecommerce/images/payment-logos/przelewy24@2x.png',
+                    'method' => 'przelewy24'
                 ],
                 'sofort' => [
+                    'api' => 'payments',
                     'display_name' => 'Sofort',
-                    'logo' => 'chuckbe/chuckcms-module-ecommerce/images/payment-logos/sofort@2x.png'
+                    'logo' => 'chuckbe/chuckcms-module-ecommerce/images/payment-logos/sofort@2x.png',
+                    'method' => 'sofort'
+                ],
+                'voucher-monizze' => [
+                    'api' => 'orders',
+                    'display_name' => 'Monizze (Eco & Meal)',
+                    'logo' => 'chuckbe/chuckcms-module-ecommerce/images/payment-logos/Monizze@2x.png',
+                    'method' => 'voucher'
+                ],
+                'voucher-sodexo-lunchpass' => [
+                    'api' => 'orders',
+                    'display_name' => 'Sodexo Lunch Pass',
+                    'logo' => 'chuckbe/chuckcms-module-ecommerce/images/payment-logos/Sodexo-lunch@2x.png',
+                    'method' => 'voucher'
+                ],
+                'voucher-sodexo-ecopass' => [
+                    'api' => 'orders',
+                    'display_name' => 'Sodexo Eco Pass',
+                    'logo' => 'chuckbe/chuckcms-module-ecommerce/images/payment-logos/Sodexo-eco@2x.png',
+                    'method' => 'voucher'
                 ]
             ]
         ]

@@ -23,7 +23,7 @@ class CartRepository
     public function getProducts($cart)
     {
         $sku = [];
-        if (count($cart->content()) == 1) {
+        if (count($cart->content()) == 1) { //@TODO: remove this if statement, cs obsolete?
             $sku = $cart->content()->first()->id;
             return $this->productRepository->sku([$sku]);
         }

@@ -65,9 +65,9 @@ class ProductRepository
         return $this->product
                     ->where('json->is_displayed', true)
                     ->where(function ($query) use ($string) {
-                        $query->where('json->cody->sku', $string)
-                            ->orWhere('json->cody->upc', $string)
-                            ->orWhere('json->cody->ean', $string)
+                        $query->where('json->code->sku', $string)
+                            ->orWhere('json->code->upc', $string)
+                            ->orWhere('json->code->ean', $string)
                             ->orWhereRaw('LOWER(json_unquote(json_extract(`json`, '.'\'$."title"."'.(string)app()->getLocale().'"'.'\'))) LIKE "%'.strtolower($string).'%"')
                             ->orWhereRaw('LOWER(json_unquote(json_extract(`json`, '.'\'$."page_title"."'.(string)app()->getLocale().'"'.'\'))) LIKE "%'.strtolower($string).'%"')
                             ->orWhereRaw('LOWER(json_unquote(json_extract(`json`, '.'\'$."description"."short"."'.(string)app()->getLocale().'"'.'\'))) LIKE "%'.strtolower($string).'%"')
