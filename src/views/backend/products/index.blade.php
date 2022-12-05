@@ -309,8 +309,10 @@ $( document ).ready(function (){
 			let barcode = $(modalbody).find('input#barcode').val();
 			let price = $(modalbody).find('input#price').val();
 			let quantity = $(modalbody).find('input#quantity').val();
+
+			console.log(checkEan(barcode));
 			
-			printLabel(manufacturer,barcode,price,quantity, 'customjob');
+			// printLabel(manufacturer,barcode,price,quantity, 'customjob');
 		}
 	});
 });
