@@ -16,6 +16,8 @@ Route::group(['middleware' => ['web']], function() {
 			
 			//START OF: PRODUCTS ROUTES
 			Route::get('/dashboard/ecommerce/products', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\ProductController@index')->name('dashboard.module.ecommerce.products.index');
+			Route::post('/dashboard/ecommerce/product', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\ProductController@fetchProduct')->name('dashboard.module.ecommerce.products.product');
+			
 			Route::get('/dashboard/ecommerce/products/create', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\ProductController@create')->name('dashboard.module.ecommerce.products.create');
 			Route::get('/dashboard/ecommerce/products/{product}/edit', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\ProductController@edit')->name('dashboard.module.ecommerce.products.edit');
 			Route::post('/dashboard/ecommerce/products/save', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\ProductController@save')->name('dashboard.module.ecommerce.products.save');
@@ -79,6 +81,11 @@ Route::group(['middleware' => ['web']], function() {
 			Route::get('/dashboard/ecommerce/settings/integrations', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\SettingController@integrations')->name('dashboard.module.ecommerce.settings.index.integrations');
 			Route::post('/dashboard/ecommerce/settings/integrations/update', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\Settings\IntegrationsController@update')->name('dashboard.module.ecommerce.settings.index.integrations.update');
 			//END OF: SETTINGS ROUTES
+
+			// START OF: LABEL ROUTES
+				
+			
+			// END OF: LABEL ROUTES
 		});
 		
 		//START OF: FRONT_END ACCOUNT ROUTES
