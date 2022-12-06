@@ -18,16 +18,16 @@
 			<IsVariable>True</IsVariable>
 			<GroupID>-1</GroupID>
 			<IsOutlined>False</IsOutlined>
-			<HorizontalAlignment>Center</HorizontalAlignment>
+			<HorizontalAlignment>Left</HorizontalAlignment>
 			<VerticalAlignment>Middle</VerticalAlignment>
-			<TextFitMode>None</TextFitMode>
+			<TextFitMode>ShrinkToFit</TextFitMode>
 			<UseFullFontHeight>True</UseFullFontHeight>
 			<Verticalized>False</Verticalized>
 			<StyledText>
 				<Element>
 					<String xml:space="preserve">brand_name</String>
 					<Attributes>
-						<Font Family="Arial" Size="12" Bold="False" Italic="False" Underline="False" Strikeout="False" />
+						<Font Family="Arial" Size="10" Bold="False" Italic="False" Underline="False" Strikeout="False" />
 						<ForeColor Alpha="255" Red="0" Green="0" Blue="0" HueScale="100" />
 					</Attributes>
 				</Element>
@@ -72,14 +72,14 @@
 			<IsOutlined>False</IsOutlined>
 			<HorizontalAlignment>Left</HorizontalAlignment>
 			<VerticalAlignment>Top</VerticalAlignment>
-			<TextFitMode>None</TextFitMode>
+			<TextFitMode>ShrinkToFit</TextFitMode>
 			<UseFullFontHeight>True</UseFullFontHeight>
 			<Verticalized>False</Verticalized>
 			<StyledText>
 				<Element>
 					<String xml:space="preserve">M</String>
 					<Attributes>
-						<Font Family="Arial" Size="12" Bold="False" Italic="False" Underline="False" Strikeout="False" />
+						<Font Family="Arial" Size="10" Bold="False" Italic="False" Underline="False" Strikeout="False" />
 						<ForeColor Alpha="255" Red="0" Green="0" Blue="0" HueScale="100" />
 					</Attributes>
 				</Element>
@@ -100,14 +100,14 @@
 			<IsOutlined>False</IsOutlined>
 			<HorizontalAlignment>Left</HorizontalAlignment>
 			<VerticalAlignment>Top</VerticalAlignment>
-			<TextFitMode>None</TextFitMode>
+			<TextFitMode>ShrinkToFit</TextFitMode>
 			<UseFullFontHeight>True</UseFullFontHeight>
 			<Verticalized>False</Verticalized>
 			<StyledText>
 				<Element>
 					<String xml:space="preserve">€ 35,00</String>
 					<Attributes>
-						<Font Family="Arial" Size="12" Bold="False" Italic="False" Underline="False" Strikeout="False" />
+						<Font Family="Arial" Size="10" Bold="False" Italic="False" Underline="False" Strikeout="False" />
 						<ForeColor Alpha="255" Red="0" Green="0" Blue="0" HueScale="100" />
 					</Attributes>
 				</Element>
@@ -128,14 +128,14 @@
 			<IsOutlined>False</IsOutlined>
 			<HorizontalAlignment>Left</HorizontalAlignment>
 			<VerticalAlignment>Top</VerticalAlignment>
-			<TextFitMode>None</TextFitMode>
+			<TextFitMode>ShrinkToFit</TextFitMode>
 			<UseFullFontHeight>True</UseFullFontHeight>
 			<Verticalized>False</Verticalized>
 			<StyledText>
 				<Element>
 					<String xml:space="preserve">product_name</String>
 					<Attributes>
-						<Font Family="Arial" Size="12" Bold="False" Italic="False" Underline="False" Strikeout="False" />
+						<Font Family="Arial" Size="10" Bold="False" Italic="False" Underline="False" Strikeout="False" />
 						<ForeColor Alpha="255" Red="0" Green="0" Blue="0" HueScale="100" />
 					</Attributes>
 				</Element>

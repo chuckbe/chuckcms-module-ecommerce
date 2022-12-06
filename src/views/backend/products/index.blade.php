@@ -97,6 +97,10 @@
 					<input type="text" id="brandname" class="form-control" aria-describedby="brandname" readonly>
 				</div>
 				<div class="col-12 form-group single_product_area">
+					<div class="product_area mb-3">
+						<label for="product_name" class="form-label">Product Name</label>
+						<input type="text" id="product_name" class="form-control" aria-describedby="product_name" readonly>
+					</div>
 					<div class="barcode_area mb-3">
 						<label for="barcode" class="form-label">Barcode</label>
 						<input type="text" id="barcode" class="form-control" aria-describedby="barcode" readonly>
@@ -108,8 +112,12 @@
 						</div>
 
 						<div class="col quantity_area">
-							<label for="price" class="form-label">quantity</label>
+							<label for="price" class="form-label">Quantity</label>
 							<input type="number" id="quantity" class="form-control" aria-describedby="quantity" max="0" min="0" value="0">
+						</div>
+						<div class="col attributes_area">
+							<label for="attributes" class="form-label">Attributes</label>
+							<input type="text" id="attributes" class="form-control" aria-describedby="attributes" readonly>
 						</div>
 					</div>
 				</div>
@@ -134,38 +142,21 @@
 									<input type="number" class="combination-quantity" value="0" min="0" max="0">
 								</td>
 								<td>
-									<button type="button" class="btn btn-primary combination-print">Print</button>
+									<button type="button" class="btn btn-primary combination-print print-btn" data-product-type="single_combi_product">Print</button>
 								</td>
 							</tr>
 						</tbody>
 					</table>
-					{{-- <div class="row combinations_row">
-						<div class="col-12 combination_item">
-							<div class="input-group mb-3">
-								<div class="input-group-prepend">
-									<input type="checkbox" checked="checked" name="">
-								</div>
-								<div class="combination-name px-3">
-									<span class="px-3">combination name</span>
-								</div>
-								<div class="input-group-append">
-									<span class="combination-price px-3">€ 0,00</span>
-
-									<input type="text" class="combination-quantity" value="0" readonly>
-								</div>
-							</div>
-						</div>
-					</div> --}}
 				</div>
 			</div>
 		</div>
 		<div class="modal-footer">
 			<div class="row w-100">
 				<div class="col-12 col-lg-6">
-					<div class="d-flex w-100 align-items-center">
+					{{-- <div class="d-flex w-100 align-items-center">
 						<small data-bind="text: message">Loading</small><br>
 						<small data-bind="text: webServicePresent, visible: environmentChecked()"></small>
-					</div>
+					</div> --}}
 					<div class="d-flex w-100 align-items-center">
 						<span class="px-1" data-bind="html: printerConnected, visible: printerChecked()"></span>
 						<small data-bind="text: printerName, visible: printerChecked()"></small>
@@ -259,18 +250,25 @@ $( document ).ready(function (){
 					modal_body.find('#brandname').val(data.brand);
 				}
 				if(product_data.combinations && Object.keys(product_data.combinations).length > 0){
-					modal.find('.modal-footer .print-btn').attr('disabled', 'disabled');
+					// modal.find('.modal-footer .print-btn').attr('disabled', 'disabled');
+					modal.find('.modal-footer .print-btn').attr('data-product-type', 'multi_combi_products');
 					modal_body.find('.single_product_area #barcode').val('');
 					modal_body.find('.single_product_area').hide();
 					modal_body.find('.combination_area').show();
 					$.each(product_data.combinations, function(k,v){
 						let combiEl = modal_body.find('.combinations_row .combination_item').eq(0).clone();
-						combiEl.attr('data-ean', v.code.ean);
 						let price = new Intl.NumberFormat("nl-BE", { style: "currency", "currency":"EUR" }).format(v.price.final);
+						combiEl.attr('data-product', product_data.title.nl);
+						combiEl.attr('data-ean', v.code.ean);
+						combiEl.attr('data-attr', k);
+						combiEl.attr('data-price', price);
+						combiEl.attr('data-qty', v.quantity);
+
 						if(v.quantity == 0){
 							combiEl.find('.combination_active').attr('checked',false);
 							combiEl.find('.combination-print').attr('disabled','disabled');
 						}
+						
 
 						combiEl.find('.combination-name').text(v.display_name.nl);
 						combiEl.find('.combination-price').text(price);
@@ -280,12 +278,27 @@ $( document ).ready(function (){
 					});
 					modal_body.find('.combinations_row .combination_item').first().remove();
 				}else{
+					let attributes = [];
+					Object.values(product_data.attributes).forEach(function(attribute){
+						let name = attribute.display_name.nl;
+						attributes.push(name);
+					});
+					let attr;
+					if(attributes.length > 1){
+						attr = attributes.join(' ');
+					}else{
+						attr = attributes.join('');
+					}
+					
+
 					modal.find('.modal-footer .print-btn').attr('disabled', false);
 					modal_body.find('.single_product_area #barcode').val(product_data.code.ean);
+					modal_body.find('.single_product_area #product_name').val(product_data.title.nl);
 					let price = new Intl.NumberFormat("nl-BE", { style: "currency", "currency":"EUR" }).format(product_data.price.final);
 					modal_body.find('.single_product_area #price').val(price);
 					modal_body.find('.single_product_area #quantity').attr('value', product_data.quantity);
 					modal_body.find('.single_product_area #quantity').attr('max', product_data.quantity);
+					modal_body.find('.single_product_area #attributes').val(attr);;
 					modal_body.find('.single_product_area').show();
 					modal_body.find('.combination_area').hide();
 				}
@@ -304,31 +317,115 @@ $( document ).ready(function (){
 	
 	$(document).on('click','#labelModal .print-btn', function(e){
 		let modalbody = $('#labelModal').find('.modal-body');
+		let manufacturer;
+		let product_name;
+		let barcode;
+		let price;
+		let quantity;
+		let attributes;
+		let jobName; 
 		if($(this).attr('data-product-type') == 'single'){
-			let manufacturer = $(modalbody).find('input#brandname').val();
-			let barcode = $(modalbody).find('input#barcode').val();
-			let price = $(modalbody).find('input#price').val();
-			let quantity = $(modalbody).find('input#quantity').val();
+			manufacturer = $(modalbody).find('input#brandname').val();
+			product_name = $(modalbody).find('input#product_name').val();
+			barcode = $(modalbody).find('input#barcode').val();
+			price = $(modalbody).find('input#price').val();
+			quantity = $(modalbody).find('input#quantity').val();
+			attributes = $(modalbody).find('input#attributes').val();
+			jobName = 'customJob';
 
-			console.log(checkEan(barcode));
+			if(checkEan(barcode)){
+				if(barcode.length == 13){
+					barcode = barcode.slice(0, -1)
+				}
+				if(quantity > 0){
+					printLabel(manufacturer,product_name,barcode,attributes,price,quantity, jobName);
+				}else{
+					console.log('quantity set to 0');
+				}
+			}else{
+				console.log('invalid barcode');
+			}
 			
-			// printLabel(manufacturer,barcode,price,quantity, 'customjob');
 		}
+		if($(this).attr('data-product-type') == 'single_combi_product'){
+			manufacturer = $(modalbody).find('input#brandname').val();
+			let ci = $(this).closest('tr.combination_item')
+			
+			product_name = $(ci).attr('data-product');
+			barcode = $(ci).attr('data-ean');
+			price = $(ci).find('.combination-price').text();;
+			quantity = $(ci).find('.combination-quantity').val();
+			attributes = $(ci).attr('data-attr');
+			jobName = 'customJob';
+
+			if(checkEan(barcode)){
+				if(barcode.length == 13){
+					barcode = barcode.slice(0, -1)
+				}
+				if(quantity > 0){
+					printLabel(manufacturer,product_name,barcode,attributes,price,quantity, jobName);
+				}else{
+					console.log('quantity set to 0');
+				}
+			}else{
+				console.log('invalid barcode');
+			}
+		}
+
+		if($(this).attr('data-product-type') == 'multi_combi_products'){
+			manufacturer = $(modalbody).find('input#brandname').val();
+			let combinations = $('.combinations_row tr.combination_item');
+			if(combinations.length > 0){
+				for (let i = 0; i < combinations.length; i++) {
+					let active = $(combinations[i]).find('.combination_active').is(":checked")
+					if(active){
+						let ci = combinations[i]
+						product_name = $(ci).attr('data-product');
+						barcode = $(ci).attr('data-ean');
+						price = $(ci).find('.combination-price').text();;
+						quantity = $(ci).find('.combination-quantity').val();
+						attributes = $(ci).attr('data-attr');
+						jobName = 'customJob';
+						if(checkEan(barcode)){
+							if(barcode.length == 13){
+								barcode = barcode.slice(0, -1)
+							}
+							if(quantity > 0){
+								// printLabel
+								printLabel(manufacturer,product_name,barcode,attributes,price,quantity, jobName);
+							}else{
+								console.log('quantity set to 0');
+							}
+						}else{
+							console.log('invalid barcode');
+						}
+					}
+				}
+			}else{
+				console.log('no combinations found');
+			}
+		}
+
+
+		
+			
+		
 	});
 });
 
 
 
-function printLabel($manufacturer,$barcode,$price,$quantity,$printJobName) {
+function printLabel($manufacturer,$product_name,$barcode,$attributes,$price,$quantity,$printJobName) {
 	printerViewModel.message("Spooling");
 	var label = dymo.label.framework.openLabelXml(shippingLabelTemplate);
 
 	let manufacturer_name = $manufacturer;
-    let product = 'product_name';
+    let product = $product_name;
     let barcode = $barcode;
-    let attributes = 'attributes';
+    let attributes = $attributes;
     let price = $price;
     let quantity = $quantity;
+
 
 	let basicPrintParamsXML = '<?xml version="1.0" encoding="utf-8"?>\n' +
     '<LabelWriterPrintParams>\n' +
@@ -345,17 +442,20 @@ function printLabel($manufacturer,$barcode,$price,$quantity,$printJobName) {
     label.setObjectText('attribute', attributes);
     label.setObjectText('price', price);
 
-	label.printAsync(printerViewModel.printerName(), basicPrintParamsXML).then(function(state) {
-        if (state) {
-            printerViewModel.message("Printing");
-            setTimeout(function() {
-                printerViewModel.message("Ready");
-            }, 2000);
-        } else {
-            printerViewModel.message("Error");
-        }
-    });
-    return false;
+	label.print(printerViewModel.printerName(), basicPrintParamsXML);
+
+
+	// label.printAsync(printerViewModel.printerName(), basicPrintParamsXML).then(function(state) {
+    //     if (state) {
+    //         printerViewModel.message("Printing");
+    //         setTimeout(function() {
+    //             printerViewModel.message("Ready");
+    //         }, 2000);
+    //     } else {
+    //         printerViewModel.message("Error");
+    //     }
+    // });
+    // return false;
 }
 </script>
 @endsection
