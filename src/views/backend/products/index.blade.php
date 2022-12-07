@@ -242,6 +242,7 @@ $( document ).ready(function (){
 			if(data.status == 'success'){
 				let modal_body = $(modal).find('.modal-body');
 				let product_data = data.product.json;
+				// console.log(product_data);
 				if(data.brand !== ''){
 					modal_body.find('#brandname').val(data.brand);
 				}
@@ -254,9 +255,13 @@ $( document ).ready(function (){
 					$.each(product_data.combinations, function(k,v){
 						let combiEl = modal_body.find('.combinations_row .combination_item').eq(0).clone();
 						let price = new Intl.NumberFormat("nl-BE", { style: "currency", "currency":"EUR" }).format(v.price.final);
+						let attribute = k.replace('__', ", ");
 						combiEl.attr('data-product', product_data.title.nl);
 						combiEl.attr('data-ean', v.code.ean);
-						combiEl.attr('data-attr', k);
+						if(v.code.ean == null){
+							combiEl.attr('data-ean', product_data.code.ean);
+						}
+						combiEl.attr('data-attr', attribute);
 						combiEl.attr('data-price', price);
 						combiEl.attr('data-qty', v.quantity);
 
@@ -324,6 +329,7 @@ $( document ).ready(function (){
 		if($(this).attr('data-product-type') == 'single'){
 			manufacturer = $(modalbody).find('input#brandname').val();
 			product_name = $(modalbody).find('input#product_name').val();
+			product_name = product_name.replace(/.{10}\S*\s+/g, "$&@").split(/\s+@/).join('\n');
 			barcode = $(modalbody).find('input#barcode').val();
 			price = $(modalbody).find('input#price').val();
 			quantity = $(modalbody).find('input#quantity').val();
@@ -349,6 +355,7 @@ $( document ).ready(function (){
 			let ci = $(this).closest('tr.combination_item')
 			
 			product_name = $(ci).attr('data-product');
+			product_name = product_name.replace(/.{10}\S*\s+/g, "$&@").split(/\s+@/).join('\n');
 			barcode = $(ci).attr('data-ean');
 			price = $(ci).find('.combination-price').text();;
 			quantity = $(ci).find('.combination-quantity').val();
@@ -378,6 +385,7 @@ $( document ).ready(function (){
 					if(active){
 						let ci = combinations[i]
 						product_name = $(ci).attr('data-product');
+						product_name = product_name.replace(/.{10}\S*\s+/g, "$&@").split(/\s+@/).join('\n');
 						barcode = $(ci).attr('data-ean');
 						price = $(ci).find('.combination-price').text();;
 						quantity = $(ci).find('.combination-quantity').val();
@@ -402,9 +410,6 @@ $( document ).ready(function (){
 				console.log('no combinations found');
 			}
 		}
-
-
-		
 			
 		
 	});

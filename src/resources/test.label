@@ -33,7 +33,7 @@
 				</Element>
 			</StyledText>
 		</TextObject>
-		<Bounds X="142" Y="158" Width="1505" Height="334" />
+		<Bounds X="142" Y="113.385828474538" Width="1700.78742711807" Height="283.464571186345" />
 	</ObjectInfo>
 	<ObjectInfo>
 		<BarcodeObject>
@@ -57,7 +57,7 @@
 			<HorizontalAlignment>Center</HorizontalAlignment>
 			<QuietZonesPadding Left="0" Top="0" Right="0" Bottom="0" />
 		</BarcodeObject>
-		<Bounds X="59.2204589843701" Y="643.181152343749" Width="3123.77954101563" Height="600.944885253906" />
+		<Bounds X="59.2204589843701" Y="453.543313898151" Width="3123.77954101563" Height="600.944885253906" />
 	</ObjectInfo>
 	<ObjectInfo>
 		<TextObject>
@@ -70,9 +70,9 @@
 			<IsVariable>False</IsVariable>
 			<GroupID>-1</GroupID>
 			<IsOutlined>False</IsOutlined>
-			<HorizontalAlignment>Left</HorizontalAlignment>
-			<VerticalAlignment>Top</VerticalAlignment>
-			<TextFitMode>ShrinkToFit</TextFitMode>
+			<HorizontalAlignment>Right</HorizontalAlignment>
+			<VerticalAlignment>Middle</VerticalAlignment>
+			<TextFitMode>AlwaysFit</TextFitMode>
 			<UseFullFontHeight>True</UseFullFontHeight>
 			<Verticalized>False</Verticalized>
 			<StyledText>
@@ -85,7 +85,7 @@
 				</Element>
 			</StyledText>
 		</TextObject>
-		<Bounds X="2799" Y="198" Width="216" Height="252" />
+		<Bounds X="1927.55908406714" Y="113.385828474538" Width="1133.85828474538" Height="283.464571186345" />
 	</ObjectInfo>
 	<ObjectInfo>
 		<TextObject>
@@ -98,8 +98,8 @@
 			<IsVariable>False</IsVariable>
 			<GroupID>-1</GroupID>
 			<IsOutlined>False</IsOutlined>
-			<HorizontalAlignment>Left</HorizontalAlignment>
-			<VerticalAlignment>Top</VerticalAlignment>
+			<HorizontalAlignment>Right</HorizontalAlignment>
+			<VerticalAlignment>Bottom</VerticalAlignment>
 			<TextFitMode>ShrinkToFit</TextFitMode>
 			<UseFullFontHeight>True</UseFullFontHeight>
 			<Verticalized>False</Verticalized>
@@ -107,13 +107,13 @@
 				<Element>
 					<String xml:space="preserve">€ 35,00</String>
 					<Attributes>
-						<Font Family="Arial" Size="10" Bold="False" Italic="False" Underline="False" Strikeout="False" />
+						<Font Family="Arial" Size="9" Bold="False" Italic="False" Underline="False" Strikeout="False" />
 						<ForeColor Alpha="255" Red="0" Green="0" Blue="0" HueScale="100" />
 					</Attributes>
 				</Element>
 			</StyledText>
 		</TextObject>
-		<Bounds X="2163" Y="1425" Width="948" Height="252" />
+		<Bounds X="2163" Y="1145.19686759283" Width="948" Height="566.929142372689" />
 	</ObjectInfo>
 	<ObjectInfo>
 		<TextObject>
@@ -127,20 +127,22 @@
 			<GroupID>-1</GroupID>
 			<IsOutlined>False</IsOutlined>
 			<HorizontalAlignment>Left</HorizontalAlignment>
-			<VerticalAlignment>Top</VerticalAlignment>
-			<TextFitMode>ShrinkToFit</TextFitMode>
+			<VerticalAlignment>Bottom</VerticalAlignment>
+			<TextFitMode>None</TextFitMode>
 			<UseFullFontHeight>True</UseFullFontHeight>
 			<Verticalized>False</Verticalized>
 			<StyledText>
 				<Element>
-					<String xml:space="preserve">product_name</String>
+					<String xml:space="preserve">POP TRADING 
+COMPANY 'MIFFY 
+BALLOON' DECK 7.75"</String>
 					<Attributes>
-						<Font Family="Arial" Size="10" Bold="False" Italic="False" Underline="False" Strikeout="False" />
+						<Font Family="Arial" Size="8" Bold="False" Italic="False" Underline="False" Strikeout="False" />
 						<ForeColor Alpha="255" Red="0" Green="0" Blue="0" HueScale="100" />
 					</Attributes>
 				</Element>
 			</StyledText>
 		</TextObject>
-		<Bounds X="183.000000000001" Y="1418" Width="1632" Height="276" />
+		<Bounds X="183.000000000001" Y="1146.07085762731" Width="1927.55908406714" Height="566.929142372689" />
 	</ObjectInfo>
 </DieCutLabel>

@@ -113,7 +113,7 @@
 
 @section('scripts')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
-<script src="{{ URL::to('vendor/laravel-filemanager/js/lfm.js') }}"></script>
+<script src="{{ URL::to('vendor/laravel-filemanager/js/filemanager.js') }}"></script>
 <script src="//cdn.chuck.be/assets/plugins/jquery-autonumeric/autoNumeric.js"></script>
 <script src="//cdn.chuck.be/assets/plugins/summernote/js/summernote.min.js"></script>
 
@@ -549,7 +549,7 @@ $(document).ready(function() {
     $('.autonumeric').autoNumeric('init');
 
     //init media manager inputs 
-    var domain = "{{ URL::to('dashboard/media')}}";
+    var domain = "{{ URL::to('/')}}";
     $('.img_lfm_link').filemanager('image', {prefix: domain});
     $('.file_lfm_link').filemanager('file', {prefix: domain});
 
