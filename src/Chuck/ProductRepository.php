@@ -415,7 +415,7 @@ class ProductRepository
                     if(array_key_exists($combinationKey, $product->json['combinations'])) {
                         $combinations[$combinationKey]['code']['sku'] = $product->json['combinations'][$combinationKey]['code']['sku'];
                         $combinations[$combinationKey]['code']['upc'] = $product->json['combinations'][$combinationKey]['code']['upc'];
-                        $combinations[$combinationKey]['code']['ean'] = $product->json['combinations'][$combinationKey]['code']['ean'];
+                        $combinations[$combinationKey]['code']['ean'] = $product->json['combinations'][$combinationKey]['code']['ean'] ?? $this->generateSingleEan();;
                         
                     } else {
                         $combinations[$combinationKey]['code']['sku'] = $this->generateSingleSku();
