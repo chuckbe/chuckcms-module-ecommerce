@@ -51,6 +51,35 @@
             </div>
         </div>
     </div>
+
+    <hr>
+
+    <div class="row">
+        <div class="col-sm-12">
+            <h6><b>dymo printer</b></h6>
+        </div>
+        <div class="col-lg-12">
+            <div class="form-group form-group-default">
+                <div class="">
+                    <h6 class="font-weight-bold my-3">environment</h6>
+                    <p class="mb-2">browser supported: <span data-bind="text: browserSupported, visible: environmentChecked()"></span></p>
+                    <p class="mb-2">dymo framework installed: <span data-bind="text: frameworkInstalled, visible: environmentChecked()"></span></p>
+                    <p class="mb-2">dymo webservice ready: <span data-bind="text: webServicePresent, visible: environmentChecked()"></span></p>
+                    <h6 class="font-weight-bold my-3">printer</h6>
+                    <p class="mb-2">
+                        Name: 
+                        <span data-bind="text: printerName, visible: printerChecked()"></span>
+                    </p>
+                    <h6 class="font-weight-bold my-3">label</h6>
+                    <p class="mb-2">acquired: <span data-bind="text: lebelaAcquired, visible: lebelAjaxComplete()"></span></p>
+                    <div>
+                        <span data-bind="text: message">Loading</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="row">
         <div class="col-sm-12 text-right">
             <input type="hidden" name="_token" value="{{ Session::token() }}">
