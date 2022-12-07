@@ -258,6 +258,7 @@ $( document ).ready(function (){
 						let attribute = k.replace('__', ", ");
 						combiEl.attr('data-product', product_data.title.nl);
 						combiEl.attr('data-ean', v.code.ean);
+						console.log(v.code.ean);
 						if(v.code.ean == null){
 							combiEl.attr('data-ean', product_data.code.ean);
 						}

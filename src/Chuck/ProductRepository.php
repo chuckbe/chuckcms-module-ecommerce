@@ -150,7 +150,7 @@ class ProductRepository
     	$json = [];
     	$json['code']['sku'] = $this->generateSingleSku();
         $json['code']['upc'] = $values->get('code')['upc'];
-        $json['code']['ean'] = $values->get('code')['ean'];
+        $json['code']['ean'] = $values->get('code')['ean'] ?? $this->generateSingleEan();
 
         $json['is_displayed'] = ($values->get('is_displayed') == '1' ? true : false);
         $json['is_buyable'] = ($values->get('is_buyable') == '1' ? true : false);
@@ -216,7 +216,7 @@ class ProductRepository
 
                 	$combinations[$combinationKey]['code']['sku'] = $this->generateSingleSku();
                 	$combinations[$combinationKey]['code']['upc'] = null;
-                	$combinations[$combinationKey]['code']['ean'] = null;
+                	$combinations[$combinationKey]['code']['ean'] = $this->generateSingleEan();
 
                 	$combinations[$combinationKey]['price']['unit']['amount'] = $values->get('price')['unit']['amount'];
         	        $combinations[$combinationKey]['price']['unit']['type'] = $values->get('price')['unit']['type'];
@@ -335,6 +335,7 @@ class ProductRepository
 
     public function update(Request $values)
     {
+        
     	$input = [];
         $template = ChuckEcommerce::getTemplate();
 
@@ -347,7 +348,7 @@ class ProductRepository
     	$json = [];
     	$json['code']['sku'] = $product->json['code']['sku'];
         $json['code']['upc'] = $values->get('code')['upc'];
-        $json['code']['ean'] = $values->get('code')['ean'];
+        $json['code']['ean'] = $values->get('code')['ean'] ?? $this->generateSingleEan();
 
         $json['is_displayed'] = ($values->get('is_displayed') == '1' ? true : false);
         $json['is_buyable'] = ($values->get('is_buyable') == '1' ? true : false);
@@ -415,10 +416,11 @@ class ProductRepository
                         $combinations[$combinationKey]['code']['sku'] = $product->json['combinations'][$combinationKey]['code']['sku'];
                         $combinations[$combinationKey]['code']['upc'] = $product->json['combinations'][$combinationKey]['code']['upc'];
                         $combinations[$combinationKey]['code']['ean'] = $product->json['combinations'][$combinationKey]['code']['ean'];
+                        
                     } else {
                         $combinations[$combinationKey]['code']['sku'] = $this->generateSingleSku();
                         $combinations[$combinationKey]['code']['upc'] = null;
-                        $combinations[$combinationKey]['code']['ean'] = null;
+                        $combinations[$combinationKey]['code']['ean'] = $this->generateSingleEan();
                     }
 
                 	$combinations[$combinationKey]['price']['unit']['amount'] = $values->get('price')['unit']['amount'];
@@ -564,6 +566,31 @@ class ProductRepository
             return $uid;
         }
     }
+
+    public function generateSingleEan()
+    {
+        $random = rand(1000000, 9999999);
+
+        $code = '20' . str_pad($random, 10, '0');
+        $weightflag = true;
+        $sum = 0;
+
+        for ($i = strlen($code) - 1; $i >= 0; $i--) {
+            $sum += (int)$code[$i] * ($weightflag ? 3 : 1);
+            $weightflag = !$weightflag;
+        }
+        $code .= (10 - ($sum % 10)) % 10;
+
+        $count = $this->search($code)->count();
+
+        if ($count > 0) {
+            $this->generateSingleEan();
+        } else {
+            return $code;
+        }
+    }
+
+    
 
     public function getAttributes(Repeater $product)
     {
