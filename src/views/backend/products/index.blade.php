@@ -153,10 +153,6 @@
 		<div class="modal-footer">
 			<div class="row w-100">
 				<div class="col-12 col-lg-6">
-					{{-- <div class="d-flex w-100 align-items-center">
-						<small data-bind="text: message">Loading</small><br>
-						<small data-bind="text: webServicePresent, visible: environmentChecked()"></small>
-					</div> --}}
 					<div class="d-flex w-100 align-items-center">
 						<span class="px-1" data-bind="html: printerConnected, visible: printerChecked()"></span>
 						<small data-bind="text: printerName, visible: printerChecked()"></small>
@@ -273,6 +269,7 @@ $( document ).ready(function (){
 						combiEl.find('.combination-name').text(v.display_name.nl);
 						combiEl.find('.combination-price').text(price);
 						combiEl.find('.combination-quantity').attr('value',v.quantity);
+						combiEl.find('.combination-quantity').val(v.quantity);
 						combiEl.find('.combination-quantity').attr('max',v.quantity);
 						combiEl.appendTo($(modal_body.find('.combinations_row')));
 					});
@@ -410,6 +407,13 @@ $( document ).ready(function (){
 		
 			
 		
+	});
+
+	$(document).on('keyup', ['.combination_item .combination-quantity', '.single_product_area .quantity'], function(e){
+		let max = $(e.target).attr('max');
+		if($(e.target).val() !== '' && $(e.target).val() > max) {
+			$(e.target).val(max);
+		}
 	});
 });
 
