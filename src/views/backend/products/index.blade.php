@@ -154,7 +154,7 @@
 			<div class="row w-100">
 				<div class="col-12 col-lg-6">
 					<div class="d-flex w-100 align-items-center">
-						<span class="px-1" data-bind="html: printerConnected, visible: printerChecked()"></span>
+						<span class="px-1" data-bind="html: printerConnectedIndicator, visible: printerChecked()"></span>
 						<small data-bind="text: printerName, visible: printerChecked()"></small>
 					</div>
 				</div>
@@ -224,6 +224,9 @@ $( document ).ready(function (){
 </script>
 <script>
 $( document ).ready(function (){
+	if(printerViewModel.message() !== 'ready') {
+		$('.print-btn').attr('disabled', 'disabled');
+	}
 	$(document).on('click','.labelbtn', function (e) {
 		let $invoker = $(this);
 		let modal = $('#labelModal');
@@ -242,7 +245,6 @@ $( document ).ready(function (){
 			if(data.status == 'success'){
 				let modal_body = $(modal).find('.modal-body');
 				let product_data = data.product.json;
-				// console.log(product_data);
 				if(data.brand !== ''){
 					modal_body.find('#brandname').val(data.brand);
 				}
@@ -258,9 +260,9 @@ $( document ).ready(function (){
 						let attribute = k.replace('__', ", ");
 						combiEl.attr('data-product', product_data.title.nl);
 						combiEl.attr('data-ean', v.code.ean);
-						console.log(v.code.ean);
 						if(v.code.ean == null){
-							combiEl.attr('data-ean', product_data.code.ean);
+							console.log('ean barcode not set');
+							// combiEl.attr('data-ean', product_data.code.ean);
 						}
 						combiEl.attr('data-attr', attribute);
 						combiEl.attr('data-price', price);
