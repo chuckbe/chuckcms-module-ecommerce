@@ -33,7 +33,7 @@ class IntegrationsController extends Controller
     {
         
         $this->validate($request, [
-            // 'integrations.mollie.key' => 'required',
+            'integrations.mollie.key' => 'required',
             'integrations.mollie.methods' => 'required|array',
             'integrations.banktransfer.active' => 'required|in:0,1',
             'integrations.banktransfer.name' => 'nullable',
