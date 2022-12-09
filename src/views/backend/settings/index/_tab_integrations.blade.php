@@ -76,28 +76,15 @@
 
 
                     <h6 class="font-weight-bold my-3">
+                        <a class="px-2" data-bind="visible: lebelAjaxComplete()" href="{{ChuckEcommerce::getSetting('integrations.label.src') ?? '/chuckbe/chuckcms-module-ecommerce/test.label'}}" download >
+                            <i class="fa fa-download"></i>
+                        </a>
                         Label:  <span data-bind="text: lebelaAcquired, visible: lebelAjaxComplete()"></span>
                     </h6>
                     <div class="label-input-group input-group flex-column">
-                       
-                        {{-- <span class="input-group-btn"> 
-                            <a id="lfmlabel" class="btn btn-primary" style="color:#FFF">
-                                <i class="fa fa-file"></i> Kies
-                            </a>
-                          </span>
-                          <input 
-                            id="dymolabel" 
-                            class="form-control" 
-                            accept="application/octet-stream" 
-                            type="text" 
-                            name="integrations[label]" 
-                            value=""
-                        > --}}
-                        
-
                         <div class="custom-file w-100 mb-3">
                             <input type="file" class="custom-file-input" id="labelFile" name="integrations[label]">
-                            <label class="custom-file-label" data-src="{{ChuckEcommerce::getSetting('integrations.label.src') ?? ''}}" for="labelFile" data-bind="text: lebelTemplate, visible: lebelAjaxComplete()">Choose file</label>
+                            <label class="custom-file-label" data-src="{{ChuckEcommerce::getSetting('integrations.label.src') ?? ''}}" for="labelFile" data-bind="text: lebelTemplate">Choose file</label>
                         </div>
                         <div class="alert alert-danger labelError d-none" role="alert"></div>
                     </div>
