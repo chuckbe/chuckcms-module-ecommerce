@@ -83,7 +83,7 @@ Route::group(['middleware' => ['web']], function() {
 			//END OF: SETTINGS ROUTES
 
 			// START OF: LABEL ROUTES
-				
+			Route::post('/dashboard/ecommerce/settings/integrations/dymo/uploadLabel', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\Settings\IntegrationsController@dymoLabelUpload')->name('dashboard.module.ecommerce.settings.index.integrations.label.upload');
 			
 			// END OF: LABEL ROUTES
 		});

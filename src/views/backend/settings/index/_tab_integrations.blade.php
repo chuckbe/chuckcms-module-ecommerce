@@ -1,7 +1,7 @@
 @extends('chuckcms-module-ecommerce::backend.settings.index')
 
 @section('tab')
-<form action="{{ route('dashboard.module.ecommerce.settings.index.integrations.update') }}" method="POST">
+<form action="{{ route('dashboard.module.ecommerce.settings.index.integrations.update') }}" method="POST"  enctype="multipart/form-data">
     <div class="row">
         <div class="col-sm-12">
             <h6><b>mollie</b></h6>
@@ -61,19 +61,45 @@
         <div class="col-lg-12">
             <div class="form-group form-group-default">
                 <div class="">
-                    <h6 class="font-weight-bold my-3">environment</h6>
-                    <p class="mb-2">browser supported: <span data-bind="text: browserSupported, visible: environmentChecked()"></span></p>
-                    <p class="mb-2">dymo framework installed: <span data-bind="text: frameworkInstalled, visible: environmentChecked()"></span></p>
-                    <p class="mb-2">dymo webservice ready: <span data-bind="text: webServicePresent, visible: environmentChecked()"></span></p>
-                    <h6 class="font-weight-bold my-3">printer</h6>
-                    <p class="mb-2">
-                        Name: 
+                    <h6 class="font-weight-bold my-3">
+                        printer: 
                         <span data-bind="text: printerName, visible: printerChecked()"></span>
-                    </p>
-                    <h6 class="font-weight-bold my-3">label</h6>
-                    <p class="mb-2">acquired: <span data-bind="text: lebelaAcquired, visible: lebelAjaxComplete()"></span></p>
-                    <div>
-                        <span data-bind="text: message">Loading</span>
+                    </h6>
+                    <h6 class="font-weight-bold my-3">status</h6>
+                    <p class="mb-2">printer connection: <span data-bind="text: message">Loading</span> </p>
+                    
+                    <p class="mb-2">browser supported: <span data-bind="text: browserSupported, visible: environmentChecked()"></span></p>
+                
+                    <p class="mb-2">dymo framework installed: <span data-bind="text: frameworkInstalled, visible: environmentChecked()"></span></p>
+                
+                    <p class="mb-2">dymo webservice ready: <span data-bind="text: webServicePresent, visible: environmentChecked()"></span></p>
+
+
+                    <h6 class="font-weight-bold my-3">
+                        Label:  <span data-bind="text: lebelaAcquired, visible: lebelAjaxComplete()"></span>
+                    </h6>
+                    <div class="label-input-group input-group flex-column">
+                       
+                        {{-- <span class="input-group-btn"> 
+                            <a id="lfmlabel" class="btn btn-primary" style="color:#FFF">
+                                <i class="fa fa-file"></i> Kies
+                            </a>
+                          </span>
+                          <input 
+                            id="dymolabel" 
+                            class="form-control" 
+                            accept="application/octet-stream" 
+                            type="text" 
+                            name="integrations[label]" 
+                            value=""
+                        > --}}
+                        
+
+                        <div class="custom-file w-100 mb-3">
+                            <input type="file" class="custom-file-input" id="labelFile" name="integrations[label]">
+                            <label class="custom-file-label" data-src="{{ChuckEcommerce::getSetting('integrations.label.src') ?? ''}}" for="labelFile" data-bind="text: lebelTemplate, visible: lebelAjaxComplete()">Choose file</label>
+                        </div>
+                        <div class="alert alert-danger labelError d-none" role="alert"></div>
                     </div>
                 </div>
             </div>

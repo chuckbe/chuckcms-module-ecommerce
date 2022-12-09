@@ -105,22 +105,32 @@ $lang = \LaravelLocalization::getCurrentLocale();
         width: 5px;
         height: 5px;
         border-radius: 50%;
+    }  
+    .custom-file .custom-file-input:focus ~ .custom-file-label, .custom-file .custom-file-input:hover ~ .custom-file-label {
+        border-color: inherit;
+        box-shadow: none;
+    }
+    .custom-file .custom-file-input:focus ~ .custom-file-label.has-error, .custom-file .custom-file-input:hover ~ .custom-file-label.has-error , .custom-file-label.has-error{
+        border-color: var(--danger);
     }
 </style>
 @endsection
 
 @section('scripts')
-<script src="{{ URL::to('vendor/laravel-filemanager/js/filemanager.js') }}"></script>
+{{-- <script src="{{ URL::to('vendor/laravel-filemanager/js/filemanager.js') }}"></script> --}}
+<script src="{{ URL::to('/vendor/laravel-filemanager/js/stand-alone-button.js') }}"></script>
 <script src="/chuckbe/chuckcms-module-ecommerce/js/labelprinter/DYMO.Label.Framework.3.0.js"></script>
 <script src="/chuckbe/chuckcms-module-ecommerce/js/labelprinter/Knockout-min.js"></script>
 <script src="/chuckbe/chuckcms-module-ecommerce/js/labelprinter/label.js"></script>
 <script>
+const labelSrc = "{{ChuckEcommerce::getSetting('integrations.label.src') ?? '/chuckbe/chuckcms-module-ecommerce/test.label'}}";
 $( document ).ready(function() { 
     init();
 
     function init () {
         var domain = "{{ URL::to('dashboard/media')}}";
-        $('#lfm').filemanager('image', {prefix: domain});
+        // $('#lfm').filemanager('image', {prefix: domain});
+        $('#lfmlabel').filemanager('file', {prefix: domain});
 
         //$('.autonumeric').autoNumeric('init');
     }

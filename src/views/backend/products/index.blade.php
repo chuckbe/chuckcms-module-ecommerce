@@ -223,6 +223,7 @@ $( document ).ready(function (){
 });
 </script>
 <script>
+const labelSrc = "{{ChuckEcommerce::getSetting('integrations.label.src') ?? '/chuckbe/chuckcms-module-ecommerce/test.label'}}";
 $( document ).ready(function (){
 	if(printerViewModel.message() !== 'ready') {
 		$('.print-btn').attr('disabled', 'disabled');
