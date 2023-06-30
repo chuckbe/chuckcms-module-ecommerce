@@ -25,10 +25,9 @@ function statusOrder () {
         	$('.order-success').removeClass('d-none');
             $('.order-canceled').remove();
         } else { 
-        	$('.order-canceled').removeClass('d-none');
+            $('.order-canceled').removeClass('d-none');	
             $('.order-success').remove();
         } 
     });
 }
-
 </script>

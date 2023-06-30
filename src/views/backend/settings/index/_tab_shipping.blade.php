@@ -8,13 +8,13 @@
         @php
         $langKey = ChuckSite::getFeaturedLocale();
         @endphp
-        <b>{{ $carrier['name'] }}</b> <small>{{ $carrier['transit_time'] }}</small> <span class="badge badge-success badge-pill{{ $carrier['default'] ? '' : ' d-none' }}">Standaard verzending</span>
-        <a href="#" onclick="deleteCarrierModal('{{ $carrierKey }}', '{{ $carrier['name'] }}')" class="btn btn-danger btn-sm btn-rounded float-right">delete</a>
+        <b>{{ $carrier['name'][$langKey] }}</b> <small>{{ $carrier['transit_time'][$langKey] }}</small> <span class="badge badge-success badge-pill{{ $carrier['default'] ? '' : ' d-none' }}">Standaard verzending</span>
+        <a href="#" onclick="deleteCarrierModal('{{ $carrierKey }}', '{{ $carrier['name'][$langKey] }}')" class="btn btn-danger btn-sm btn-rounded float-right">delete</a>
         <a href="#" onclick="editCarrierModal('{{ $carrierKey }}')" class="btn btn-secondary btn-sm btn-rounded mr-2 float-right">edit</a>
       </h6>
       <p class="mb-1">Kostprijs: {{ (float)$carrier['cost'] > 0 ? ChuckEcommerce::formatPrice($carrier['cost']) : 'Free shipping' }}</p>
       <p class="mb-1">Gratis vanaf: {{ !array_key_exists('free_from', $carrier) ? '/' : ((float)$carrier['free_from'] == 0 || is_null($carrier['free_from']) ? '/' : ChuckEcommerce::formatPrice($carrier['free_from'])) }}</p>
-      
+
       <p>Min. Gewicht: {{ !array_key_exists('min_weight', $carrier) ? '∞' : ((float)$carrier['min_weight'] == 0 ? '0 kg' : $carrier['min_weight'].' kg') }}</p>
       <p>Max. Gewicht: {{ !array_key_exists('max_weight', $carrier) ? '∞' : ((float)$carrier['max_weight'] == 0 ? '∞' : $carrier['max_weight'].' kg') }}</p>
 

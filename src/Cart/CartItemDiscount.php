@@ -96,7 +96,7 @@ class CartItemDiscount extends Collection
         $price = floatval($price);
         switch ($this->type) {
             case 'currency':
-                return ($this->value > $price) ? 0 : $this->value;
+                return ($this->value > $price) ? $price : $this->value;
                 break;
             case 'percentage':
                 return round(($price * ($this->value / 100)), 6);

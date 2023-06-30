@@ -121,9 +121,9 @@
 $(document).ready(function() {
   toggleRemoveExtraButton(); 
     
-  $( "#options_input_container" ).sortable({revert: true});
+  $("[data-options-container]").sortable({revert: true});
 
-  $('body').on('click', '.remove_line_button', function() {
+  $('body').on('click', '[data-remove-option]', function() {
       checker = $(this).parents('._input_container').find('._input_line').length;
       if(checker > 1) {
           $(this).parents('._input_line').remove();
@@ -133,7 +133,7 @@ $(document).ready(function() {
       }
   });
 
-  $('body').on('click', '#new_option_button', function() {
+  $('body').on('click', '[data-add-option]', function() {
       $('#new_option_error').addClass('d-none');
       if($('#new_option_key').val().length == 0 || $('#new_option_value').val().length == 0) {
           $('#new_option_error').removeClass('d-none');
@@ -142,8 +142,7 @@ $(document).ready(function() {
 
       new_key = $('#new_option_key').val();
       new_value = $('#new_option_value').val();
-      //new_file = $('#new_css_asset').is(':checked');
-
+      
       if($('.option_input_line').length > 1) {
           $('.option_input_line:first').clone().appendTo('.options_input_container');
           $('.option_input_container').append('<hr>');
@@ -186,6 +185,8 @@ $(document).ready(function() {
     holderid = $('.extra_input_row:last').find('.img_lfm_holder').attr('id');
     $('.extra_input_row:last').find('.img_lfm_holder').attr('id',holderid+'_'+$('.extra_input_row').length);
 
+    $('.extra_input_row:last').find("[data-auto-tax]").attr('data-auto-tax-group', $('.extra_input_row').length);
+
     toggleRemoveExtraButton();
 
     init();
@@ -205,7 +206,6 @@ $(document).ready(function() {
       $('.removeExtraRowButton').hide();
     }
   }
-
 
   $("body").on('keyup', "[data-auto-tax][data-auto-tax-price]", function () {
     let auto_tax_group = $(this).attr('data-auto-tax-group');
@@ -231,27 +231,320 @@ $(document).ready(function() {
     $("[data-auto-tax][data-auto-tax-group='"+auto_tax_group+"'][data-auto-tax-price]").val(exvat).change();
   });
 
-  
 
-    $('body').on('change', '.boolean_checkbox_input', function() {
-        if($(this).is(':checked')) {
-            $(this).val(1);
-            $(this).parent('label').siblings('input').prop('disabled', true);
-        } else {
-            $(this).val(0);
-            $(this).parent('label').siblings('input').prop('disabled', false);
-        }
+  $('body').on('change', '.boolean_checkbox_input', function() {
+      if($(this).is(':checked')) {
+          $(this).val(1);
+          $(this).parent('label').siblings('input').prop('disabled', true);
+      } else {
+          $(this).val(0);
+          $(this).parent('label').siblings('input').prop('disabled', false);
+      }
+  });
+
+  $('body').on('keyup', '.product_slug_input', function(){
+      var text = $(this).val();
+      slug_text = text.toLowerCase().replace(/[^\w ]+/g,'-').replace(/ +/g,'-');
+      $(".product_slug_input").val(slug_text);   
+  });
+
+
+  $('body').on('keyup', "#sale_price_ex_input", function(){
+    var vat = parseFloat($('#tax-input').find(":selected").attr("data-amount"));
+    var exvat = parseFloat($(this).val());
+    var invat = (exvat + ((exvat / 100) * vat)).toFixed(6);
+    $("#sale_price_in_input").val(invat).change();
+  });
+
+  $('body').on('change', "#tax-input", function() {
+    var vat = parseFloat($(this).find(":selected").attr("data-amount"));
+    var exvat = parseFloat($("#sale_price_ex_input").val());
+    var invat = (exvat + ((exvat / 100) * vat)).toFixed(6);
+    $("#sale_price_in_input").val(invat).change();
+  });
+
+  $('body').on('keyup', "#sale_price_in_input", function(){
+    var vat = parseFloat('1.'+$('#tax-input').find(":selected").attr("data-amount"));
+    var invat = parseFloat($(this).val());
+    var exvat = (invat / vat).toFixed(6);
+    $("#sale_price_ex_input").val(exvat).change();
+  });
+
+
+  $('body').on('keyup', ".sale_price_ex_input", function(){
+    var combi_slug = $(this).attr('data-combination-key');
+    var vat = parseFloat($('#tax-input').find(":selected").attr("data-amount"));
+    var exvat = parseFloat($(this).val());
+    var invat = (exvat + ((exvat / 100) * vat)).toFixed(6);
+    $(".sale_price_in_input[data-combination-key="+combi_slug+"]").val(invat).change();
+  });
+
+  $('body').on('keyup', ".sale_price_in_input", function(){
+    var combi_slug = $(this).attr('data-combination-key');
+    var vat = parseFloat('1.'+$('#tax-input').find(":selected").attr("data-amount"));
+    var invat = parseFloat($(this).val());
+    var exvat = (invat / vat).toFixed(6);
+    $(".sale_price_ex_input[data-combination-key="+combi_slug+"]").val(exvat).change();
+  });
+
+
+
+  $('body').on('change', "#attributes_multi_select", function(){
+    var selectedAttributes = $(this).val();
+    $('.attribute-select-row').each(function() {
+      if( jQuery.inArray($(this).attr('data-attribute'), selectedAttributes) !== -1 ){
+        $(this).show();
+      } else {
+        $(this).hide();
+      }
     });
+  });
+
+  $('body').on('focusout', ".attribute-multi-select-input", function(){
+    //check if all attributes are filled
+    var selectedAttributes = $("#attributes_multi_select").val();
+    var totalCombinations = parseInt(1);
+    var attributesList = [];
+    var attributesFullList = [];
+    var isSelected = 0;
+
+    for (var i = selectedAttributes.length - 1; i >= 0; i--) {
+      if( $(".attribute-multi-select-input[data-attribute="+selectedAttributes[i]+"]").val() == null ){
+        break; //break off function as not all attributes are filled
+      } else {
+        isSelected++;
+        totalCombinations = totalCombinations * parseInt($(".attribute-multi-select-input[data-attribute="+selectedAttributes[i]+"]").val().length);
+
+        var selectedOptions = $(".attribute-multi-select-input[data-attribute="+selectedAttributes[i]+"]").find('option:selected');
+
+        attributesList[i] = [];
+        attributesFullList[i] = [];
+
+        selectedOptions.each(function(index) {
+          var langs = $(this).attr('data-langs').split(',');
+          var name = {};
+          for (var g = 0; g < langs.length; g++) {
+            name[langs[g]] =$(this).attr('data-type')+' '+$(this).attr('data-name-'+langs[g]);
+          };
+          attributesList[i][index] = {
+            'key':$(this).attr('value'),
+            'name':$(this).attr('data-name'),
+            'display_name':name
+          };
+          attributesFullList[i][index] = {
+            'key':$(this).attr('value'),
+            'name':$(this).attr('data-name'),
+            'display_name':name
+          };
+        });
+        
+      }
+    };
+
+    var isAllSelected = false;
+
+    if(selectedAttributes.length == isSelected) {
+      var isAllSelected = true;
+    }
+
+    if (!isAllSelected) {
+      $('.combination-row:not(:first)').remove();
+      $('.combination-row:first').attr('data-combination-key', '');
+      $('.combination-row:first').find('.combination_quantity_input').val('0');
+      $('.combination-row:first').hide();
+      $('.quantity-row').show();
+
+      init();
+      return;
+    }
+
+
+    
+    $('.quantity-row').hide();
+    var finalCombinations = [];
+
+    function cartesian(cartes) {
+        var r = [], arg = cartes, max = arg.length-1;
+        function helper(arr, i) {
+            for (var j=0, l=arg[i].length; j<l; j++) {
+                var a = arr.slice(0); // clone arr
+                a.push(arg[i][j]);
+                if (i==max)
+                    r.push(a);
+                else
+                    helper(a, i+1);
+            }
+        }
+        helper([], 0);
+        return r;
+    }
+
+    preFinalCombinationsList = cartesian(attributesList);
+
+    for (var i = 0; i < totalCombinations; i++) {
+      // add/copy attributes data to combination - preFinalCombinationsList[i]
+      
+      var combinationKey = '';
+      var combinationName = '';
+      var combinationDisplayName = {};
+      var langs = $('.attributes-combinations-block:first').attr('data-langs').split(',');
+
+      for (var g = 0; g < preFinalCombinationsList[i].length; g++) {
+
+        if(combinationKey == ''){
+          combinationKey = preFinalCombinationsList[i][g].key;
+          combinationName = preFinalCombinationsList[i][g].name;
+          for (var k = 0; k < langs.length; k++) {
+            combinationDisplayName[langs[k]] = preFinalCombinationsList[i][g].display_name[langs[k]];
+          };
+          
+        } else {
+          combinationKey = combinationKey+'__'+preFinalCombinationsList[i][g].key;
+          combinationName = combinationName+' '+preFinalCombinationsList[i][g].name;
+          for (var k = 0; k < langs.length; k++) {
+            combinationDisplayName[langs[k]] = combinationDisplayName[langs[k]]+' '+preFinalCombinationsList[i][g].display_name[langs[k]];
+          };
+        }
+
+      };
+
+      finalCombinations[i] = {
+        'key':combinationKey,
+        'name':combinationName,
+        'display_name':combinationDisplayName
+      };       
+    };
+
+    
+    if($('.combination-row').length == 1) { // only 1 row => so no previous combinations...
+      for (var i = 0; i < finalCombinations.length; i++) {
+        let combinationSelector = '.combination-row:first';
+
+        if(i > 0) {
+          combinationSelector = '.combination-row:last';
+          $('.combination-row:first').clone().appendTo('.attributes-combinations-block');
+        }
+
+        prefillCombinationRow(
+          combinationSelector, 
+          finalCombinations[i], 
+          '0', 
+          '0.000000', 
+          '0.000000', 
+          '0.000000', 
+          '0,00', 
+          '0,00', 
+          '0,00', 
+          '0,000',
+          langs);
+      };
+    } else { // there are previous combinations
+      $('.combination-row').addClass('old-combination-row');
+      for (var i = 0; i < finalCombinations.length; i++) {
+        //keep combinations that are present, remove others and add remaining new combinations
+        
+        let presentSelector = '.combination-row[data-combination-key="'+finalCombinations[i].key+'"]';
+        
+        if($(presentSelector).length == 0){
+          var oldQuantity = '0';
+          var oldPriceSale = '0.000000';
+          var oldPriceFinal = '0.000000';
+          var oldPriceDiscount = '0.000000';
+          var oldWidth = '0,00';
+          var oldHeight = '0,00';
+          var oldDepth = '0,00';
+          var oldWeight = '0,000';
+        } else {
+          let oldSelector = '.old-combination-row[data-combination-key="'+finalCombinations[i].key+'"]';
+
+          var oldQuantity = $(oldSelector).find('.combination_quantity_input').val();
+          var oldPriceSale = $(oldSelector).find('.combination_price_sale_input').val();
+          var oldPriceFinal = $(oldSelector).find('.combination_price_final_input').val();
+          var oldPriceDiscount = $(oldSelector).find('.combination_price_discount_input').val();
+
+          var oldWidth = $(oldSelector).find('.combination_width_input').val();
+          var oldHeight = $(oldSelector).find('.combination_height_input').val();
+          var oldDepth = $(oldSelector).find('.combination_depth_input').val();
+          var oldWeight = $(oldSelector).find('.combination_weight_input').val();
+        }
+
+        $('.combination-row:first').clone().appendTo('.attributes-combinations-block');
+        $('.combination-row:last').removeClass('old-combination-row');
+        
+        prefillCombinationRow(
+          '.combination-row:last', 
+          finalCombinations[i], 
+          oldQuantity, 
+          oldPriceSale, 
+          oldPriceFinal, 
+          oldPriceDiscount, 
+          oldWidth, 
+          oldHeight, 
+          oldDepth, 
+          oldWeight,
+          langs);
+          
+      };
+      $('.old-combination-row').remove();
+    }
+
+    init();
+  });
+
+  function prefillCombinationRow(selector, combination, quantity, price_sale, price_final, price_discount, width, height, depth, weight, langs) {
+    $(selector).attr('data-combination-key',combination.key);
+            
+    $(selector).find('.combination_quantity_input')
+      .val(quantity)
+      .attr('name', 'combinations['+combination.key+'][quantity]');
+
+
+    $(selector).find('.combination_price_sale_input')
+      .val(price_sale)
+      .attr('name', 'combinations['+combination.key+'][price][sale]')
+      .attr('data-combination-key', combination.key);
+
+    $(selector).find('.combination_price_final_input')
+      .val(price_final)
+      .attr('name', 'combinations['+combination.key+'][price][final]')
+      .attr('data-combination-key', combination.key);
+
+    $(selector).find('.combination_price_discount_input')
+      .val(price_discount)
+      .attr('name', 'combinations['+combination.key+'][price][discount]');
+
+
+    $(selector).find('.combination_width_input')
+      .val(width)
+      .attr('name', 'combinations['+combination.key+'][dimensions][width]');
+    $(selector).find('.combination_height_input')
+      .val(height)
+      .attr('name', 'combinations['+combination.key+'][dimensions][height]');
+    $(selector).find('.combination_depth_input')
+      .val(depth)
+      .attr('name', 'combinations['+combination.key+'][dimensions][depth]');
+    $(selector).find('.combination_weight_input')
+      .val(weight)
+      .attr('name', 'combinations['+combination.key+'][dimensions][weight]');
+
+
+    $(selector).find('.combination_name_input').attr('value', combination.name);
+    
+    for (var k = 0; k < langs.length; k++) {
+      $(selector).find('.combination_display_name_'+langs[k])
+        .attr('name', 'combinations['+combination.key+'][display_name]['+langs[k]+']')
+        .attr('value', combination.display_name[langs[k]]);
+    };
+
+    $(selector).find('input.combination_slug').attr('value', combination.key);
+
+    $(selector).show();
+  }
+
 
   init(); 
 
   function init() {
-    $(".product_slug_input").keyup(function(){
-        var text = $(this).val();
-        slug_text = text.toLowerCase().replace(/[^\w ]+/g,'-').replace(/ +/g,'-');
-        $(".product_slug_input").val(slug_text);   
-    });
-
     //Autonumeric plug-in - automatic addition of dollar signs,etc controlled by tag attributes
     $('.autonumeric').autoNumeric('init');
 
@@ -263,7 +556,6 @@ $(document).ready(function() {
     $('.summernote-text-editor').summernote({
       height: 150,
       fontNames: ['Arial', 'Arial Black', 'Open Sans', 'Helvetica', 'Helvetica Neue', 'Lato'],
-      fontSizes: ['8', '9', '10', '11', '12', '14', '16', '18', '20', '22', '24', '26', '28', '30', '36'],
       toolbar: [
         // [groupName, [list of button]]
         ['style', ['bold', 'italic', 'underline', 'clear']],
@@ -273,296 +565,9 @@ $(document).ready(function() {
         ['height', ['height']]
       ]
     });
-
-    $("#sale_price_ex_input").keyup(function(){
-      var vat = parseFloat($('#tax-input').find(":selected").attr("data-amount"));
-      var exvat = parseFloat($(this).val());
-      var invat = (exvat + ((exvat / 100) * vat)).toFixed(6);
-      $("#sale_price_in_input").val(invat).change();
-    });
-
-    $("#tax-input").on('change', function() {
-      var vat = parseFloat($(this).find(":selected").attr("data-amount"));
-      var exvat = parseFloat($("#sale_price_ex_input").val());
-      var invat = (exvat + ((exvat / 100) * vat)).toFixed(6);
-      $("#sale_price_in_input").val(invat).change();
-    });
-
-    $("#sale_price_in_input").keyup(function(){
-      var vat = parseFloat('1.'+$('#tax-input').find(":selected").attr("data-amount"));
-      console.log(vat);
-      var invat = parseFloat($(this).val());
-      var exvat = (invat / vat).toFixed(6);
-      if($(this).val() == ''){
-        $("#sale_price_ex_input").val(0.000000).change();
-      }else{
-        $("#sale_price_ex_input").val(exvat).change();
-      }
-    });
-
-
-    $(".sale_price_ex_input").keyup(function(){
-      var combi_slug = $(this).attr('data-combination-key');
-      var vat = parseFloat($('#tax-input').find(":selected").attr("data-amount"));
-      var exvat = parseFloat($(this).val());
-      var invat = (exvat + ((exvat / 100) * vat)).toFixed(6);
-      if($(this).val() == ''){
-        $(".sale_price_in_input[data-combination-key="+combi_slug+"]").val(0.000000).change();
-      }else{
-        $(".sale_price_in_input[data-combination-key="+combi_slug+"]").val(invat).change();
-      }
-    });
-
-    $(".sale_price_in_input").keyup(function(){
-      var combi_slug = $(this).attr('data-combination-key');
-      var vat = parseFloat('1.'+$('#tax-input').find(":selected").attr("data-amount"));
-      console.log(vat);
-      var invat = parseFloat($(this).val());
-      var exvat = (invat / vat).toFixed(6);
-      console.log(exvat);
-      if($(this).val() == ''){
-        $(".sale_price_ex_input[data-combination-key="+combi_slug+"]").val(0.000000).change();
-      }else{
-        $(".sale_price_ex_input[data-combination-key="+combi_slug+"]").val(exvat).change();
-      }
-    });
-
-
-
-    $("#attributes_multi_select").on('change', function(){
-      var selectedAttributes = $(this).val();
-      $('.attribute-select-row').each(function() {
-        if( jQuery.inArray($(this).attr('data-attribute'), selectedAttributes) !== -1 ){
-          $(this).show();
-        } else {
-          $(this).hide();
-        }
-      });
-    });
-
-    $(".attribute-multi-select-input").on('focusout', function(){
-      //check if all attributes are filled
-      var selectedAttributes = $("#attributes_multi_select").val();
-      var totalCombinations = parseInt(1);
-      var attributesList = [];
-      var attributesFullList = [];
-      var isSelected = 0;
-
-      for (var i = selectedAttributes.length - 1; i >= 0; i--) {
-        if( $(".attribute-multi-select-input[data-attribute="+selectedAttributes[i]+"]").val() == null ){
-          break; //break off function as not all attributes are filled
-        } else {
-          isSelected++;
-          totalCombinations = totalCombinations * parseInt($(".attribute-multi-select-input[data-attribute="+selectedAttributes[i]+"]").val().length);
-
-          var selectedOptions = $(".attribute-multi-select-input[data-attribute="+selectedAttributes[i]+"]").find('option:selected');
-
-          attributesList[i] = [];
-          attributesFullList[i] = [];
-
-          selectedOptions.each(function(index) {
-            var langs = $(this).attr('data-langs').split(',');
-            var name = {};
-            for (var g = 0; g < langs.length; g++) {
-              name[langs[g]] =$(this).attr('data-type')+' '+$(this).attr('data-name-'+langs[g]);
-            };
-            console.log('name :: ', name);
-            attributesList[i][index] = {
-              'key':$(this).attr('value'),
-              'name':$(this).attr('data-name'),
-              'display_name':name
-            };
-            attributesFullList[i][index] = {
-              'key':$(this).attr('value'),
-              'name':$(this).attr('data-name'),
-              'display_name':name
-            };
-          });
-          
-        }
-      };
-
-
-      if(selectedAttributes.length == isSelected) {
-        var isAllSelected = true;
-      } else {
-        var isAllSelected = false;
-      }
-
-
-      if(isAllSelected == true){
-        $('.quantity-row').hide();
-        var finalCombinations = [];
-
-        function cartesian(cartes) {
-            var r = [], arg = cartes, max = arg.length-1;
-            function helper(arr, i) {
-                for (var j=0, l=arg[i].length; j<l; j++) {
-                    var a = arr.slice(0); // clone arr
-                    a.push(arg[i][j]);
-                    if (i==max)
-                        r.push(a);
-                    else
-                        helper(a, i+1);
-                }
-            }
-            helper([], 0);
-            return r;
-        }
-        //console.log('og og list ::  ', attributesList);
-        preFinalCombinationsList = cartesian(attributesList);
-        //console.log('cartesian function :: ', preFinalCombinationsList);
-        //console.log('original attributes :: ', attributesFullList);
-
-        //$(".combination-row:not(:first)").remove();
-        for (var i = 0; i < totalCombinations; i++) {
-          // add/copy attributes data to combination - preFinalCombinationsList[i]
-          
-          var combinationKey = '';
-          var combinationName = '';
-          var combinationDisplayName = {};
-          var langs = $('.attributes-combinations-block:first').attr('data-langs').split(',');
-
-          for (var g = 0; g < preFinalCombinationsList[i].length; g++) {
-
-            if(combinationKey == ''){
-              combinationKey = preFinalCombinationsList[i][g].key;
-              combinationName = preFinalCombinationsList[i][g].name;
-              for (var k = 0; k < langs.length; k++) {
-                combinationDisplayName[langs[k]] = preFinalCombinationsList[i][g].display_name[langs[k]];
-              };
-              
-            } else {
-              combinationKey = combinationKey+'__'+preFinalCombinationsList[i][g].key;
-              combinationName = combinationName+' '+preFinalCombinationsList[i][g].name;
-              for (var k = 0; k < langs.length; k++) {
-                combinationDisplayName[langs[k]] = combinationDisplayName[langs[k]]+' '+preFinalCombinationsList[i][g].display_name[langs[k]];
-              };
-            }
-
-          };
-
-          finalCombinations[i] = {'key':combinationKey,'name':combinationName,'display_name':combinationDisplayName};       
-        };
-
-        
-        if($('.combination-row').length == 1) { // only 1 row => so no previous combinations...
-          for (var i = 0; i < finalCombinations.length; i++) {
-            if(i == 0){
-              $('.combination-row:first').show();
-              $('.combination-row:first').attr('data-combination-key',finalCombinations[i].key);
-              $('.combination-row:first').find('.combination_name_input').attr('value', finalCombinations[i].name);
-              //change name attributes of inputs
-               $('.combination-row:first').find('.combination_price_sale_input').attr('data-combination-key', finalCombinations[i].key);
-              $('.combination-row:first').find('.combination_price_final_input').attr('data-combination-key', finalCombinations[i].key);
-            } else if(i > 0) {
-              $('.combination-row:first').clone().appendTo('.attributes-combinations-block');
-              $('.combination-row:last').attr('data-combination-key',finalCombinations[i].key);
-              $('.combination-row:last').find('.combination_name_input').attr('value', finalCombinations[i].name);
-              //change name attributes of inputs
-              $('.combination-row:last').find('.combination_price_sale_input').attr('data-combination-key', finalCombinations[i].key);
-              $('.combination-row:last').find('.combination_price_final_input').attr('data-combination-key', finalCombinations[i].key);
-            }
-          };
-        } else { // there are previous combinations
-          $('.combination-row').addClass('old-combination-row');
-          for (var i = 0; i < finalCombinations.length; i++) {
-            //keep combinations that are present, remove others and add remaining new combinations
-            
-              
-              
-              if($('.combination-row[data-combination-key="'+finalCombinations[i].key+'"]').length == 0){
-                var oldQuantity = '0';
-                var oldPriceSale = '0.000000';
-                var oldPriceFinal = '0.000000';
-                var oldPriceDiscount = '0.000000';
-                var oldWidth = '0,00';
-                var oldHeight = '0,00';
-                var oldDepth = '0,00';
-                var oldWeight = '0,000';
-              } else {
-                var oldQuantity = $('.old-combination-row[data-combination-key="'+finalCombinations[i].key+'"]').find('.combination_quantity_input').val();
-                var oldPriceSale = $('.old-combination-row[data-combination-key="'+finalCombinations[i].key+'"]').find('.combination_price_sale_input').val();
-                var oldPriceFinal = $('.old-combination-row[data-combination-key="'+finalCombinations[i].key+'"]').find('.combination_price_final_input').val();
-                var oldPriceDiscount = $('.old-combination-row[data-combination-key="'+finalCombinations[i].key+'"]').find('.combination_price_discount_input').val();
-
-                var oldWidth = $('.old-combination-row[data-combination-key="'+finalCombinations[i].key+'"]').find('.combination_width_input').val();
-                var oldHeight = $('.old-combination-row[data-combination-key="'+finalCombinations[i].key+'"]').find('.combination_height_input').val();
-                var oldDepth = $('.old-combination-row[data-combination-key="'+finalCombinations[i].key+'"]').find('.combination_depth_input').val();
-                var oldWeight = $('.old-combination-row[data-combination-key="'+finalCombinations[i].key+'"]').find('.combination_weight_input').val();
-              }
-
-              console.log('da old quantity :: ', oldQuantity);
-
-              $('.combination-row:first').clone().appendTo('.attributes-combinations-block');
-              $('.combination-row:last').removeClass('old-combination-row');
-              $('.combination-row:last').attr('data-combination-key',finalCombinations[i].key);
-              
-              $('.combination-row:last').find('.combination_quantity_input').val(oldQuantity);
-              $('.combination-row:last').find('.combination_quantity_input').attr('name', 'combinations['+finalCombinations[i].key+'][quantity]');
-
-
-
-
-              $('.combination-row:last').find('.combination_price_sale_input').val(oldPriceSale);
-              $('.combination-row:last').find('.combination_price_sale_input').attr('name', 'combinations['+finalCombinations[i].key+'][price][sale]');
-              $('.combination-row:last').find('.combination_price_sale_input').attr('data-combination-key', finalCombinations[i].key);
-
-              $('.combination-row:last').find('.combination_price_final_input').val(oldPriceFinal);
-              $('.combination-row:last').find('.combination_price_final_input').attr('name', 'combinations['+finalCombinations[i].key+'][price][final]');
-              $('.combination-row:last').find('.combination_price_final_input').attr('data-combination-key', finalCombinations[i].key);
-
-              $('.combination-row:last').find('.combination_price_discount_input').val(oldPriceDiscount);
-              $('.combination-row:last').find('.combination_price_discount_input').attr('name', 'combinations['+finalCombinations[i].key+'][price][discount]');
-
-
-              $('.combination-row:last').find('.combination_width_input').val(oldWidth);
-              $('.combination-row:last').find('.combination_width_input').attr('name', 'combinations['+finalCombinations[i].key+'][dimensions][width]');
-              $('.combination-row:last').find('.combination_height_input').val(oldHeight);
-              $('.combination-row:last').find('.combination_height_input').attr('name', 'combinations['+finalCombinations[i].key+'][dimensions][height]');
-              $('.combination-row:last').find('.combination_depth_input').val(oldDepth);
-              $('.combination-row:last').find('.combination_depth_input').attr('name', 'combinations['+finalCombinations[i].key+'][dimensions][depth]');
-              $('.combination-row:last').find('.combination_weight_input').val(oldWeight);
-              $('.combination-row:last').find('.combination_weight_input').attr('name', 'combinations['+finalCombinations[i].key+'][dimensions][weight]');
-
-
-
-
-              $('.combination-row:last').find('.combination_name_input').attr('value', finalCombinations[i].name);
-              
-              for (var k = 0; k < langs.length; k++) {
-                $('.combination-row:last').find('.combination_display_name_'+langs[k]).attr('name', 'combinations['+finalCombinations[i].key+'][display_name]['+langs[k]+']');
-                $('.combination-row:last').find('.combination_display_name_'+langs[k]).attr('value', finalCombinations[i].display_name[langs[k]]);
-              };
-              $('.combination-row:last').find('input.combination_slug').attr('value', finalCombinations[i].key);
-
-              $('.combination-row:last').show();
-              
-          };
-          $('.old-combination-row').remove();
-        }
-        
-
-        console.log('combinatieLijst :: ', finalCombinations);
-
-        init();
-
-      } else {
-        //remove current combination rows / hide will cause fields to be submitted...
-        //$('.combination-row').hide();
-        $('.combination-row:not(:first)').remove();
-        $('.combination-row:first').attr('data-combination-key', '');
-        $('.combination-row:first').find('.combination_quantity_input').val('0');
-        $('.combination-row:first').hide();
-        $('.quantity-row').show();
-
-        init();
-      }
-    });
-
   }
     
-  });
+});
 </script>
 <script>
 $( document ).ready(function() { 

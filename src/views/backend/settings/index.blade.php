@@ -113,7 +113,7 @@ $( document ).ready(function() {
         var domain = "{{ URL::to('dashboard/media')}}";
         $('#lfm').filemanager('image', {prefix: domain});
 
-        // $('.autonumeric').autoNumeric('init');
+        //$('.autonumeric').autoNumeric('init');
     }
 
     $('body').on('change', '.boolean_checkbox_input', function() {

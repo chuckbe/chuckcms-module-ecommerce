@@ -21,9 +21,9 @@
             </div>
         </div>
     </div>
-
+    
     <hr>
-
+    
     <div class="row">
         <div class="col-sm-12">
             <h6><b>banktransfer</b></h6>

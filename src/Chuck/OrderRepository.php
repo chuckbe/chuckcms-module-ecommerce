@@ -10,6 +10,7 @@ use Chuckbe\ChuckcmsModuleEcommerce\Models\Order;
 use ChuckCart;
 use Illuminate\Http\Request;
 use ChuckEcommerce;
+use ChuckProduct;
 use Carbon\Carbon;
 use ChuckSite;
 use Mail;
@@ -131,6 +132,67 @@ class OrderRepository
                 }
             }
         }
+    }
+
+    public function mollieLines(Order $order) 
+    {
+        $lines = [];
+
+        $skus = $order->getAllSkus();
+        $products = ChuckProduct::sku($skus);
+
+        foreach($order->json['products'] as $itemId => $product) {
+            $sku = $product['sku'];
+
+            $item = $products->filter(function ($value, $key) use ($sku) {
+                if ($value->json['code']['sku'] == $sku) {
+                    return true;
+                }
+
+                foreach ($value->json['combinations'] as $combination) {
+                    if ($combination['code']['sku'] == $sku) {
+                        return true;
+                    }
+                }
+
+                return false;
+            })->first();
+
+            $line = [];
+
+            $line["type"] = $item->is_download ? "digital" : "physical";
+            $line["category"] = "eco";
+            $line["sku"] = $sku;
+            $line["name"] = $product['title'];
+            $line["quantity"] = $product['quantity'];
+            $line["vatRate"] = number_format( ( $product['tax_rate'] ), 2, '.', '');
+            
+            $line["unitPrice"] = [
+               "currency" => "EUR",
+               "value" => number_format( ( $product['_price']['_unit'] ), 2, '.', '')
+            ];
+            
+            $line["totalAmount"] = [
+               "currency" => "EUR",
+               "value" => number_format( ( $product['_price']['_final'] ), 2, '.', '')
+            ];
+
+            if ( $product['_price']['_discount'] > 0 ) {
+                $line["discountAmount"] = [
+                   "currency" => "EUR",
+                   "value" => number_format( ( $product['_price']['_discount'] ), 2, '.', '')
+                ];
+            }
+
+            $line["vatAmount"] = [
+               "currency" => "EUR",
+               "value" => number_format( ( $product['_price']['_tax'] ), 2, '.', '')
+            ];
+            
+            $lines[] = $line;
+        }
+
+        return $lines;
     }
 
     private function sendMail(Order $order, array $status, string $emailKey, array $email, $pdf = null)

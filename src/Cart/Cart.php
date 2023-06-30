@@ -521,10 +521,15 @@ class Cart
      * Validate a discount for an item in the cart.
      *
      * @param string $rowId
+     * @param string $itemId
      * @param string $discountCode
      * @return bool
      */
-    protected function validateItemDiscount(string $rowId, string $discountCode)
+    protected function validateItemDiscount(
+        string $rowId, 
+        string $itemId, 
+        string $discountCode
+    )
     {
         $discount = $this->discountRepository->code($discountCode);
 
@@ -533,6 +538,10 @@ class Cart
         }
 
         if(! $this->discountRepository->checkConditions($discount, $this)) {
+            return false;
+        }
+
+        if (! $this->discountRepository->isApplicableForCartItem($discount, $this, $itemId)) {
             return false;
         }
 
@@ -546,22 +555,63 @@ class Cart
      */
     protected function resetDiscounts()
     {
-        $discounts = $this->getDiscounts();
+        $discounts = $this->getDiscounts()->toArray();
 
         $content = $this->getContent();
+
+        //remove gifts from content
+        //re-add all gifts from discounts to the content
 
         foreach ($content as $cartItem) {
             
             $this->removeItemDiscount($cartItem->rowId);
             
-            foreach($discounts as $discount) {
+            foreach($discounts as $discountKey => $discount) { //sort by priority 
+                $remainder = 0;
+                $discountValue = $discount['value'] + 0;
 
-                if(!$this->validateItemDiscount($cartItem->rowId, $discount['code'])) {
+                if(!$this->validateItemDiscount($cartItem->rowId, $cartItem->id, $discount['code'])) {
                     continue;
                 }
 
-                $this->setItemDiscount($cartItem->rowId, $discount['code'], $discount['type'], ($discount['value'] + 0));
+                if ($discount['type'] == 'currency' && $discountValue > $cartItem->final) {
+                    $remainder = $discountValue - $cartItem->final;
+                    $discountValue = $cartItem->final;
+
+                    $this->setItemDiscount(
+                        $cartItem->rowId, 
+                        $discount['code'], 
+                        $discount['type'], 
+                        $discountValue
+                    );
+
+                    $discounts[$discountKey]['value'] = $remainder;
+
+                    continue;
+                }
+
+                if ($discount['type'] == 'currency' && $discountValue <= $cartItem->final) {
+
+                    $this->setItemDiscount(
+                        $cartItem->rowId, 
+                        $discount['code'], 
+                        $discount['type'], 
+                        $discountValue
+                    );
+
+                    unset($discounts[$discountKey]);
+
+                    continue;
+                }
+
+                $this->setItemDiscount(
+                    $cartItem->rowId, 
+                    $discount['code'], 
+                    $discount['type'], 
+                    $discountValue);
             }
+
+            $discounts = $discounts;
         }
     }
 

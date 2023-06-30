@@ -76,7 +76,7 @@ class LoginController extends Controller
     public function showLoginForm()
     {
         $templateHintpath = config('chuckcms-module-ecommerce.auth.template.hintpath');
-        $template = Template::where('type', 'ecommerce')->where('active', 1)->where('hintpath', $templateHintpath)->first();
+        $template = Template::where('active', 1)->where('hintpath', $templateHintpath)->first();
         $blade = $templateHintpath . '::templates.' . $template->slug . '.account.auth';
 
         if (view()->exists($blade)) {

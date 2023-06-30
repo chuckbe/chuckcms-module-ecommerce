@@ -505,7 +505,7 @@ class InstallModuleEcommerce extends Command
                                 'type' => 'textarea',
                                 'value' => [
                                     'nl' => 'Hieronder vind je nogmaals een overzicht terug van jouw bestelling. <br><br> <b>Verzending:</b> [%ORDER_CARRIER_NAME%] <br> <b>Verzendtijd:</b> [%ORDER_CARRIER_TRANSIT_TIME%] <br><br> <b>Overzicht: </b> <br> [%ORDER_PRODUCTS%] <br> <b>Verzendkosten</b>: [%ORDER_SHIPPING_TOTAL%] <br><br> <b>Totaal</b>: [%ORDER_FINAL%] <br><br> <b>Facturatie adres: </b> <br> Naam: [%ORDER_SURNAME%] [%ORDER_NAME%] <br> E-mail: [%ORDER_EMAIL%] <br> Tel: [%ORDER_TELEPHONE%] <br> Bedrijf: [%ORDER_COMPANY%] <br> BTW: [%ORDER_COMPANY_VAT%] <br> Adres: <br>[%ORDER_BILLING_STREET%] [%ORDER_BILLING_HOUSENUMBER%], <br>[%ORDER_BILLING_POSTALCODE%] [%ORDER_BILLING_CITY%], [%ORDER_BILLING_COUNTRY%] <br><br> <b>Verzendadres:</b><br>Naam: [%ORDER_SURNAME%] [%ORDER_NAME%] <br>Adres:<br>[%ORDER_SHIPPING_STREET%] [%ORDER_SHIPPING_HOUSENUMBER%], <br>[%ORDER_SHIPPING_POSTALCODE%] [%ORDER_SHIPPING_CITY%], [%ORDER_SHIPPING_COUNTRY%]',
-                                    'en' => 'Below you will find another summary of your order. <br><br>'
+                                    'en' => 'Below you will find another summary of your order. <br><br> '
                                 ],
                                 'required' => true,
                                 'validation' => 'required'
@@ -656,7 +656,7 @@ class InstallModuleEcommerce extends Command
         $json['settings']['integrations']['banktransfer']['name'] = 'ChuckCMS';
         $json['settings']['integrations']['banktransfer']['iban'] = 'BE00 0000 0000 0000';
         $json['settings']['integrations']['banktransfer']['bank'] = 'Bank of Belgium';
-        
+
         // create the module
         $module = $this->moduleRepository->createFromArray([
             'name' => $name,

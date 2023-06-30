@@ -57,7 +57,7 @@ class CarrierController extends Controller
             $carrier['name'][$langKey] = $request->get('name')[$langKey];
             $carrier['transit_time'][$langKey] = $request->get('transit_time')[$langKey];
         }
-        
+
         $carrier['image'] = $request->get('image');
         $carrier['min_cart'] = $request->get('min_cart');
         $carrier['cost'] = $request->get('cost');

@@ -625,10 +625,10 @@ $(document).ready(function() {
 
         <div class="d-block my-3">
             @if(!is_null(ChuckEcommerce::getSetting('integrations.banktransfer.active')) && ChuckEcommerce::getSetting('integrations.banktransfer.active'))
-              <div class="custom-control custom-radio mt-2">
-                  <input id="banktransfer" name="paymentMethod" value="banktransfer" type="radio" class="custom-control-input" checked required>
-                  <label class="custom-control-label" for="banktransfer"><img src="{{ asset(config('chuckcms-module-ecommerce.integrations.mollie.methods.banktransfer.logo')) }}" alt="{{ config('chuckcms-module-ecommerce.integrations.mollie.methods.banktransfer.display_name') }} logo" width="30"> {{ config('chuckcms-module-ecommerce.integrations.mollie.methods.banktransfer.display_name') }}</label>
-              </div>
+            <div class="custom-control custom-radio mt-2">
+                <input id="banktransfer" name="paymentMethod" value="banktransfer" type="radio" class="custom-control-input" checked required>
+                <label class="custom-control-label" for="banktransfer"><img src="{{ asset(config('chuckcms-module-ecommerce.integrations.mollie.methods.banktransfer.logo')) }}" alt="{{ config('chuckcms-module-ecommerce.integrations.mollie.methods.banktransfer.display_name') }} logo" width="30"> {{ config('chuckcms-module-ecommerce.integrations.mollie.methods.banktransfer.display_name') }}</label>
+            </div>
             @endif
             @foreach(ChuckEcommerce::getSetting('integrations.mollie.methods') as $method)
             <div class="custom-control custom-radio mt-2">

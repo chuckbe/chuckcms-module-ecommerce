@@ -55,6 +55,7 @@ Route::group(['middleware' => ['web']], function() {
 			Route::get('/dashboard/ecommerce/discounts/{discount}/edit', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\DiscountController@edit')->name('dashboard.module.ecommerce.discounts.edit');
 			Route::post('/dashboard/ecommerce/discounts/save', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\DiscountController@save')->name('dashboard.module.ecommerce.discounts.save');
 			Route::post('/dashboard/ecommerce/discounts/delete', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\DiscountController@delete')->name('dashboard.module.ecommerce.discounts.delete');
+			Route::post('/dashboard/ecommerce/discounts/refresh/code', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\DiscountController@refreshCode')->name('dashboard.module.ecommerce.discounts.refresh_code');
 			//END OF: DISCOUNTS ROUTES
 
 			//START OF: LOCATIONS ROUTES

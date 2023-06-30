@@ -81,7 +81,7 @@ class AddAwaitingTransferStatus extends Command
         $statuses['awaiting_transfer']['email']['customer']['send_delivery_note'] = false;
 
         $statuses['awaiting_transfer']['email']['customer']['data'] = [];
-
+        
         $statuses['awaiting_transfer']['email']['customer']['data']['subject'] = [];
         $statuses['awaiting_transfer']['email']['customer']['data']['subject']['type'] = 'text';
         $statuses['awaiting_transfer']['email']['customer']['data']['subject']['value'] = [];
@@ -164,7 +164,7 @@ class AddAwaitingTransferStatus extends Command
         }
         $statuses['awaiting_transfer']['email']['customer']['data']['footer']['required'] = true;
         $statuses['awaiting_transfer']['email']['customer']['data']['footer']['validation'] = 'required';
-
+        
 
         $statuses['awaiting_transfer']['invoice'] = false;
         $statuses['awaiting_transfer']['delivery'] = false;
@@ -175,7 +175,7 @@ class AddAwaitingTransferStatus extends Command
         $json['settings']['order']['statuses'] = $statuses;
         $ecommerce->json = $json;
         $ecommerce->update();
-
+        
 
         $this->info('.         .');
         $this->info('..         ..');

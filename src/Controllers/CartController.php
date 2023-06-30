@@ -355,7 +355,7 @@ class CartController extends Controller
         }
 
         if(! $this->discountRepository->checkAvailabilityForCustomerGroup($discount, $user)) {
-            return response()->json(['status' => 'invalid', 'status_text' => 'Coupon is niet toegankelijk voor klantengroep.']);
+            return response()->json(['status' => 'invalid', 'status_text' => 'Coupon is niet toegankelijk voor klant of klantengroep.']);
         }
 
         if(! $this->discountRepository->checkConditions($discount, $cart)) {

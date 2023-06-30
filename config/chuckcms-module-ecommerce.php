@@ -103,76 +103,130 @@ return [
         'mollie' => [
             'methods' => [
                 'applepay' => [
+                    'api' => 'payments',
                     'display_name' => 'Apple Pay',
-                    'logo' => 'chuckbe/chuckcms-module-ecommerce/images/payment-logos/applepay@2x.png'
+                    'logo' => 'chuckbe/chuckcms-module-ecommerce/images/payment-logos/applepay@2x.png',
+                    'method' => 'applepay'
                 ],
                 'bancontact' => [
+                    'api' => 'payments',
                     'display_name' => 'Bancontact (mistercash)',
-                    'logo' => 'chuckbe/chuckcms-module-ecommerce/images/payment-logos/bancontact@2x.png'
+                    'logo' => 'chuckbe/chuckcms-module-ecommerce/images/payment-logos/bancontact@2x.png',
+                    'method' => 'bancontact'
                 ],
                 'banktransfer' => [
+                    'api' => 'payments',
                     'display_name' => 'Banktransfer',
-                    'logo' => 'chuckbe/chuckcms-module-ecommerce/images/payment-logos/banktransfer@2x.png'
+                    'logo' => 'chuckbe/chuckcms-module-ecommerce/images/payment-logos/banktransfer@2x.png',
+                    'method' => 'banktransfer'
                 ],
                 'belfius' => [
+                    'api' => 'payments',
                     'display_name' => 'Belfius',
-                    'logo' => 'chuckbe/chuckcms-module-ecommerce/images/payment-logos/belfius@2x.png'
+                    'logo' => 'chuckbe/chuckcms-module-ecommerce/images/payment-logos/belfius@2x.png',
+                    'method' => 'belfius'
                 ],
                 'creditcard' => [
+                    'api' => 'payments',
                     'display_name' => 'Creditcard (Visa, MasterCard, Amex)',
-                    'logo' => 'chuckbe/chuckcms-module-ecommerce/images/payment-logos/creditcard@2x.png'
+                    'logo' => 'chuckbe/chuckcms-module-ecommerce/images/payment-logos/creditcard@2x.png',
+                    'method' => 'creditcard'
                 ],
                 'directdebit' => [
+                    'api' => 'payments',
                     'display_name' => 'Direct Debit (SEPA)',
-                    'logo' => 'chuckbe/chuckcms-module-ecommerce/images/payment-logos/directdebit@2x.png'
+                    'logo' => 'chuckbe/chuckcms-module-ecommerce/images/payment-logos/directdebit@2x.png',
+                    'method' => 'directdebit'
                 ],
                 'eps' => [
+                    'api' => 'payments',
                     'display_name' => 'EPS',
-                    'logo' => 'chuckbe/chuckcms-module-ecommerce/images/payment-logos/eps@2x.png'
+                    'logo' => 'chuckbe/chuckcms-module-ecommerce/images/payment-logos/eps@2x.png',
+                    'method' => 'eps'
                 ],
                 'giftcard' => [
+                    'api' => 'payments',
                     'display_name' => 'Giftcard',
-                    'logo' => 'chuckbe/chuckcms-module-ecommerce/images/payment-logos/giftcard@2x.png'
+                    'logo' => 'chuckbe/chuckcms-module-ecommerce/images/payment-logos/giftcard@2x.png',
+                    'method' => 'giftcard'
                 ],
                 'giropay' => [
+                    'api' => 'payments',
                     'display_name' => 'Giropay',
-                    'logo' => 'chuckbe/chuckcms-module-ecommerce/images/payment-logos/giropay@2x.png'
+                    'logo' => 'chuckbe/chuckcms-module-ecommerce/images/payment-logos/giropay@2x.png',
+                    'method' => 'giropay'
                 ],
                 'ideal' => [
+                    'api' => 'payments',
                     'display_name' => 'Ideal',
-                    'logo' => 'chuckbe/chuckcms-module-ecommerce/images/payment-logos/ideal@2x.png'
+                    'logo' => 'chuckbe/chuckcms-module-ecommerce/images/payment-logos/ideal@2x.png',
+                    'method' => 'ideal'
                 ],
                 'inghomepay' => [
+                    'api' => 'payments',
                     'display_name' => 'ING',
-                    'logo' => 'chuckbe/chuckcms-module-ecommerce/images/payment-logos/inghomepay@2x.png'
+                    'logo' => 'chuckbe/chuckcms-module-ecommerce/images/payment-logos/inghomepay@2x.png',
+                    'method' => 'inghomepay'
                 ],
                 'kbc' => [
+                    'api' => 'payments',
                     'display_name' => 'KBC',
-                    'logo' => 'chuckbe/chuckcms-module-ecommerce/images/payment-logos/kbc@2x.png'
+                    'logo' => 'chuckbe/chuckcms-module-ecommerce/images/payment-logos/kbc@2x.png',
+                    'method' => 'kbc'
                 ],
                 'klarna' => [
+                    'api' => 'orders',
                     'display_name' => 'Klarna',
-                    'logo' => 'chuckbe/chuckcms-module-ecommerce/images/payment-logos/klarna@2x.png'
+                    'logo' => 'chuckbe/chuckcms-module-ecommerce/images/payment-logos/klarna@2x.png',
+                    'method' => 'klarna'
                 ],
                 'mybank' => [
+                    'api' => 'payments',
                     'display_name' => 'Mybank',
-                    'logo' => 'chuckbe/chuckcms-module-ecommerce/images/payment-logos/mybank@2x.png'
+                    'logo' => 'chuckbe/chuckcms-module-ecommerce/images/payment-logos/mybank@2x.png',
+                    'method' => 'mybank'
                 ],
                 'paypal' => [
+                    'api' => 'payments',
                     'display_name' => 'Paypal',
-                    'logo' => 'chuckbe/chuckcms-module-ecommerce/images/payment-logos/paypal@2x.png'
+                    'logo' => 'chuckbe/chuckcms-module-ecommerce/images/payment-logos/paypal@2x.png',
+                    'method' => 'paypal'
                 ],
                 'paysafecard' => [
+                    'api' => 'payments',
                     'display_name' => 'Paysafecard',
-                    'logo' => 'chuckbe/chuckcms-module-ecommerce/images/payment-logos/paysafecard@2x.png'
+                    'logo' => 'chuckbe/chuckcms-module-ecommerce/images/payment-logos/paysafecard@2x.png',
+                    'method' => 'paysafecard'
                 ],
                 'przelewy24' => [
+                    'api' => 'payments',
                     'display_name' => 'Przelewy24',
-                    'logo' => 'chuckbe/chuckcms-module-ecommerce/images/payment-logos/przelewy24@2x.png'
+                    'logo' => 'chuckbe/chuckcms-module-ecommerce/images/payment-logos/przelewy24@2x.png',
+                    'method' => 'przelewy24'
                 ],
                 'sofort' => [
+                    'api' => 'payments',
                     'display_name' => 'Sofort',
-                    'logo' => 'chuckbe/chuckcms-module-ecommerce/images/payment-logos/sofort@2x.png'
+                    'logo' => 'chuckbe/chuckcms-module-ecommerce/images/payment-logos/sofort@2x.png',
+                    'method' => 'sofort'
+                ],
+                'voucher-monizze' => [
+                    'api' => 'orders',
+                    'display_name' => 'Monizze (Eco & Meal)',
+                    'logo' => 'chuckbe/chuckcms-module-ecommerce/images/payment-logos/Monizze@2x.png',
+                    'method' => 'voucher'
+                ],
+                'voucher-sodexo-lunchpass' => [
+                    'api' => 'orders',
+                    'display_name' => 'Sodexo Lunch Pass',
+                    'logo' => 'chuckbe/chuckcms-module-ecommerce/images/payment-logos/Sodexo-lunch@2x.png',
+                    'method' => 'voucher'
+                ],
+                'voucher-sodexo-ecopass' => [
+                    'api' => 'orders',
+                    'display_name' => 'Sodexo Eco Pass',
+                    'logo' => 'chuckbe/chuckcms-module-ecommerce/images/payment-logos/Sodexo-eco@2x.png',
+                    'method' => 'voucher'
                 ]
             ]
         ]
@@ -336,7 +390,345 @@ return [
                 'regex' => '^(NL)?[0-9]{9}B[0-9]{2}$',
                 'format' => 'NL001234567B01'
             ]
-        ]
+        ],
+        "AT" => [
+            'name' => 'Austria',
+            'native' => 'Österreich',
+            "postalcode" => [
+                "max" => 4,
+                "regex" => '^[1-9]{1}[0-9]{3}$'
+            ],
+            'vat' => [
+                'max' => 11,
+                'regex' => '^(AT)?U[0-9]{8}$',
+                'format' => 'ATU12345678'
+            ]
+        ],
+        "BG" => [
+            'name' => 'Bulgaria',
+            'native' => 'българия',
+            "postalcode" => [
+                "max" => 4,
+                "regex" => '^[1-9]{1}[0-9]{3}$'
+            ],
+            'vat' => [
+                'max' => 11,
+                'regex' => '^(BG)?[0-9]{9,10}$',
+                'format' => 'BG12345678'
+            ]
+        ],
+        "CH" => [
+            'name' => 'Switzerland',
+            'native' => 'die Schweiz',
+            "postalcode" => [
+                "max" => 4,
+                "regex" => '^(\d{4})$'
+            ],
+            'vat' => [
+                'max' => 11,
+                'regex' => '^(CY)?[0-9]{8}L$',
+                'format' => 'CHE123456789'
+            ]
+        ],
+        "CY" => [
+            'name' => 'Cyprus',
+            'native' => 'Κύπρος',
+            "postalcode" => [
+                "max" => 4,
+                "regex" => '^(\d{4})$'
+            ],
+            'vat' => [
+                'max' => 11,
+                'regex' => '^(CY)?[0-9]{8}L$',
+                'format' => 'CY12345678X'
+            ]
+        ],
+        "CZ" => [
+            'name' => 'Czech Republic',
+            'native' => 'Česká republika',
+            "postalcode" => [
+                "max" => 6,
+                "regex" => '^(\d{3}[ ]\d{2})$'
+            ],
+            'vat' => [
+                'max' => 11,
+                'regex' => '^(CZ)(\d{8,10})?$',
+                'format' => 'CZ1234567890'
+            ]
+        ],
+        "DE" => [
+            'name' => 'Germany',
+            'native' => 'Deutschland',
+            "postalcode" => [
+                "max" => 5,
+                "regex" => '^(\d{5})$'
+            ],
+            'vat' => [
+                'max' => 11,
+                'regex' => '^(DE)([1-9]\d{8})$',
+                'format' => 'DE123456789'
+            ]
+        ],
+        "DK" => [
+            'name' => 'Denmark',
+            'native' => 'Danmark',
+            "postalcode" => [
+                "max" => 4,
+                "regex" => '^(\d{4})$'
+            ],
+            'vat' => [
+                'max' => 10,
+                'regex' => '^(DK)(\d{8})?$',
+                'format' => 'DK12345678'
+            ]
+        ],
+        "EE" => [
+            'name' => 'Estonia',
+            'native' => 'Eesti',
+            "postalcode" => [
+                "max" => 5,
+                "regex" => '^(\d{5})$'
+            ],
+            'vat' => [
+                'max' => 10,
+                'regex' => '^(EE)?[0-9]{9}$',
+                'format' => 'EE123456789'
+            ]
+        ],
+        "ES" => [
+            'name' => 'Spain',
+            'native' => 'España',
+            "postalcode" => [
+                "max" => 5,
+                "regex" => '^(\d{5})$'
+            ],
+            'vat' => [
+                'max' => 11,
+                'regex' => '^(ES)?[0-9A-Z][0-9]{7}[0-9A-Z]$',
+                'format' => 'ESX1234567X'
+            ]
+        ],
+        "FI" => [
+            'name' => 'Finland',
+            'native' => 'Suomi',
+            "postalcode" => [
+                "max" => 5,
+                "regex" => '^(\d{5})$'
+            ],
+            'vat' => [
+                'max' => 10,
+                'regex' => '^(FI)?[0-9]{8}$',
+                'format' => 'FI12345678'
+            ]
+        ],
+        "FR" => [
+            'name' => 'France',
+            'native' => 'La France',
+            "postalcode" => [
+                "max" => 5,
+                "regex" => '^(\d{5})$'
+            ],
+            'vat' => [
+                'max' => 13,
+                'regex' => '^(FR)([0-9A-Z]{2}[0-9]{9})$',
+                'format' => 'FRXX123456789'
+            ]
+        ],
+        "GR" => [
+            'name' => 'Greece',
+            'native' => 'Ελλάδα',
+            "postalcode" => [
+                "max" => 6,
+                "regex" => '^(\d{3}[ ]?\d{2})$'
+            ],
+            'vat' => [
+                'max' => 11,
+                'regex' => '^(EL|GR)?[0-9]{9}$',
+                'format' => 'EL123456789'
+            ]
+        ],
+        "HR" => [
+            'name' => 'Croatia',
+            'native' => 'Hrvatska',
+            "postalcode" => [
+                "max" => 5,
+                "regex" => '^(\d{5})$'
+            ],
+            'vat' => [
+                'max' => 11,
+                'regex' => '^(HR)?[0-9]{11}$',
+                'format' => 'HR12345678901'
+            ]
+        ],
+        "HU" => [
+            'name' => 'Hungary',
+            'native' => 'Magyarország',
+            "postalcode" => [
+                "max" => 4,
+                "regex" => '^(\d{4})$'
+            ],
+            'vat' => [
+                'max' => 10,
+                'regex' => '^(HU)?[0-9]{8}$',
+                'format' => 'HU12345678'
+            ]
+        ],
+        "IE" => [
+            'name' => 'Ireland',
+            'native' => 'Éire',
+            "postalcode" => [
+                "max" => 8,
+                "regex" => '(?:^[AC-FHKNPRTV-Y][0-9]{2}|D6W)[ -]?[0-9AC-FHKNPRTV-Y]{4}$'
+            ],
+            'vat' => [
+                'max' => 11,
+                'regex' => '^(IE)([0-9A-Z\*\+]{7}[A-Z]{1,2})$',
+                'format' => 'IE1234567FA'
+            ]
+        ],
+        "IT" => [
+            'name' => 'Italy',
+            'native' => 'Italia',
+            "postalcode" => [
+                "max" => 5,
+                "regex" => '^(\d{5})$'
+            ],
+            'vat' => [
+                'max' => 11,
+                'regex' => '^(IT)(\d{11})$',
+                'format' => 'IT12345678901'
+            ]
+        ],
+        "LV" => [
+            'name' => 'Latvia',
+            'native' => 'Latvija',
+            "postalcode" => [
+                "max" => 4,
+                "regex" => '^(\d{4})$'
+            ],
+            'vat' => [
+                'max' => 11,
+                'regex' => '^(LV)?[0-9]{11}$',
+                'format' => 'LV12345678901'
+            ]
+        ],
+        "LT" => [
+            'name' => 'Lithuania',
+            'native' => 'Lietuva',
+            "postalcode" => [
+                "max" => 5,
+                "regex" => '^(\d{5})$'
+            ],
+            'vat' => [
+                'max' => 11,
+                'regex' => '^(LT)?([\d]{9}|[\d]{12})$',
+                'format' => 'LT123456789012'
+            ]
+        ],
+        "MT" => [
+            'name' => 'Malta',
+            'native' => 'Malta',
+            "postalcode" => [
+                "max" => 8,
+                "regex" => '^[A-Z]{3}[ ]?\d{2,4}$'
+            ],
+            'vat' => [
+                'max' => 11,
+                'regex' => '^(MT)?[\d]{8}$',
+                'format' => 'MT12345678'
+            ]
+        ],
+        "NO" => [
+            'name' => 'Norway',
+            'native' => 'Norge',
+            "postalcode" => [
+                "max" => 4,
+                "regex" => '^(\d{4})$'
+            ],
+            'vat' => [
+                'max' => 12,
+                'regex' => '^(NO)(\d{9})$',
+                'format' => 'NO123456789'
+            ]
+        ],
+        "PL" => [
+            'name' => 'Poland',
+            'native' => 'Polska',
+            "postalcode" => [
+                "max" => 6,
+                "regex" => '^(\d{2}-\d{3})$'
+            ],
+            'vat' => [
+                'max' => 12,
+                'regex' => '^(PL)?[0-9]{10}$',
+                'format' => 'PL1234567890'
+            ]
+        ],
+        "PT" => [
+            'name' => 'Portugal',
+            'native' => 'Portugal',
+            "postalcode" => [
+                "max" => 8,
+                "regex" => '^(\d{4}([\-]\d{3}))$'
+            ],
+            'vat' => [
+                'max' => 12,
+                'regex' => '^(PT)?[0-9]{9}$',
+                'format' => 'PT123456789'
+            ]
+        ],
+        "RO" => [
+            'name' => 'Romania',
+            'native' => 'România',
+            "postalcode" => [
+                "max" => 4,
+                "regex" => '^(\d{4})$'
+            ],
+            'vat' => [
+                'max' => 12,
+                'regex' => '^(RO)?[\d]{2,10}$',
+                'format' => 'RO1234567890'
+            ]
+        ],
+        "SE" => [
+            'name' => 'Sweden',
+            'native' => 'Sverige',
+            "postalcode" => [
+                "max" => 6,
+                "regex" => '^(\d{3}[ ]?\d{2})$'
+            ],
+            'vat' => [
+                'max' => 14,
+                'regex' => '^(SE)?[0-9]{12}$',
+                'format' => 'SE123456789012'
+            ]
+        ],
+        "SK" => [
+            'name' => 'Slovakia',
+            'native' => 'Slovensko',
+            "postalcode" => [
+                "max" => 6,
+                "regex" => '^(\d{3}[ ]?\d{2})$'
+            ],
+            'vat' => [
+                'max' => 12,
+                'regex' => '^(SK)?[0-9]{10}$',
+                'format' => 'SK1234567890'
+            ]
+        ],
+        "SI" => [
+            'name' => 'Slovenia',
+            'native' => 'Slovenija',
+            "postalcode" => [
+                "max" => 4,
+                "regex" => '^(\d{4})$'
+            ],
+            'vat' => [
+                'max' => 10,
+                'regex' => '^(SI)?[0-9]{8}$',
+                'format' => 'SI12345678'
+            ]
+        ],
     ],
 
     'countries' => [
