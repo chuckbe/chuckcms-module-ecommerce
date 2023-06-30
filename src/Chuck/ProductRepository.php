@@ -62,16 +62,19 @@ class ProductRepository
      **/
     public function search(string $string)
     {
+        $locale = (string)app()->getLocale();
+
         return $this->product
                     ->where('json->is_displayed', true)
-                    ->where(function ($query) use ($string) {
+                    ->where(function ($query) use ($string, $locale) {
                         $query->where('json->code->sku', $string)
                             ->orWhere('json->code->upc', $string)
                             ->orWhere('json->code->ean', $string)
-                            ->orWhereRaw('LOWER(json_unquote(json_extract(`json`, '.'\'$."title"."'.(string)app()->getLocale().'"'.'\'))) LIKE "%'.strtolower($string).'%"')
-                            ->orWhereRaw('LOWER(json_unquote(json_extract(`json`, '.'\'$."page_title"."'.(string)app()->getLocale().'"'.'\'))) LIKE "%'.strtolower($string).'%"')
-                            ->orWhereRaw('LOWER(json_unquote(json_extract(`json`, '.'\'$."description"."short"."'.(string)app()->getLocale().'"'.'\'))) LIKE "%'.strtolower($string).'%"')
-                            ->orWhereRaw('LOWER(json_unquote(json_extract(`json`, '.'\'$."description"."long"."'.(string)app()->getLocale().'"'.'\'))) LIKE "%'.strtolower($string).'%"');
+
+                            ->orWhereRaw('LOWER(json_unquote(json_extract(`json`, "$.title.' . $locale .'") ) ) LIKE ?', ['%' . strtolower($string) . '%'])
+                            ->orWhereRaw('LOWER(json_unquote(json_extract(`json`, "$.page_title.' . $locale .'") ) ) LIKE ?', ['%' . strtolower($string) . '%'])
+                            ->orWhereRaw('LOWER(json_unquote(json_extract(`json`, "$.description.short.' . $locale .'") ) ) LIKE ?', ['%' . strtolower($string) . '%'])
+                            ->orWhereRaw('LOWER(json_unquote(json_extract(`json`, "$.description.long.' . $locale .'") ) ) LIKE ?', ['%' . strtolower($string) . '%']);
                     })
                     ->get();
     }
@@ -135,7 +138,7 @@ class ProductRepository
             }
             return $query->get(); 
         }
-        return $this->repeater->whereRaw('json LIKE "%'.$sku.'%"', [20000])->first();
+        return $this->repeater->whereRaw('json LIKE ?', ['%' . $sku . '%'])->first();
     }
 
     public function save(Request $values)
@@ -558,7 +561,10 @@ class ProductRepository
     public function generateSingleSku()
     {
         $uid = rand(1000000, 9999999);
-        $uids = $this->repeater->where('slug', config('chuckcms-module-ecommerce.products.slug'))->whereRaw('json LIKE "%'.$uid.'%"', [20000])->get();
+        $uids = $this->repeater
+            ->where('slug', config('chuckcms-module-ecommerce.products.slug'))
+            ->whereRaw('json LIKE ?', ['%' . $uid . '%'])
+            ->get();
         if (count($uids) > 0) {
             $this->generateSingleSku();
         } else {
