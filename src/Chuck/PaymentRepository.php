@@ -105,7 +105,7 @@ class PaymentRepository
 
     public function check(Order $order)
     {
-        if( $order->isPaid() ) {
+        if ($order->isPaid()) {
             return;
         }
 

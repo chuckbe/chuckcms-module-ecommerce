@@ -57,6 +57,12 @@ Route::group(['middleware' => ['web']], function() {
 			Route::post('/dashboard/ecommerce/discounts/delete', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\DiscountController@delete')->name('dashboard.module.ecommerce.discounts.delete');
 			Route::post('/dashboard/ecommerce/discounts/refresh/code', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\DiscountController@refreshCode')->name('dashboard.module.ecommerce.discounts.refresh_code');
 			//END OF: DISCOUNTS ROUTES
+
+			//START OF: LOCATIONS ROUTES
+				Route::get('/dashboard/ecommerce/locations', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\LocationController@index')->name('dashboard.module.ecommerce.locations.index');
+				Route::post('/dashboard/ecommerce/locations/save', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\LocationController@save')->name('dashboard.module.ecommerce.locations.save');
+				Route::post('/dashboard/ecommerce/locations/delete', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\LocationController@delete')->name('dashboard.module.ecommerce.locations.delete');
+			//END OF:   LOCATIONS ROUTES
 			
 			//START OF: SETTINGS ROUTES
 			Route::get('/dashboard/ecommerce/settings', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\SettingController@index')->name('dashboard.module.ecommerce.settings.index');
@@ -79,6 +85,9 @@ Route::group(['middleware' => ['web']], function() {
 			Route::get('/dashboard/ecommerce/settings/integrations', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\SettingController@integrations')->name('dashboard.module.ecommerce.settings.index.integrations');
 			Route::post('/dashboard/ecommerce/settings/integrations/update', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\Settings\IntegrationsController@update')->name('dashboard.module.ecommerce.settings.index.integrations.update');
 			//END OF: SETTINGS ROUTES
+
+			// STARTOF: POS ROUTES
+			Route::get('/dashboard/ecommerce/pos', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\POSController@index')->name('dashboard.module.ecommerce.pos.index');
 		});
 		
 		//START OF: FRONT_END ACCOUNT ROUTES
@@ -139,5 +148,9 @@ Route::group(['middleware' => ['web']], function() {
 	Route::post('/verwijder-uit-verlanglijstje', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\WishlistController@removeFromWishlist')->name('module.ecommerce.wishlist.remove.product');
 
 	Route::post('/webhook/chuck-ecommerce-module-mollie', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\OrderController@webhookMollie')->name('module.ecommerce.mollie_webhook');
+
+	// Route::get('/convert', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\POSController@convert')->name('module.ecommerce.pos.convert'); 
+
+	Route::post('/ecommerce-pos-url', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\POSController@posHandler')->name('ecommerce_pos_url');
 
 });

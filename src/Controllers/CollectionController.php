@@ -50,6 +50,7 @@ class CollectionController extends Controller
     {
         $this->validate($request, [ 
             'name' => 'max:185|required',
+            'is_pos_available' => 'required|in:0,1',
             'parent' => 'nullable',
             'image' => 'nullable',
             'id' => 'required_with:update'

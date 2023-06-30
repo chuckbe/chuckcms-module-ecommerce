@@ -80,6 +80,7 @@ class CollectionRepository
         $input['json']['name'] = $values->name;
         $input['json']['parent'] = $values->parent;
         $input['json']['image'] = $values->image;
+        $input['json']['is_pos_available'] = $values->is_pos_available;
 
         $collection = $this->repeater->create($input);
 
@@ -102,6 +103,7 @@ class CollectionRepository
         $json['name'] = $values->name;
         $json['image'] = $values->image;
         $json['parent'] = $values->parent;
+        $json['is_pos_available'] = $values->is_pos_available;
 
         $collection = $this->repeater->where('id', $values->id)->first();
         $collection->slug = $input['slug'];

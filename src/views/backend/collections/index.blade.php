@@ -23,13 +23,30 @@ $( document ).ready(function() {
 		var domain = "{{ URL::to('dashboard/media')}}";
 		$('.img_lfm_link').filemanager('image', {prefix: domain});
 	}
+	$('body').on('click','.edit_collection_checkbox_input', function(){
+		if($(this).val() == 1){
+			$(this).val('0')
+		}else{
+			$(this).val('1')
+		}
+	});
 });
-function editModal(id, name, parent, image){
+function editModal(id, name, parent, image, is_pos_available){
+	console.log(is_pos_available);
 	$('#edit_collection_id').val(id);
 	$('#edit_collection_name').val(name);
 	$('#edit_collection_parent').val(parent).trigger('change');
 	$('#edit_collection_image').val(image);
 	$('#editcollectionimageholder').attr('src', image);
+	if(is_pos_available == 1){
+		$('.edit_collection_checkbox_input_hidden').attr("disabled", true);
+		$('.edit_collection_checkbox_input').val("1");
+		$('.edit_collection_checkbox_input').attr("checked", true);
+	}else{
+		$('.edit_collection_checkbox_input_hidden').attr("disabled", false);
+		$('.edit_collection_checkbox_input').val("0");
+		$('.edit_collection_checkbox_input').attr("checked", false);
+	}
 	$('#editCollectionModal').modal('show');
 }
 
@@ -65,6 +82,7 @@ function deleteModal(id, name){
 							<th scope="col">Naam</th>
 							<th scope="col">Producten</th>
 							<th scope="col">Hoofdcollectie</th>
+							<th scope="col">POS?</th>
 							<th scope="col" style="min-width:190px">Actions</th>
         				</tr>
         			</thead>
@@ -75,13 +93,18 @@ function deleteModal(id, name){
 							<td class="v-align-middle">{{$collection->json['name'] }}</td>
 							<td class="v-align-middle">{{ ChuckProduct::forCollection($collection->json['name'], $collection->json['parent'], true) }}</td>
 							<td class="v-align-middle">{{$collections->where('id', $collection->json['parent'])->first() ? $collections->where('id', $collection->json['parent'])->first()->json['name'] : '' }}</td>
+							<td class="v-align-middle">
+								<span class="badge badge-{{ $collection->is_pos_available == '1' ? 'success' : 'danger' }}">
+									{!!$collection->is_pos_available == '1' ? '✓' : '✕'!!}
+								</span>
+							</td>
 							<td class="v-align-middle semi-bold">
 								<a href="{{ route('dashboard.module.ecommerce.collections.sorting', ['collection' => $collection->id]) }}" class="btn btn-primary btn-sm btn-rounded m-r-20">
 									<i class="fa fa-eye"></i>
 								</a>
 
 								@can('edit redirects')
-								<a href="#" onclick="editModal({{ $collection->id }}, '{{ $collection->json['name'] }}', '{{ $collection->json['parent'] }}', '{{ $collection->json['image'] }}')" class="btn btn-secondary btn-sm btn-rounded m-r-20">
+								<a href="#" onclick="editModal({{ $collection->id }}, '{{ $collection->json['name'] }}', '{{ $collection->json['parent'] }}', '{{ $collection->json['image'] }}', '{{$collection->json['is_pos_available']}}')" class="btn btn-secondary btn-sm btn-rounded m-r-20">
 									<i class="fa fa-edit"></i>
 								</a>
 								@endcan

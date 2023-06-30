@@ -52,6 +52,16 @@
                 </div>
               </div>
             </div>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group form-group-default">
+                  <input type="hidden" class="edit_collection_checkbox_input_hidden" value="0" name="is_pos_available">
+                  <label for="is_pos_available">
+                      <input type="checkbox" class="edit_collection_checkbox_input" id="is_pos_available" value="0" name="is_pos_available"/> Is beschikbaar in POS?
+                  </label>
+                </div>
+              </div>
+            </div>
           </div>
         <div class="row">
           <div class="col-md-12 m-t-10 sm-m-t-10 pull-right">
