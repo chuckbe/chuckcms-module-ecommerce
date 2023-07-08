@@ -138,7 +138,10 @@ class ProductRepository
             }
             return $query->get(); 
         }
-        return $this->repeater->whereRaw('json LIKE ?', ['%' . $sku . '%'])->first();
+        return $this->repeater
+            ->where('slug', config('chuckcms-module-ecommerce.products.slug'))
+            ->whereRaw('json LIKE ?', ['%' . $sku . '%'])
+            ->first();
     }
 
     public function save(Request $values)

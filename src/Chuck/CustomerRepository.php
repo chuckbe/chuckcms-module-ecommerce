@@ -29,6 +29,16 @@ class CustomerRepository
         return $this->customer->get();
     }
 
+    /**
+     * Get the guest customer
+     *
+     * @var string
+     **/
+    public function guest()
+    {
+        return $this->customer->where('email', 'guest@guest.com')->first();
+    }
+
     public function findByUserId($user_id)
     {
         $this->customer->where('user_id', $user_id)->first();

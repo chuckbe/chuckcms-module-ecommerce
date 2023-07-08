@@ -54,7 +54,7 @@ class InstallModuleEcommerce extends Command
         $hintpath = 'chuckcms-module-ecommerce';
         $path = 'chuckbe/chuckcms-module-ecommerce';
         $type = 'module';
-        $version = '0.1.16';
+        $version = '0.2.2';
         $author = 'Karel Brijs (karel@chuck.be)';
 
         $json = [];

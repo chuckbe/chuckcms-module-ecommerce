@@ -62,6 +62,14 @@
                 </div>
               </div>
             </div>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group form-group-default required">
+                  <label>Volgorde</label>
+                  <input type="number" id="edit_collection_order" name="order" class="form-control" min="1" steps="1" required>
+                </div>
+              </div>
+            </div>
           </div>
         <div class="row">
           <div class="col-md-12 m-t-10 sm-m-t-10 pull-right">

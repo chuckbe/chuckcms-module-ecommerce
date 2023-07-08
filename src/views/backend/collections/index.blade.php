@@ -31,7 +31,7 @@ $( document ).ready(function() {
 		}
 	});
 });
-function editModal(id, name, parent, image, is_pos_available){
+function editModal(id, name, parent, image, is_pos_available, order){
 	console.log(is_pos_available);
 	$('#edit_collection_id').val(id);
 	$('#edit_collection_name').val(name);
@@ -47,6 +47,7 @@ function editModal(id, name, parent, image, is_pos_available){
 		$('.edit_collection_checkbox_input').val("0");
 		$('.edit_collection_checkbox_input').attr("checked", false);
 	}
+	$('#edit_collection_order').val(order);
 	$('#editCollectionModal').modal('show');
 }
 
@@ -83,6 +84,7 @@ function deleteModal(id, name){
 							<th scope="col">Producten</th>
 							<th scope="col">Hoofdcollectie</th>
 							<th scope="col">POS?</th>
+							<th scope="col">Volgorde</th>
 							<th scope="col" style="min-width:190px">Actions</th>
         				</tr>
         			</thead>
@@ -98,13 +100,14 @@ function deleteModal(id, name){
 									{!!$collection->is_pos_available == '1' ? '✓' : '✕'!!}
 								</span>
 							</td>
+							<td class="v-align-middle">{{ $collection->order }}</td>
 							<td class="v-align-middle semi-bold">
 								<a href="{{ route('dashboard.module.ecommerce.collections.sorting', ['collection' => $collection->id]) }}" class="btn btn-primary btn-sm btn-rounded m-r-20">
 									<i class="fa fa-eye"></i>
 								</a>
 
 								@can('edit redirects')
-								<a href="#" onclick="editModal({{ $collection->id }}, '{{ $collection->json['name'] }}', '{{ $collection->json['parent'] }}', '{{ $collection->json['image'] }}', '{{$collection->json['is_pos_available']}}')" class="btn btn-secondary btn-sm btn-rounded m-r-20">
+								<a href="#" onclick="editModal({{ $collection->id }}, '{{ $collection->json['name'] }}', '{{ $collection->json['parent'] }}', '{{ $collection->json['image'] }}', '{{$collection->json['is_pos_available']}}', '{{$collection->order ?: '1'}}')" class="btn btn-secondary btn-sm btn-rounded m-r-20">
 									<i class="fa fa-edit"></i>
 								</a>
 								@endcan

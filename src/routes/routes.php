@@ -1,5 +1,7 @@
 <?php
 
+use Chuckbe\ChuckcmsModuleEcommerce\Controllers\POSController;
+
 Route::group(['middleware' => ['web']], function() {
 	Route::group(['middleware' => 'auth'], function () {
 		Route::group(['middleware' => ['role:super-admin|administrator|moderator']], function () {
@@ -87,7 +89,27 @@ Route::group(['middleware' => ['web']], function() {
 			//END OF: SETTINGS ROUTES
 
 			// STARTOF: POS ROUTES
-			Route::get('/dashboard/ecommerce/pos', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\POSController@index')->name('dashboard.module.ecommerce.pos.index');
+			Route::get('/dashboard/ecommerce/pos', [
+				POSController::class, 'index'
+			])->name('dashboard.module.ecommerce.pos.index');
+
+			Route::post('/dashboard/ecommerce/pos/combinations', [
+				POSController::class, 'combinations'
+			])->name('dashboard.module.ecommerce.pos.combinations');
+
+			Route::post('/dashboard/ecommerce/pos/add-to-cart', [
+				POSController::class, 'addToCart'
+			])->name('dashboard.module.ecommerce.pos.cart.add');
+
+			Route::post('/dashboard/ecommerce/pos/update', [
+				POSController::class, 'updateCartItem'
+			])->name('dashboard.module.ecommerce.pos.cart.update');
+
+			Route::post('/dashboard/ecommerce/pos/remove', [
+				POSController::class, 'removeCartItem'
+			])->name('dashboard.module.ecommerce.pos.cart.remove');
+
+			Route::get('/dashboard/ecommerce/pos/place-order', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\POSController@order')->name('dashboard.module.ecommerce.pos.place_order');
 		});
 		
 		//START OF: FRONT_END ACCOUNT ROUTES
@@ -151,6 +173,6 @@ Route::group(['middleware' => ['web']], function() {
 
 	// Route::get('/convert', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\POSController@convert')->name('module.ecommerce.pos.convert'); 
 
-	Route::post('/ecommerce-pos-url', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\POSController@posHandler')->name('ecommerce_pos_url');
+	//Route::post('/ecommerce-pos-url', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\POSController@posHandler')->name('ecommerce_pos_url');
 
 });
