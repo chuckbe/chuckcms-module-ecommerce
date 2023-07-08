@@ -4,6 +4,8 @@ namespace Chuckbe\ChuckcmsModuleEcommerce;
 
 use Chuckbe\ChuckcmsModuleEcommerce\Commands\InstallModuleEcommerce;
 use Chuckbe\ChuckcmsModuleEcommerce\Commands\AddAwaitingTransferStatus;
+use Chuckbe\ChuckcmsModuleEcommerce\Commands\ImportFacebookCategories;
+use Chuckbe\ChuckcmsModuleEcommerce\Commands\ImportGoogleCategories;
 use Chuckbe\ChuckcmsModuleEcommerce\Commands\UpdateCarriersToMultilanguage;
 use Illuminate\Support\ServiceProvider;
 
@@ -39,6 +41,8 @@ class ChuckcmsModuleEcommerceServiceProvider extends ServiceProvider
                 InstallModuleEcommerce::class,
                 AddAwaitingTransferStatus::class,
                 UpdateCarriersToMultilanguage::class,
+                ImportFacebookCategories::class,
+                ImportGoogleCategories::class,
             ]);
         }
 

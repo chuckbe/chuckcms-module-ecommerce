@@ -34,13 +34,48 @@
                   <label>Hoofdcollectie </label>
                   <select class="custom-select" name="parent" data-init-plugin="select2" data-minimum-results-for-search="Infinity" data-placeholder="Selecteer een collectie" data-allow-clear="true">
                     <option></option>
-                    @foreach($collections as $collection)
-                      <option value="{{ $collection->id }}">{{ $collection->json['name'] }}</option>
-                    @endforeach
+                      @foreach ($collections as $collection)
+                        <option value="{{$collection->id}}">{{$collection->json['name']}}</option>
+                      @endforeach
                   </select>
                 </div>
               </div>
             </div>
+
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group form-group-default required">
+                  <label>Facebook Product Categorie</label>
+                  {{--  <input type="text" id="create_fb_product_category" name="fb_product_category" class="form-control" required>  --}}
+                  <select class="custom-select" name="fb_product_category" data-init-plugin="select2" data-minimum-results-for-search="Infinity" data-placeholder="Selecteer een fb collectie" data-allow-clear="true">
+                    <option></option>
+                    @if(count(ChuckRepeater::for('facebook_product_category')) > 0)
+                      @foreach(ChuckRepeater::for('facebook_product_category') as $fb)
+                        <option value="{{$fb->category_id}}">{{$fb->category}}</option>
+                      @endforeach
+                    @endif
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group form-group-default required">
+                  <label>Google Product Categorie</label>
+                  <select class="custom-select" name="google_product_category" data-init-plugin="select2" data-minimum-results-for-search="Infinity" data-placeholder="Selecteer een fb collectie" data-allow-clear="true">
+                    <option></option>
+                    @if(count(ChuckRepeater::for('google_product_category')) > 0)
+                      @foreach(ChuckRepeater::for('google_product_category') as $gpc)
+                        <option value="{{$gpc->category_id}}">{{$gpc->category}}</option>
+                      @endforeach
+                    @endif
+                  </select>
+                </div>
+              </div>
+            </div>
+
+
             <div class="row">
               <div class="col-md-12">
                 <div class="form-group form-group-default">

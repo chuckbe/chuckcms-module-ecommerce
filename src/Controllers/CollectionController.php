@@ -6,7 +6,6 @@ use Chuckbe\ChuckcmsModuleEcommerce\Chuck\ProductRepository;
 use Chuckbe\ChuckcmsModuleEcommerce\Chuck\CollectionRepository;
 use Chuckbe\ChuckcmsModuleEcommerce\Chuck\BrandRepository;
 
-use App\Http\Requests;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Chuckbe\Chuckcms\Models\Repeater;

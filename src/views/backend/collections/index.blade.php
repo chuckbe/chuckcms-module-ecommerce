@@ -24,10 +24,12 @@ $( document ).ready(function() {
 		$('.img_lfm_link').filemanager('image', {prefix: domain});
 	}
 });
-function editModal(id, name, parent, image){
+function editModal(id, name, parent, fb_product_id, google_product_id, image){
 	$('#edit_collection_id').val(id);
 	$('#edit_collection_name').val(name);
 	$('#edit_collection_parent').val(parent).trigger('change');
+	$('#edit_collection_fb_category').find(`option[value='${fb_product_id}']`).attr("selected","selected");
+	$('#edit_collection_google_category').find(`option[value='${google_product_id}']`).attr("selected","selected");
 	$('#edit_collection_image').val(image);
 	$('#editcollectionimageholder').attr('src', image);
 	$('#editCollectionModal').modal('show');
@@ -81,7 +83,7 @@ function deleteModal(id, name){
 								</a>
 
 								@can('edit redirects')
-								<a href="#" onclick="editModal({{ $collection->id }}, '{{ $collection->json['name'] }}', '{{ $collection->json['parent'] }}', '{{ $collection->json['image'] }}')" class="btn btn-secondary btn-sm btn-rounded m-r-20">
+								<a href="#" onclick="editModal({{ $collection->id }}, '{{ $collection->json['name'] }}', '{{ $collection->json['parent'] }}', '{{isset($collection->json['fb_product_category']) ? $collection->json['fb_product_category'] : ''}}', '{{isset($collection->json['google_product_category'])  ? $collection->json['google_product_category'] : ''}}' ,'{{ $collection->json['image'] }}')" class="btn btn-secondary btn-sm btn-rounded m-r-20">
 									<i class="fa fa-edit"></i>
 								</a>
 								@endcan

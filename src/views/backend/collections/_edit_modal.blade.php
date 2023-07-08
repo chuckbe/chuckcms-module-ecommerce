@@ -38,6 +38,37 @@
             </div>
             <div class="row">
               <div class="col-md-12">
+                <div class="form-group form-group-default required">
+                  <label>Facebook Product Categorie</label>
+                  <select id="edit_collection_fb_category" class="custom-select" name="fb_product_category" data-init-plugin="select2" data-minimum-results-for-search="Infinity" data-placeholder="Selecteer een fb collectie" data-allow-clear="true">
+                    <option></option>
+                    @if(count(ChuckRepeater::for('facebook_product_category')) > 0)
+                      @foreach(ChuckRepeater::for('facebook_product_category') as $fb)
+                          <option value="{{$fb->category_id}}">{{$fb->category}}</option>
+                      @endforeach
+                    @endif
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group form-group-default required">
+                  <label>Google Product Categorie</label>
+                  <select id="edit_collection_google_category" class="custom-select" name="google_product_category" data-init-plugin="select2" data-minimum-results-for-search="Infinity" data-placeholder="Selecteer een fb collectie" data-allow-clear="true">
+                    <option></option>
+                    @if(count(ChuckRepeater::for('google_product_category')) > 0)
+                      @foreach(ChuckRepeater::for('google_product_category') as $gpc)
+                          <option value="{{$gpc->category_id}}">{{$gpc->category}}</option>
+                      @endforeach
+                    @endif
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
                 <div class="form-group form-group-default">
                   <label>Afbeelding</label>
                   <div class="input-group">
