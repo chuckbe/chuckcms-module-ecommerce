@@ -74,7 +74,11 @@ class OrderController extends Controller
             return;
         }
 
-        $payment = Mollie::api()->payments()->get($request->id);
+        if ( substr($payId, 0, 3) === "ord") {
+            $payment = Mollie::api()->orders()->get($request->id, ['embed' => 'payments']);
+        } else {
+            $payment = Mollie::api()->payments()->get($request->id);
+        }
         
         $order = Order::where('id', $payment->metadata->order_id)->where('json->order_number', $payment->metadata->order_number)->first();
         

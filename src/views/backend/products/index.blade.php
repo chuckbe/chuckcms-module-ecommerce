@@ -43,6 +43,7 @@
         					<th scope="col">Collectie</th>
         					<th scope="col" class="pr-5">Prijs</th>
         					<th scope="col">Status</th>
+							<th scope="col">POS?</th>
         					<th scope="col">Hvl</th>
         					<th scope="col" style="min-width:200px">Acties</th>
         				</tr>
@@ -57,6 +58,11 @@
         					<td class="text-center">
 								<span class="badge badge-{{ ChuckProduct::isBuyable($product) ? 'success' : 'danger' }}">
 									{!! ChuckProduct::isBuyable($product) ? '✓' : '✕' !!}
+								</span>
+							</td>
+							<td class="text-center">
+								<span class="badge badge-{{ $product->json['is_pos_available'] == true ? 'success' : 'danger' }}">
+									{!! $product->json['is_pos_available'] == true ? '✓' : '✕' !!}
 								</span>
 							</td>
         					<td>{{ChuckProduct::quantity($product, ChuckProduct::defaultSku($product)) }}</td>

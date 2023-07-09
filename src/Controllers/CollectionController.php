@@ -50,17 +50,20 @@ class CollectionController extends Controller
     {
         $this->validate($request, [ 
             'name' => 'max:185|required',
+            'is_pos_available' => 'required|in:0,1',
             'parent' => 'nullable',
             'image' => 'nullable',
+            'order' => 'required|numeric',
             'id' => 'required_with:update'
         ]);
-        if($request->has('id') && $request->has('update')) {
+
+        if ($request->has('id') && $request->has('update')) {
             $collection = $this->collectionRepository->update($request);
-        } elseif($request->has('create')) {
+        } elseif ($request->has('create')) {
             $collection = $this->collectionRepository->create($request);
         }
 
-        if($collection->save()){
+        if ($collection->save()) {
             return redirect()->route('dashboard.module.ecommerce.collections.index');
         } else {
             return 'error';//add ThrowNewException

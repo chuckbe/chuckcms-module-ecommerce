@@ -235,7 +235,6 @@ class Cart
      */
     public function content()
     {
-        //dd($this->session->get($this->instance));
         if (is_null($this->session->get($this->instance))) {
             return new Collection;
         }

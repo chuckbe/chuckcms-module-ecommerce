@@ -54,7 +54,7 @@ class InstallModuleEcommerce extends Command
         $hintpath = 'chuckcms-module-ecommerce';
         $path = 'chuckbe/chuckcms-module-ecommerce';
         $type = 'module';
-        $version = '0.1.16';
+        $version = '0.2.2';
         $author = 'Karel Brijs (karel@chuck.be)';
 
         $json = [];
@@ -139,6 +139,22 @@ class InstallModuleEcommerce extends Command
                     'submenu' => null
                 ),
                 'seventh' => array(
+                    'name' => 'POS',
+                    'icon' => true,
+                    'icon_data' => 'store',
+                    'route' => 'dashboard.module.ecommerce.pos.index',
+                    'has_submenu' => false,
+                    'submenu' => null
+                ),
+                'eighth' => array(
+                    'name' => 'Locaties',
+                    'icon' => true,
+                    'icon_data' => 'tag',
+                    'route' => 'dashboard.module.ecommerce.locations.index',
+                    'has_submenu' => false,
+                    'submenu' => null
+                ),
+                'ninth' => array(
                     'name' => 'Instellingen',
                     'icon' => true,
                     'icon_data' => 'cpu',

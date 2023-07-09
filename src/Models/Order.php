@@ -109,6 +109,19 @@ class Order extends Eloquent
         return 'levering_' . $this->json['order_number'] . '.pdf';
     }
 
+    public function getAllSkus()
+    {
+        $skus = [];
+
+        $products = $this->json['products'];
+
+        foreach ($products as $key => $product) {
+            $skus[] = $product['sku'];
+        }
+
+        return $skus;
+    }
+
     /**
      * Return the discount
      *

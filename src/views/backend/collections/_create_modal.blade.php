@@ -57,6 +57,23 @@
                 </div>
               </div>
             </div>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group form-group-default ml-4">
+                    <input type="hidden" class="boolean_checkbox_input_hidden" value="0" name="is_pos_available">
+                    <input type="checkbox" class="form-check-input" id="boolean_checkbox_input" value="1" name="is_pos_available">
+                    <label>Is beschikbaar in POS?</label>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group form-group-default required">
+                  <label>Volgorde</label>
+                  <input type="number" id="create_collection_order" name="order" class="form-control" min="1" steps="1" required>
+                </div>
+              </div>
+            </div>
           </div>
         <div class="row">
           <div class="col-md-12 m-t-10 sm-m-t-10">
