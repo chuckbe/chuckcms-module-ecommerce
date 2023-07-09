@@ -18,6 +18,7 @@ Route::group(['middleware' => ['web']], function() {
 			
 			//START OF: PRODUCTS ROUTES
 			Route::get('/dashboard/ecommerce/products', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\ProductController@index')->name('dashboard.module.ecommerce.products.index');
+			
 			Route::get('/dashboard/ecommerce/products/create', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\ProductController@create')->name('dashboard.module.ecommerce.products.create');
 			Route::get('/dashboard/ecommerce/products/{product}/edit', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\ProductController@edit')->name('dashboard.module.ecommerce.products.edit');
 			Route::post('/dashboard/ecommerce/products/save', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\ProductController@save')->name('dashboard.module.ecommerce.products.save');
@@ -88,6 +89,12 @@ Route::group(['middleware' => ['web']], function() {
 			Route::post('/dashboard/ecommerce/settings/integrations/update', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\Settings\IntegrationsController@update')->name('dashboard.module.ecommerce.settings.index.integrations.update');
 			//END OF: SETTINGS ROUTES
 
+			// START OF: LABEL ROUTES
+			Route::post('/dashboard/ecommerce/settings/integrations/dymo/uploadLabel', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\Settings\IntegrationsController@dymoLabelUpload')->name('dashboard.module.ecommerce.settings.index.integrations.label.upload');
+			
+			Route::post('/dashboard/ecommerce/products/label-modal', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\ProductController@labelModal')->name('dashboard.module.ecommerce.products.label');
+			// END OF: LABEL ROUTES
+
 			// STARTOF: POS ROUTES
 			Route::get('/dashboard/ecommerce/pos', [
 				POSController::class, 'index'
@@ -110,6 +117,7 @@ Route::group(['middleware' => ['web']], function() {
 			])->name('dashboard.module.ecommerce.pos.cart.remove');
 
 			Route::get('/dashboard/ecommerce/pos/place-order', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\POSController@order')->name('dashboard.module.ecommerce.pos.place_order');
+
 		});
 		
 		//START OF: FRONT_END ACCOUNT ROUTES
@@ -174,5 +182,4 @@ Route::group(['middleware' => ['web']], function() {
 	// Route::get('/convert', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\POSController@convert')->name('module.ecommerce.pos.convert'); 
 
 	//Route::post('/ecommerce-pos-url', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\POSController@posHandler')->name('ecommerce_pos_url');
-
 });

@@ -25,7 +25,12 @@
         </div>
     </div>
     <div class="row bg-light shadow-sm rounded py-3 mb-3 mx-1">
-    	<div class="col-sm-12 text-right">
+    	<div class="col-sm-6">
+    		<button class="btn btn-sm btn-outline-danger mr-auto" id="labelPrinterStatus" disabled>
+    			<i class="fa fa-circle"></i> <span>Geen printer gevonden</span>
+    		</button>
+    	</div>
+    	<div class="col-sm-6 text-right">
     		<a href="{{ route('dashboard.module.ecommerce.products.create') }}" class="btn btn-sm btn-outline-success">Product Toevoegen</a>
     	</div>
         <div class="col-sm-12 my-3">
@@ -40,7 +45,7 @@
         					<th scope="col">Status</th>
 							<th scope="col">POS?</th>
         					<th scope="col">Hvl</th>
-        					<th scope="col" style="min-width:170px">Acties</th>
+        					<th scope="col" style="min-width:200px">Acties</th>
         				</tr>
         			</thead>
         			<tbody>
@@ -49,10 +54,10 @@
         					<th scope="row">{{ $product->id }}</th>
         					<td>{{ $product->json['title'][ChuckSite::getFeaturedLocale()] }}</td>
         					<td>{{ is_null(ChuckProduct::collection($product)) ? '' : ChuckProduct::collection($product)->json['name']}}</td>
-        					<td>{{ChuckProduct::lowestPrice($product)}}</td>
+        					<td>{{ ChuckProduct::lowestPrice($product) }}</td>
         					<td class="text-center">
 								<span class="badge badge-{{ ChuckProduct::isBuyable($product) ? 'success' : 'danger' }}">
-									{!!ChuckProduct::isBuyable($product) ? '✓' : '✕'!!}
+									{!! ChuckProduct::isBuyable($product) ? '✓' : '✕' !!}
 								</span>
 							</td>
 							<td class="text-center">
@@ -66,6 +71,11 @@
 					    		<a href="{{ route('dashboard.module.ecommerce.products.edit', ['product' => $product->id]) }}" class="btn btn-sm btn-outline-secondary rounded d-inline-block">
 					    			<i class="fa fa-pen"></i> edit 
 					    		</a>
+								<button 
+									class="btn btn-sm btn-outline-secondary rounded d-inline-block openLabelModalBtn"
+									data-product-id="{{ $product->id }}">
+					    			<i class="fa fa-tag"></i> 
+					    		</button>
 					    		@endcan
 					    		@can('delete forms')
 					    		<a href="#" class="btn btn-sm btn-outline-danger rounded d-inline-block product_delete" data-id="{{ $product->id }}">
@@ -81,14 +91,23 @@
         </div>
     </div>
 </div>
+<!-- Modal -->
+@include('chuckcms-module-ecommerce::backend.products.modals.labels')
 @endsection
 
 @section('css')
-	
+	<style>
+		.online, .offline {
+			width: 5px;
+			height: 5px;
+			border-radius: 50%;
+		}
+	</style>
 @endsection
 
 @section('scripts')
 <script src="https://cdn.chuck.be/assets/plugins/sweetalert2.all.js"></script>
+@include('chuckcms-module-ecommerce::backend.products.labels')
 <script>
 $( document ).ready(function (){
     $('body').on('click', '.product_delete', function (event) {
