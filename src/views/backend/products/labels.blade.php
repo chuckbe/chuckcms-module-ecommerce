@@ -84,80 +84,7 @@ $( document ).ready(function (){
                 labelModal.modal('show');
 
                 return;
-
-
-
-
-
-
-                let modal_body = $(modal).find('.modal-body');
-                let product_data = data.product.json;
-
-                if (data.brand !== '') {
-                    modal_body.find('#brandname').val(data.brand);
-                }
-
-                if (product_data.combinations && Object.keys(product_data.combinations).length > 0) {
-                    // modal.find('.modal-footer .print-btn').attr('disabled', 'disabled');
-                    modal.find('.modal-footer .print-btn').attr('data-product-type', 'multi_combi_products');
-                    modal_body.find('.single_product_area #barcode').val('');
-                    modal_body.find('.single_product_area').hide();
-                    modal_body.find('.combination_area').show();
-                    $.each(product_data.combinations, function(k,v){
-                        let combiEl = modal_body.find('.combinations_row .combination_item').eq(0).clone();
-                        let price = new Intl.NumberFormat("nl-BE", { style: "currency", "currency":"EUR" }).format(v.price.final);
-                        let attribute = k.replace('__', ", ");
-                        combiEl.attr('data-product', product_data.title.nl);
-                        combiEl.attr('data-ean', v.code.ean);
-                        if(v.code.ean == null){
-                            console.log('ean barcode not set');
-                            // combiEl.attr('data-ean', product_data.code.ean);
-                        }
-                        combiEl.attr('data-attr', attribute);
-                        combiEl.attr('data-price', price);
-                        combiEl.attr('data-qty', v.quantity);
-
-                        if(v.quantity == 0){
-                            combiEl.find('.combination_active').attr('checked',false);
-                            combiEl.find('.combination-print').attr('disabled','disabled');
-                        }
-
-
-                        combiEl.find('.combination-name').text(v.display_name.nl);
-                        combiEl.find('.combination-price').text(price);
-                        combiEl.find('.combination-quantity').attr('value',v.quantity);
-                        combiEl.find('.combination-quantity').val(v.quantity);
-                        combiEl.find('.combination-quantity').attr('max',v.quantity);
-                        combiEl.appendTo($(modal_body.find('.combinations_row')));
-                    });
-                    modal_body.find('.combinations_row .combination_item').first().remove();
-                } else {
-                    let attributes = [];
-                    Object.values(product_data.attributes).forEach(function(attribute){
-                        let name = attribute.display_name.nl;
-                        attributes.push(name);
-                    });
-                    let attr;
-                    if(attributes.length > 1){
-                        attr = attributes.join(' ');
-                    }else{
-                        attr = attributes.join('');
-                    }
-
-
-                    modal.find('.modal-footer .print-btn').attr('disabled', false);
-                    modal_body.find('.single_product_area #barcode').val(product_data.code.ean);
-                    modal_body.find('.single_product_area #product_name').val(product_data.title.nl);
-                    let price = new Intl.NumberFormat("nl-BE", { style: "currency", "currency":"EUR" }).format(product_data.price.final);
-                    modal_body.find('.single_product_area #price').val(price);
-                    modal_body.find('.single_product_area #quantity').attr('value', product_data.quantity);
-                    modal_body.find('.single_product_area #quantity').attr('max', product_data.quantity);
-                    modal_body.find('.single_product_area #attributes').val(attr);;
-                    modal_body.find('.single_product_area').show();
-                    modal_body.find('.combination_area').hide();
-                }
-                modal.modal('show');
-            }else{
+            } else {
                 console.log(data);
             }
         });
@@ -219,26 +146,34 @@ $( document ).ready(function (){
             jobName = 'customJob';
 
             if(checkEan(barcode)){
-                if(barcode.length == 13){
+                if (barcode.length == 13) {
                     barcode = barcode.slice(0, -1)
                 }
-                if(quantity > 0){
-                    printLabel(manufacturer,product_name,barcode,attributes,price,quantity, jobName);
-                }else{
-                    console.log('quantity set to 0');
+                if (quantity > 0) {
+                    printLabel(
+                        manufacturer,
+                        product_name,
+                        barcode,
+                        attributes,
+                        price,
+                        quantity,
+                        jobName
+                    );
+                } else {
+                    console.log('Quantity set to 0');
                 }
-            }else{
-                console.log('invalid barcode');
+            } else {
+                console.log('Invalid barcode');
             }
         }
 
         if($(this).attr('data-product-type') == 'multi_combi_products'){
             manufacturer = $(modalbody).find('input#brandname').val();
             let combinations = $('.combinations_row tr.combination_item');
-            if(combinations.length > 0){
+            if (combinations.length > 0) {
                 for (let i = 0; i < combinations.length; i++) {
                     let active = $(combinations[i]).find('.combination_active').is(":checked")
-                    if(active){
+                    if (active) {
                         let ci = combinations[i]
                         product_name = $(ci).attr('data-product');
                         product_name = product_name.replace(/.{10}\S*\s+/g, "$&@").split(/\s+@/).join('\n');
@@ -247,23 +182,23 @@ $( document ).ready(function (){
                         quantity = $(ci).find('.combination-quantity').val();
                         attributes = $(ci).attr('data-attr');
                         jobName = 'customJob';
-                        if(checkEan(barcode)){
-                            if(barcode.length == 13){
+                        if (checkEan(barcode)) {
+                            if (barcode.length == 13) {
                                 barcode = barcode.slice(0, -1)
                             }
-                            if(quantity > 0){
+                            if (quantity > 0) {
                                 // printLabel
                                 printLabel(manufacturer,product_name,barcode,attributes,price,quantity, jobName);
-                            }else{
-                                console.log('quantity set to 0');
+                            } else {
+                                console.log('Quantity set to 0');
                             }
-                        }else{
-                            console.log('invalid barcode');
+                        } else {
+                            console.log('Invalid barcode');
                         }
                     }
                 }
-            }else{
-                console.log('no combinations found');
+            } else {
+                console.log('No combinations found');
             }
         }
     });
@@ -304,9 +239,7 @@ function checkEan(eanCode){
 }
 
 
-
 function printLabel($manufacturer,$product_name,$barcode,$attributes,$price,$quantity,$printJobName) {
-    //printerViewModel.message("Spooling");
     var label = dymo.label.framework.openLabelXml(dymoLabelTemplate);
 
     let manufacturer_name = $manufacturer;
@@ -315,7 +248,6 @@ function printLabel($manufacturer,$product_name,$barcode,$attributes,$price,$qua
     let attributes = $attributes;
     let price = $price;
     let quantity = $quantity;
-
 
     let basicPrintParamsXML = '<?xml version="1.0" encoding="utf-8"?>\n' +
     '<LabelWriterPrintParams>\n' +
@@ -333,7 +265,6 @@ function printLabel($manufacturer,$product_name,$barcode,$attributes,$price,$qua
     label.setObjectText('price', price);
 
     label.print(dymoPrinterName, basicPrintParamsXML);
-
 
     // label.printAsync(printerViewModel.printerName(), basicPrintParamsXML).then(function(state) {
     //     if (state) {
