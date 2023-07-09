@@ -16,7 +16,6 @@ Route::group(['middleware' => ['web']], function() {
 			
 			//START OF: PRODUCTS ROUTES
 			Route::get('/dashboard/ecommerce/products', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\ProductController@index')->name('dashboard.module.ecommerce.products.index');
-			Route::post('/dashboard/ecommerce/product', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\ProductController@fetchProduct')->name('dashboard.module.ecommerce.products.product');
 			
 			Route::get('/dashboard/ecommerce/products/create', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\ProductController@create')->name('dashboard.module.ecommerce.products.create');
 			Route::get('/dashboard/ecommerce/products/{product}/edit', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\ProductController@edit')->name('dashboard.module.ecommerce.products.edit');
@@ -85,6 +84,7 @@ Route::group(['middleware' => ['web']], function() {
 			// START OF: LABEL ROUTES
 			Route::post('/dashboard/ecommerce/settings/integrations/dymo/uploadLabel', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\Settings\IntegrationsController@dymoLabelUpload')->name('dashboard.module.ecommerce.settings.index.integrations.label.upload');
 			
+			Route::post('/dashboard/ecommerce/products/label-modal', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\ProductController@labelModal')->name('dashboard.module.ecommerce.products.label');
 			// END OF: LABEL ROUTES
 		});
 		

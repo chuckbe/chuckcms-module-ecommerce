@@ -108,20 +108,35 @@ class ProductController extends Controller
     }
 
 
-    public function fetchProduct(Request $request)
+    public function labelModal(Request $request)
     {
-        $product = Product::where('id', $request->get('product_id'))->first();
+        $product = $this->productRepository->get($request->get('id'));
+
         if ($product) {
+            $labelModal = view(
+                'chuckcms-module-ecommerce::backend.products.modals.labels_content',
+                compact('product')
+            )->render();
+
+            return response()->json([
+                'status' => 'success',
+                'modal' => $labelModal
+            ]);
+
             // $ean = $product->json['code']['ean'];
             // $sku = $product->json['code']['sku'];
             // $finalPrice = $product->json['price']['final'];
-            $brandName = '';
-            $brand = Repeater::find($product->json['brand']);
+
+            // $brandName = '';
+            // $brand = Repeater::find($product->json['brand']);
+
             // $combinations = $product->json['combinations'];
             // $combinationData = [];
-            if($brand){
-                $brandName = $brand->json['name'];
-            }
+
+            // if($brand){
+            //     $brandName = $brand->json['name'];
+            // }
+
             // if(count($combinations)){
             //     foreach ($combinations as $index=>$combination) {
             //         $combinationdata[$index]['name'] = $combination['display_name']['nl'];
@@ -147,9 +162,11 @@ class ProductController extends Controller
 
 
 
-            return response()->json(['status' => 'success', 'product' => $product, 'brand' => $brandName]);
+            // return response()->json(['status' => 'success', 'product' => $product, 'brand' => $brandName]);
         } else {
-            return response()->json(['status' => 'error']);
+            return response()->json([
+                'status' => 'error'
+            ]);
         }
     }
     
