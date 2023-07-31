@@ -25,7 +25,7 @@ Locaties
             $('.img_lfm_link').filemanager('image', {prefix: domain});
         }
     });
-    function editModal(id, name, pos_users, pos_name, pos_address1, pos_address2, pos_vat, pos_receipt_title, pos_receipt_footer_line1, pos_receipt_footer_line2, pos_receipt_footer_line3, order){
+    function editModal(id, name, pos_users, pos_name, pos_address1, pos_address2, pos_vat, pos_receipt_title, pos_receipt_footer_line1, pos_receipt_footer_line2, pos_receipt_footer_line3, mollie_terminal_id, order){
         $('#edit_location_id').val(id);
         $('#edit_location_name').val(name);
         $('#edit_location_pos_users').val(pos_users);
@@ -37,6 +37,7 @@ Locaties
         $('#edit_location_pos_receipt_footer_line1').val(pos_receipt_footer_line1);
         $('#edit_location_pos_receipt_footer_line2').val(pos_receipt_footer_line2);
         $('#edit_location_pos_receipt_footer_line3').val(pos_receipt_footer_line3);
+        $('#edit_location_mollie_terminal_id').val(mollie_terminal_id);
         $('#edit_location_order').val(order);
         $('#editLocationModal').modal('show');
     }
@@ -83,7 +84,7 @@ Locaties
                                 <td class="v-align-middle">{{$location->order }}</td>
                                 <td class="v-align-middle semi-bold">
                                     @can('edit redirects')
-                                    <a href="#" onclick="editModal({{ $location->id }}, '{{ $location->json['name'] }}', '{{ $location->pos_users }}', '{{ $location->pos_name }}', '{{ $location->pos_address1 }}', '{{ $location->pos_address2 }}', '{{ $location->pos_vat }}', '{{ $location->pos_receipt_title }}', '{{ $location->pos_receipt_footer_line1 }}', '{{ $location->pos_receipt_footer_line2 }}', '{{ $location->pos_receipt_footer_line3 }}', '{{ $location->order }}')" class="btn btn-default btn-sm btn-rounded m-r-20">
+                                    <a href="#" onclick="editModal({{ $location->id }}, '{{ $location->json['name'] }}', '{{ $location->pos_users }}', '{{ $location->pos_name }}', '{{ $location->pos_address1 }}', '{{ $location->pos_address2 }}', '{{ $location->pos_vat }}', '{{ $location->pos_receipt_title }}', '{{ $location->pos_receipt_footer_line1 }}', '{{ $location->pos_receipt_footer_line2 }}', '{{ $location->pos_receipt_footer_line3 }}', '{{ $location->mollie_terminal_id }}', '{{ $location->order }}')" class="btn btn-default btn-sm btn-rounded m-r-20">
                                         <i data-feather="edit-2"></i> edit
                                     </a>
                                     @endcan

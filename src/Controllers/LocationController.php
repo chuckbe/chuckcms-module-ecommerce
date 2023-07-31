@@ -41,6 +41,7 @@ class LocationController extends Controller
             'pos_receipt_footer_line1' => 'nullable',
             'pos_receipt_footer_line2' => 'nullable',
             'pos_receipt_footer_line3' => 'nullable',
+            'mollie_terminal_id' => 'nullable',
             'order' => 'numeric|required',
             'id' => 'required_with:update'
         ]);

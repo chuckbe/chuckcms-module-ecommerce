@@ -636,6 +636,15 @@ class ProductRepository
         }
     }
 
+    public function isEanCombination(Repeater $product, $ean) :bool
+    {
+        if (count($product->json['combinations']) > 0 ) {
+            return $product->json['code']['ean'] !== $ean;
+        } else {
+            return false;
+        }
+    }
+
     public function defaultCombination(Repeater $product)
     {
         foreach ( $product->json['combinations'] as $combination) {
@@ -671,6 +680,17 @@ class ProductRepository
             }
         }
         
+        return array();
+    }
+
+    public function combinationForEan(Repeater $product, $ean)
+    {
+        foreach ( $product->json['combinations'] as $combination) {
+            if( $combination['code']['ean'] == $ean ) {
+                return $combination;
+            }
+        }
+
         return array();
     }
 

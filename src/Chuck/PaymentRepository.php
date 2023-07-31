@@ -7,6 +7,7 @@ use Chuckbe\ChuckcmsModuleEcommerce\Chuck\OrderRepository;
 use Chuckbe\ChuckcmsModuleEcommerce\Events\OrderWasPaid;
 use Chuckbe\ChuckcmsModuleEcommerce\Payment\Payment;
 use Chuckbe\ChuckcmsModuleEcommerce\Models\Order;
+use Chuckbe\ChuckcmsModuleEcommerce\Models\Payment as PaymentModel;
 use Illuminate\Http\Request;
 use ChuckEcommerce;
 use ChuckSite;
@@ -101,6 +102,104 @@ class PaymentRepository
         ]);
 
         return $mollie;
+    }
+
+    /**
+     * Initiate a new cash payment
+     *
+     * @var
+     **/
+    public function cash($amount, $order)
+    {
+        $payment = PaymentModel::create([
+            'order_id' => $order->id,
+            'mollie_id' => null,
+            'type' => 'cash',
+            'amount' => floatval($amount),
+            'status' => PaymentModel::STATUS_PAYMENT
+        ]);
+
+        return $payment;
+    }
+
+    /**
+     * Initiate change
+     *
+     * @var
+     **/
+    public function change($amount, $order)
+    {
+        $payment = PaymentModel::create([
+            'order_id' => $order->id,
+            'mollie_id' => null,
+            'type' => 'change',
+            'amount' => floatval($amount),
+            'status' => PaymentModel::STATUS_PAYMENT
+        ]);
+
+        return $payment;
+    }
+
+    /**
+     * Initiate a new terminal payment
+     *
+     * @var
+     **/
+    public function terminal($amount, $location)
+    {
+        config([
+            'mollie.key' => ChuckSite::module('chuckcms-module-ecommerce')
+                                ->getSetting('integrations.mollie.key')
+        ]);
+
+        $mollie = Mollie::api()->payments()->create([
+            'amount' => [
+                'currency' => 'EUR',
+                'value' => number_format($amount, 2, '.', ''),
+            ],
+            'description' => config('chuckcms-module-ecommerce.order.terminal_description') . now()->format('YmdHis'),
+            'webhookUrl' => 'https://chuckcms.com/', //@TODO: route('module.ecommerce.mollie_webhook'),
+            'redirectUrl' => ChuckSite::getSetting('domain'),
+            'method' => 'pointofsale',
+            'terminalId' => $location->mollie_terminal_id,
+        ]);
+
+        $payment = PaymentModel::create([
+            'mollie_id' => $mollie->id,
+            'type' => 'pointofsale',
+            'amount' => floatval($amount),
+            'status' => PaymentModel::STATUS_AWAITING
+        ]);
+
+        return $payment;
+    }
+
+    public function checkTerminal(PaymentModel $payment)
+    {
+        config(['mollie.key' => ChuckSite::module('chuckcms-module-ecommerce')->getSetting('integrations.mollie.key')]);
+
+        $mollie = Mollie::api()->payments()->get($payment->mollie_id);
+
+        if ($mollie->isOpen()) {
+            return $payment->status;
+        }
+
+        if ($mollie->isCanceled()) {
+            $payment->status = PaymentModel::STATUS_CANCELED;
+            $payment->update();
+        }
+
+        if ($mollie->isFailed()) {
+            $payment->status = PaymentModel::STATUS_ERROR;
+            $payment->update();
+        }
+
+        if ($mollie->isPaid()) {
+            $payment->status = PaymentModel::STATUS_PAYMENT;
+            $payment->update();
+        }
+
+        return $payment->status;
     }
 
     public function check(Order $order)

@@ -125,7 +125,13 @@ class CartRepository
             $options_string = $this->concatOptions($cartItem->options);
 
             if ($cartItem->qty > $quantity) { // && check if product is available through backorder
-                $fails[] = array('sku' => $cartItem->id, 'name' => $this->productRepository->title($product) . ' (' . $options_string . ')', 'availability' => $quantity, 'type' => ($quantity < 1 ? 'out_of_stock' : 'end_of_stock'), 'cart_rowId' => $cartItem->rowId);
+                $fails[] = array(
+                    'sku' => $cartItem->id,
+                    'name' => $this->productRepository->title($product) . ' (' . $options_string . ')',
+                    'availability' => $quantity,
+                    'type' => ($quantity < 1 ? 'out_of_stock' : 'end_of_stock'),
+                    'cart_rowId' => $cartItem->rowId
+                );
             }
         }
 
@@ -174,7 +180,7 @@ class CartRepository
     }
 
     public function addItemsToStock($products, $cart) 
-{
+    {
         $cartItems = $cart->content();
         foreach($cartItems as $cartKey => $cartItem) {
             foreach($products as $product) {

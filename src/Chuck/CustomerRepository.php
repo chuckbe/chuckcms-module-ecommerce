@@ -30,6 +30,17 @@ class CustomerRepository
     }
 
     /**
+     * Find the customer
+     *
+     * @param string $id
+     * @var string
+     **/
+    public function find($id)
+    {
+        return $this->customer->find($id);
+    }
+
+    /**
      * Get the guest customer
      *
      * @var string

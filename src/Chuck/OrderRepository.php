@@ -32,6 +32,11 @@ class OrderRepository
         $this->order = $order;
     }
 
+    public function find($id)
+    {
+        return Order::find($id);
+    }
+
     public function followup($order_number)
     {
         $order = Order::where('json->order_number', $order_number)->first();
@@ -82,6 +87,7 @@ class OrderRepository
         $json['is_taxed'] = $cart->isTaxed;
         $json = $this->customerRepository->mapAddress($request, $json); 
         $json = $this->customerRepository->mapCompany($request, $json); 
+        $json['type'] = 'web';
 
         $order->subtotal = $cart->total();
         $order->subtotal_tax = $cart->tax();
@@ -92,6 +98,56 @@ class OrderRepository
         $order->total = $cart->final() + $order->shipping + ($cart->isTaxed ? $order->shipping_tax : 0);
         $order->total_tax = ($order->subtotal_tax) + $order->shipping_tax;
         
+        $order->final = $order->total + ($cart->isTaxed ? 0 : $order->total_tax);
+
+        $order->json = $json;
+
+        if($order->save()) {
+            return $order;
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Place a new order
+     *
+     * @var
+     **/
+    public function pos($cart, $products, $customer, $location)
+    {
+        $order = new Order();
+        $order->customer_id = $customer->id;
+        $order->status = Order::STATUS_CREATED;
+        $order->surname = $customer->surname;
+        $order->name = $customer->name;
+        $order->email = $customer->email;
+        $order->tel = $customer->tel;
+
+        $json = [];
+
+        $json['order_number'] = $this->generateOrderNumber();
+        $json['reference'] = $this->generateOrderReference();
+        $json['lang'] = app()->getLocale();
+        $json['payment_method'] = 'pointofsale';
+        $json['products'] = $this->cartRepository->formatProducts($products, $cart);
+        $json['shipping'] = null;
+        $json['shipping_tax_rate'] = null;
+        $json['discounts'] = $cart->discounts();
+        $json['is_taxed'] = $cart->isTaxed;
+        $json['type'] = 'pos';
+        $json['location_id'] = $location->id;
+        $json['location'] = $location->json;
+
+        $order->subtotal = $cart->total();
+        $order->subtotal_tax = $cart->tax();
+        $order->discount = $cart->discount();
+        $order->shipping = 0.00;
+        $order->shipping_tax = 0.00;
+
+        $order->total = $cart->final();
+        $order->total_tax = $order->subtotal_tax;
+
         $order->final = $order->total + ($cart->isTaxed ? 0 : $order->total_tax);
 
         $order->json = $json;
@@ -115,7 +171,12 @@ class OrderRepository
 
         $order->update();
 
-        if($status_object['send_email']) {
+        $isPos = false;
+        if (array_key_exists('type', $json) && $json['type'] == 'pos') {
+            $isPos = true;
+        }
+
+        if($status_object['send_email'] && !$isPos) {
             if($status_object['invoice']) {
                 $pdf = $this->generatePDF($order);
             } else {

@@ -97,6 +97,14 @@
                                 </div>
                             </div>
                             <div class="row">
+                                <div class="col-sm-12">
+                                  <div class="form-group form-group-default">
+                                    <label>Mollie Terminal ID</label>
+                                    <input type="text" id="edit_location_mollie_terminal_id" name="mollie_terminal_id" class="form-control">
+                                  </div>
+                                </div>
+                            </div>
+                            <div class="row">
                                 <div class="col-md-12">
                                   <div class="form-group form-group-default required">
                                     <label>Volgorde</label>

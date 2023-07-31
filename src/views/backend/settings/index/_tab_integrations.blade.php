@@ -4,6 +4,15 @@
 <form action="{{ route('dashboard.module.ecommerce.settings.index.integrations.update') }}" method="POST"  enctype="multipart/form-data">
     <div class="row">
         <div class="col-sm-12">
+            <h6><b>POS</b></h6>
+        </div>
+        <div class="col-lg-12">
+            <div class="form-group form-group-default ">
+              <label>POS Logo</label>
+              <input type="text" class="form-control" placeholder="data64 IMG" name="pos[logo]" value="{{ array_key_exists('pos', $module->json['settings']) ? $module->json['settings']['pos']['logo'] : '' }}">
+            </div>
+        </div>
+        <div class="col-sm-12">
             <h6><b>mollie</b></h6>
         </div>
         <div class="col-lg-12">

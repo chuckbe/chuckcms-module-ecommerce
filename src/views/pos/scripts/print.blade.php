@@ -38,7 +38,7 @@
 function printJob(job) {
     var escpos = Neodynamic.JSESCPOSBuilder;
     var doc = new escpos.Document();
-    escpos.ESCPOSImage.load("{{ChuckSite::module('chuckcms-module-ecommerce')->getSetting('pos.ticket_logo')}}")
+    escpos.ESCPOSImage.load("{{ ChuckSite::module('chuckcms-module-ecommerce')->getSetting('pos.logo') }}")
         .then(logo => {
 
             // logo image loaded, create ESC/POS commands
@@ -123,16 +123,16 @@ function printJob(job) {
                         .text(job.vat[jvq]);
             };
 
-            if (job.customer !== 1) {
-                doc.feed(2);
-                doc.font(escpos.FontFamily.A)
-                    .size(0, 0)
-                    .align(escpos.TextAlignment.Center)
-                    .text("Voor deze bestelling krijgt u")
-                    .text(""+Math.floor(job.total)+" punten")
-                    .text(" ")
-                    .text("U heeft nu "+getCustomerPoints(job.customer)+" punten in totaal.");
-            }
+            // if (job.customer !== 1) {
+            //     doc.feed(2);
+            //     doc.font(escpos.FontFamily.A)
+            //         .size(0, 0)
+            //         .align(escpos.TextAlignment.Center)
+            //         .text("Voor deze bestelling krijgt u")
+            //         .text(""+Math.floor(job.total)+" punten")
+            //         .text(" ")
+            //         .text("U heeft nu "+getCustomerPoints(job.customer)+" punten in totaal.");
+            // }
 
             if (job.location.receipt_footer1 !== null || job.location.receipt_footer2 !== null || job.location.receipt_footer3 !== null) {
                 doc.feed(2)
@@ -215,5 +215,52 @@ function printJob(job) {
               console.log('Socket is closed');
             }
     });
+}
+
+function getFormattedPaymentLines(payments) {
+    let paymentLines = [];
+
+    for (var fpayl = 0; fpayl < payments.length; fpayl++) {
+        let paymentLine = "";
+
+        if (payments[fpayl].type == "change" || Number(payments[fpayl].value) == 0) {
+            continue;
+        }
+
+        if (payments[fpayl].type == "cash") {
+            paymentLine += "CONTANT";
+        } else if (payments[fpayl].type == "card") {
+            paymentLine += "KAARTBETALING";
+        }
+
+        let paymentLineValue = "€ "+Number(payments[fpayl].value).toFixed(2)+"  ";
+
+        let neededPaymentLineLength = (48 - paymentLine.length - paymentLineValue.length);
+        for (var npll = 0; npll < neededPaymentLineLength; npll++) {
+            paymentLine += " ";
+        };
+        paymentLine += paymentLineValue;
+
+        paymentLines.push(paymentLine);
+    };
+
+    for (var fpayll = 0; fpayll < payments.length; fpayll++) {
+        if (payments[fpayll].type == "change") {
+            let changeLine = "WISSELGELD (EUR)";
+            let changeLineValue = "- € "+Math.abs(Number(payments[fpayll].value)).toFixed(2)+"  ";
+
+            let neededChangeLineLength = (48 - changeLine.length - changeLineValue.length);
+            for (var ncll = 0; ncll < neededChangeLineLength; ncll++) {
+                changeLine += " ";
+            };
+
+            changeLine += changeLineValue;
+
+            paymentLines.push(changeLine);
+            break;
+        }
+    }
+
+    return paymentLines;
 }
 </script>

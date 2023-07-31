@@ -12,6 +12,7 @@ return [
 
     'order' => [
         'payment_description' => 'Bestelling #',
+        'terminal_description' => 'Terminal Betaling #',
         'redirect_url' => [
             'nl' => 'bedankt',
             'en' => 'thanks'

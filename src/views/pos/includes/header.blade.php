@@ -22,9 +22,8 @@
                 </div> --}}
                 <div class="dropdown ml-2">
                     <button class="btn btn-sm btn-light align-self-center dropdown-toggle" type="button" id="locationDropdownButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <span id="cof_pos_location"
+                        <span id="pos_activeLocation"
                             data-active-location="{{ $locations->first()->id }}"
-                            data-on-the-spot="{{ $locations->first()->type == 'delivery' ? 0 : ($locations->first()->on_the_spot ? 1 : 0) }}"
                             data-pos-name="{{ $locations->first()->pos_name }}"
                             data-pos-address="{{ $locations->first()->pos_address1 }}"
                             data-pos-address-t="{{ $locations->first()->pos_address2 }}"

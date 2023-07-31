@@ -104,6 +104,10 @@ Route::group(['middleware' => ['web']], function() {
 				POSController::class, 'combinations'
 			])->name('dashboard.module.ecommerce.pos.combinations');
 
+			Route::post('/dashboard/ecommerce/pos/scanner', [
+				POSController::class, 'scanCode'
+			])->name('dashboard.module.ecommerce.pos.scanner');
+
 			Route::post('/dashboard/ecommerce/pos/add-to-cart', [
 				POSController::class, 'addToCart'
 			])->name('dashboard.module.ecommerce.pos.cart.add');
@@ -116,7 +120,33 @@ Route::group(['middleware' => ['web']], function() {
 				POSController::class, 'removeCartItem'
 			])->name('dashboard.module.ecommerce.pos.cart.remove');
 
-			Route::get('/dashboard/ecommerce/pos/place-order', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\POSController@order')->name('dashboard.module.ecommerce.pos.place_order');
+			Route::post('/dashboard/ecommerce/pos/initiate-payment', [
+				POSController::class, 'initiatePayment'
+			])->name('dashboard.module.ecommerce.pos.payment.initiate');
+
+			Route::post('/dashboard/ecommerce/pos/cash-payment', [
+				POSController::class, 'cashPayment'
+			])->name('dashboard.module.ecommerce.pos.cash');
+
+			Route::post('/dashboard/ecommerce/pos/terminal-payment', [
+				POSController::class, 'terminalPayment'
+			])->name('dashboard.module.ecommerce.pos.terminal');
+
+			Route::post('/dashboard/ecommerce/pos/terminal-payment/check', [
+				POSController::class, 'checkTerminalPayment'
+			])->name('dashboard.module.ecommerce.pos.terminal.check');
+
+			Route::post('/dashboard/ecommerce/pos/payment/remove', [
+				POSController::class, 'removePayment'
+			])->name('dashboard.module.ecommerce.pos.payment.remove');
+
+			Route::post('/dashboard/ecommerce/pos/order/cancel', [
+				POSController::class, 'cancelOrder'
+			])->name('dashboard.module.ecommerce.pos.order.cancel');
+
+			Route::post('/dashboard/ecommerce/pos/order/finalize', [
+				POSController::class, 'order'
+			])->name('dashboard.module.ecommerce.pos.order.finalize');
 
 		});
 		

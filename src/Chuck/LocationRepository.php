@@ -4,6 +4,7 @@ namespace Chuckbe\ChuckcmsModuleEcommerce\Chuck;
 
 use Chuckbe\Chuckcms\Models\Repeater;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use ChuckRepeater;
 
 class LocationRepository
@@ -48,7 +49,7 @@ class LocationRepository
         $input = [];
 
         $input['slug'] = config('chuckcms-module-ecommerce.locations.slug');
-        $input['url'] = config('chuckcms-module-ecommerce.locations.url').str_slug($values->get('name'), '-');
+        $input['url'] = config('chuckcms-module-ecommerce.locations.url').Str::slug($values->get('name'), '-');
         $input['page'] = config('chuckcms-module-ecommerce.locations.page');
 
         $json = [];
@@ -64,11 +65,44 @@ class LocationRepository
         $json['pos_receipt_footer_line1'] = is_null($values->get('pos_receipt_footer_line1')) ? '' : $values->get('pos_receipt_footer_line1');
         $json['pos_receipt_footer_line2'] = is_null($values->get('pos_receipt_footer_line2')) ? '' : $values->get('pos_receipt_footer_line2');
         $json['pos_receipt_footer_line3'] = is_null($values->get('pos_receipt_footer_line3')) ? '' : $values->get('pos_receipt_footer_line3');
+
+        $json['mollie_terminal_id'] = is_null($values->get('mollie_terminal_id')) ? '' : $values->get('mollie_terminal_id');
+
         $json['order'] = (int)$values->get('order');
 
         $input['json'] = $json;
 
         $of_location = $this->repeater->create($input);
+
+        return $of_location;
+    }
+
+    public function update(Request $values)
+    {
+        $of_location = $this->repeater->where('id', $values->get('id'))->firstOrFail();
+        $of_location->url = config('chuckcms-module-ecommerce.locations.url').Str::slug($values->get('name'), '-');
+
+        $json = [];
+        $json['name'] = $values->get('name');
+
+        $json['pos_users'] = is_null($values->get('pos_users')) ? '' : $values->get('pos_users');
+        $json['pos_name'] = $values->get('pos_name');
+        $json['pos_address1'] = $values->get('pos_address1');
+        $json['pos_address2'] = is_null($values->get('pos_address2')) ? '' : $values->get('pos_address2');
+        $json['pos_vat'] = $values->get('pos_vat');
+        $json['pos_receipt_title'] = $values->get('pos_receipt_title');
+
+        $json['pos_receipt_footer_line1'] = is_null($values->get('pos_receipt_footer_line1')) ? '' : $values->get('pos_receipt_footer_line1');
+        $json['pos_receipt_footer_line2'] = is_null($values->get('pos_receipt_footer_line2')) ? '' : $values->get('pos_receipt_footer_line2');
+        $json['pos_receipt_footer_line3'] = is_null($values->get('pos_receipt_footer_line3')) ? '' : $values->get('pos_receipt_footer_line3');
+
+        $json['mollie_terminal_id'] = is_null($values->get('mollie_terminal_id')) ? '' : $values->get('mollie_terminal_id');
+
+        $json['order'] = (int)$values->get('order');
+
+        $of_location->json = $json;
+
+        $of_location->update();
 
         return $of_location;
     }

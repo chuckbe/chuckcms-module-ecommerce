@@ -70,7 +70,7 @@
                           </div>
                       </div>
                       <div class="col-3 klantKoppeler">
-                        <button class="btn btn-sm w-100" id="cof_selectCustomerAccount" data-guest="{{ $guest->id }}"><small><i class="fas fa-cog"></i></small></button>
+                        <button class="btn btn-sm w-100" id="pos_selectCustomerAccount" data-guest="{{ $guest->id }}"><small><i class="fas fa-cog"></i></small></button>
                       </div>
                   </div>
                 </div>
@@ -80,7 +80,7 @@
     @include('chuckcms-module-ecommerce::pos.cart._price')
     <div class="betaalArea row">
         <div class="container">
-            <button class="btn text-center d-block " id="cof_placeOrderBtnNow">CHECKOUT & PAY</button>
+            <button class="btn text-center d-block" id="pos_checkoutBtn" data-final="{{ ChuckCart::instance('pos')->final() }}">CHECKOUT & PAY</button>
         </div>
     </div>
 </div>

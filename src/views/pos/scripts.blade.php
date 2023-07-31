@@ -16,7 +16,7 @@ $(document).ready(function() {
 
 
 
-    const sessionToken = "{{ Session::token() }}";
+
 
 
 
@@ -26,7 +26,9 @@ $(document).ready(function() {
 
     var cof_pos_active_location = $('#cof_pos_location').attr('data-active-location');
 
-    init();
+    //init();
+
+    //getOrderFromStorage();
 
 
 
@@ -68,9 +70,8 @@ $('body').on('click', '#addCombinationToCart', function (event) {
     event.preventDefault();
 
     let id = $(this).data('id');
-    console.log('whats the id :: ', id);
     let sku = $('input.combinationRadio:checked').val();
-    console.log('whats the sku :: ', sku);
+
     let options = [];
     $('.ce_optionSelectInput').each(function() {
         options.push(
@@ -159,6 +160,240 @@ $('body').on('click', '.pos_removeProduct', function (event) {
     });
 });
 
+// CART TRIGGERS
+$('body').on('click', '#pos_checkoutBtn', function (event) {
+    event.preventDefault();
+
+    $(this).text('PLEASE HOLD...');
+    $(this).prop('disabled', true);
+
+    let paymentModal = $('#paymentModal');
+
+    initiatePayment().done(function (data) {
+        if (data.status == "success") {
+            localStorage.setItem('pos_order', JSON.stringify(data.order.id));
+
+            paymentModal.find('.modal-body').html(data.body);
+
+            $('input.numpad').numpad({decimalSeparator: '.'});
+
+            paymentModal.modal('show');
+
+            $('#pos_checkoutBtn').text('CHECKOUT & PAY');
+            $('#pos_checkoutBtn').prop('disabled', false);
+        }
+
+        if (data.status == "availability") {
+            $('#pos_cart').replaceWith(data.cart);
+
+            popHtmlNotification(data.notification);
+        }
+
+        if (data.status == "failed" || data.status == "error" || data.status == "subtraction") {
+            popNotification(data.notification);
+
+            $('#pos_checkoutBtn').text('CHECKOUT & PAY');
+            $('#pos_checkoutBtn').prop('disabled', false);
+        }
+    });
+});
+
+
+
+$('body').on('click', '.pos_checkoutCashFitPayment', function (event) {
+    event.preventDefault();
+
+    if(cof_pos_processing_order) {
+        return;
+    }
+
+    let final = Number($('.pos_checkoutPendingAmount').data('amount')).toFixed(2);
+
+    $('.pos_checkoutCashInput').val(final);
+
+});
+
+$('body').on('click', '.pos_checkoutCardFitPayment', function (event) {
+    event.preventDefault();
+
+    if(cof_pos_processing_order) {
+        return;
+    }
+
+    let final = Number($('.pos_checkoutPendingAmount').data('amount')).toFixed(2);
+
+    $('.pos_checkoutCardInput').val(final);
+});
+
+$('body').on('click', '.pos_checkoutCashAddPayment', function (event) {
+    event.preventDefault();
+
+    if(cof_pos_processing_order) {
+        return;
+    }
+
+    let newCashAmount = ( Number($('.pos_checkoutCashInput').val()) + parseInt($(this).attr('data-amount')) );
+    $('.pos_checkoutCashInput').val(newCashAmount);
+});
+
+$('body').on('click', '.pos_checkoutCashPaymentReset', function (event) {
+    event.preventDefault();
+
+    if(cof_pos_processing_order) {
+        return;
+    }
+
+    $('.pos_checkoutCashInput').val('0.00');
+});
+
+$('body').on('click', '.pos_checkoutCardPaymentReset', function (event) {
+    event.preventDefault();
+
+    if(cof_pos_processing_order) {
+        return;
+    }
+
+    $('.pos_checkoutCardInput').val('0.00');
+});
+
+
+
+
+
+$('body').on('click', '.pos_checkoutCashToPayments', function (event) {
+    event.preventDefault();
+
+    if(cof_pos_processing_order) {
+        return;
+    }
+
+    let payment = Number($('.pos_checkoutCashInput').val());
+
+    if (payment == 0) {
+        return;
+    }
+
+    addPaymentToList('cash', payment);
+
+    $('.pos_checkoutCashInput').val('0.00');
+});
+
+$('body').on('click', '.pos_removeCashPayment', function (event) {
+    event.preventDefault();
+
+    if(cof_pos_processing_order) {
+        return;
+    }
+
+    let paymentListItem = $(this).closest('.pos_paymentListItem');
+
+    let paymentId = paymentListItem.data('paymentId');
+
+    removePayment(paymentId).done(function (data) {
+        if (data.status == "success") {
+            paymentListItem.remove();
+
+            if ($('.pos_paymentListItem').length == 0) {
+                $('#pos_paymentListWrapper').addClass('d-none');
+                //removePaymentsFromStorage();
+            }
+
+            updateTetheredAmount();
+        }
+
+        if (data.status == "error") {
+            popNotification(data.notification)
+        }
+    });
+
+
+});
+
+$('body').on('click', '.pos_checkoutCardToPayments', function (event) {
+    event.preventDefault();
+
+    if(cof_pos_processing_order) {
+        return;
+    }
+
+    let payment = Number($('.pos_checkoutCardInput').val());
+
+    if (payment == 0) {
+        return;
+    }
+
+    addPaymentToList('card', payment);
+
+    $('.pos_checkoutCardInput').val('0.00');
+});
+
+
+
+
+$('body').on('click', '#pos_cancelOrderBtn', function (event) {
+    event.preventDefault();
+
+    cof_pos_processing_order = false;
+
+    let orderId = $(this).data('order');
+
+    $(this).text('Even geduld...');
+    $(this).prop('disabled', true);
+
+    cancelOrder(orderId).done(function (data) {
+        if (data.status == 'success') {
+            $('#pos_finalizeOrderBtn').prop('disabled', true);
+            $('#pos_finalizeOrderBtn').html('Bestelling voltooien');
+
+            $('#paymentModal').find('.modal-body').html('');
+            $('#paymentModal').modal('hide');
+        }
+    });
+});
+
+$('body').on('click', '#pos_finalizeOrderBtn', function (event) {
+    event.preventDefault();
+
+    cof_pos_processing_order = true;
+
+    $(this).prop('disabled', true);
+    $(this).html('<i class="fa fa-sync-alt fa-spin"></i> Verwerken... ');
+
+    let orderId = $(this).data('order');
+    let change = $('.pos_checkoutPendingAmount').data('amount');
+
+    finalizeOrder(orderId, change).done(function (data) {
+        if (data.status == 'success') {
+            $('#pos_cart').replaceWith(data.cart);
+
+            let ogDate = new Date,
+            order_date = [ogDate.getDate().padLeft(),
+                       (ogDate.getMonth()+1).padLeft(),
+                       ogDate.getFullYear()].join('/'),
+            order_time = [ogDate.getHours().padLeft(),
+                       ogDate.getMinutes().padLeft(),
+                       ogDate.getSeconds().padLeft()].join(':');
+
+            printTicketFromOrder(data.order, data.payments, order_date, order_time);
+
+            $('#paymentModal').find('.modal-body').html('');
+            $('#paymentModal').modal('hide');
+        }
+
+        if (data.status == 'error') {
+            popNotification(data.notification);
+        }
+    });
+});
+// CART TRIGGERS
+
+
+
+
+
+
+
+
 function getCombinations(id) {
     let combinationsModal = $('#combinationsModal');
 
@@ -226,15 +461,739 @@ function removeCartItem(sku, rowId) {
 
 
 
-function popNotification(notification) {
-    Swal.fire({
-      icon: notification.icon,
-      title: notification.title,
-      text: notification.message,
-      timer: 2000,
-      timerProgressBar: true,
+// PAYMENT FUNCTIONS
+function initiatePayment() {
+    let customerId = $('#pos_selectCustomerAccount').data('guest');
+    let location = $('#pos_activeLocation').data('activeLocation');
+
+    return $.ajax({
+        method: 'POST',
+        url: PosURL.initiatePayment,
+        data: {
+            customer_id: customerId,
+            location: location,
+            _token: sessionToken
+        }
     });
 }
+
+function cancelOrder(orderId) {
+    return $.ajax({
+        method: 'POST',
+        url: PosURL.cancelOrder,
+        data: {
+            order: orderId,
+            _token: sessionToken
+        }
+    });
+}
+
+function finalizeOrder(orderId, change) {
+    return $.ajax({
+        method: 'POST',
+        url: PosURL.finalizeOrder,
+        data: {
+            order: orderId,
+            change: change,
+            _token: sessionToken
+        }
+    });
+}
+
+
+
+
+function getOrderFromStorage() {
+    let order = null;
+
+    if(localStorage.getItem('pos_order') === null) {
+        return order;
+    } else {
+        order = JSON.parse(localStorage.getItem('pos_order'));
+
+        return order;
+        //restorePayments(payments);
+    }
+}
+
+function removeOrderFromStorage() {
+    localStorage.removeItem('pos_order');
+}
+
+// function removePaymentsFromStorage() {
+//     localStorage.removeItem('pos_payments');
+// }
+
+// function restorePayments(payments) {
+//     for (let i = 0; i < payments.length; i++) {
+//         let type = payments[i].type;
+//         let amount = payments[i].amount;
+//         let status = payments[i].status;
+
+//         let paymentId = payments[i].id;
+//         let mollieId = payments[i].mollieId;
+
+
+//         let formattedAmount = "€ "+amount.toFixed(2).replace('.', ',');
+
+//         if (type == "cash") {
+//             type = "Cash";
+
+//             let paymentListItem = `<li class="pos_paymentListItem list-group-item d-flex justify-content-between align-items-center" data-type="cash" data-amount="${amount}" data-status="success"><span>${type}: ${formattedAmount}</span><span class="badge badge-info py-1 pos_removeCashPayment">Verwijderen</span><span class="badge badge-success py-1 paymentStatus">Betaald</span></li>`;
+
+//             $('#pos_paymentList').append(paymentListItem);
+//             $('#pos_paymentListWrapper').removeClass('d-none');
+//         }
+
+//         if (type == "card") {
+//             type = "Kaart";
+
+//             let paymentListItem = `<li class="pos_paymentListItem list-group-item d-flex justify-content-between align-items-center" data-type="pointofsale" data-payment-id="${paymentId}" data-mollie-id="${mollieId}" data-amount="${amount}" data-status="open"><span>${type}: ${formattedAmount}</span><span class="badge badge-info py-1 paymentStatus"><i class="fa fa-sync-alt fa-spin"></i> Verwerken...</span></li>`;
+
+//             $('#pos_paymentList').append(paymentListItem);
+//             $('#pos_paymentListWrapper').removeClass('d-none');
+
+//             checkTerminalPayment(paymentId);
+//         }
+//     }
+
+//     updateTetheredAmount();
+
+//     $('#paymentModal').modal('show');
+// }
+
+
+function addPaymentToList(type, amount) {
+    let order = getOrderFromStorage();
+
+    if (type == "cash") {
+        let type = "Cash";
+        let formattedAmount = "€ "+amount.toFixed(2).replace('.', ',');
+
+        let cashPayment = getCashPayment(order, amount).done(function (data) {
+            if (data.status == 'error') {
+                popNotifcation(data.notification);
+            }
+
+            if (data.status == 'success') {
+                let paymentId = data.payment.id;
+
+                let paymentListItem = `<li class="pos_paymentListItem list-group-item d-flex justify-content-between align-items-center" data-type="cash" data-payment-id="${paymentId}" data-amount="${amount}" data-status="success"><span>${type}: ${formattedAmount}</span><span class="badge badge-info py-1 pos_removeCashPayment">Verwijderen</span><span class="badge badge-success py-1 paymentStatus">Betaald</span></li>`;
+
+                $('#pos_paymentList').append(paymentListItem);
+                $('#pos_paymentListWrapper').removeClass('d-none');
+
+                updateTetheredAmount();
+            }
+        });
+    }
+
+    if (type == "card") {
+        let type = "Kaart";
+        let formattedAmount = "€ "+amount.toFixed(2).replace('.', ',');
+
+        let terminalPayment = getTerminalPayment(order, amount).done(function (data) {
+            if (data.status == 'error') {
+                popNotifcation(data.notification);
+            }
+
+            if (data.status == 'success') {
+                let paymentId = data.payment.id;
+                let mollieId = data.payment.mollie_id;
+
+                let paymentListItem = `<li class="pos_paymentListItem list-group-item d-flex justify-content-between align-items-center" data-type="pointofsale" data-payment-id="${paymentId}" data-mollie-id="${mollieId}" data-amount="${amount}" data-status="open"><span>${type}: ${formattedAmount}</span><span class="badge badge-info py-1 paymentStatus"><i class="fa fa-sync-alt fa-spin"></i> Verwerken...</span></li>`;
+
+                $('#pos_paymentList').append(paymentListItem);
+                $('#pos_paymentListWrapper').removeClass('d-none');
+
+                checkTerminalPayment(paymentId);
+            }
+        });
+    }
+}
+
+function getCashPayment(order, amount) {
+    return $.ajax({
+        method: 'POST',
+        url: PosURL.cashPayment,
+        data: {
+            order: order,
+            amount: amount,
+            _token: sessionToken
+        }
+    });
+}
+
+function getTerminalPayment(order, amount) {
+    let location = $('#pos_activeLocation').data('activeLocation');
+
+    return $.ajax({
+        method: 'POST',
+        url: PosURL.terminalPayment,
+        data: {
+            order: order,
+            amount: amount,
+            location: location,
+            _token: sessionToken
+        }
+    });
+}
+
+function checkTerminalPayment(paymentId) {
+    $.ajax({
+        method: 'POST',
+        url: PosURL.checkTerminalPayment,
+        data: {
+            payment: paymentId,
+            _token: sessionToken
+        }
+    }).done(function (data) {
+        if (data.status == "awaiting") {
+            setTimeout(() => {
+                checkTerminalPayment(paymentId);
+            }, 1500);
+        }
+
+        if (data.status == "canceled") {
+            $('.pos_paymentListItem[data-payment-id="'+paymentId+'"]').find('span.paymentStatus').removeClass('badge-info').addClass('badge-danger');
+            $('.pos_paymentListItem[data-payment-id="'+paymentId+'"]').find('span.paymentStatus').text('Geannuleerd');
+            $('.pos_paymentListItem[data-payment-id="'+paymentId+'"]').attr('data-status', 'canceled');
+        }
+
+        if (data.status == "error") {
+            $('.pos_paymentListItem[data-payment-id="'+paymentId+'"]').find('span.paymentStatus').removeClass('badge-info').addClass('badge-danger');
+            $('.pos_paymentListItem[data-payment-id="'+paymentId+'"]').find('span.paymentStatus').text('Mislukt');
+            $('.pos_paymentListItem[data-payment-id="'+paymentId+'"]').attr('data-status', 'error');
+        }
+
+        if (data.status == "paid") {
+            $('.pos_paymentListItem[data-payment-id="'+paymentId+'"]').find('span.paymentStatus').removeClass('badge-info').addClass('badge-success').text('Betaald');
+            $('.pos_paymentListItem[data-payment-id="'+paymentId+'"]').attr('data-status', 'success');
+
+            updateTetheredAmount();
+            //update tethered amount and create order if fully paid!
+        }
+    });
+}
+
+function removePayment(paymentId) {
+    return $.ajax({
+        method: 'POST',
+        url: PosURL.removePayment,
+        data: {
+            payment: paymentId,
+            _token: sessionToken
+        }
+    });
+}
+
+function updateTetheredAmount() {
+    let final = Number($('#pos_checkoutBtn').data('final')).toFixed(2);
+
+    let paid = 0;
+    // let payments = [];
+
+    let loop = 0;
+    $('.pos_paymentListItem[data-status="success"]').each(function () {
+        paid += Number($(this).data('amount'));
+        // payments.push({
+        //     id: $(this).data('type') == 'cash' ? loop : $(this).data('paymentId'),
+        //     mollieId: $(this).data('type') == 'cash' ? null : $(this).data('mollieId'),
+        //     type: $(this).data('type'),
+        //     amount: $(this).data('amount'),
+        //     status: $(this).data('status')
+        // });
+    });
+
+    let pendingAmount = final - paid;
+
+    let formatted = "€ "+pendingAmount.toFixed(2).replace('.', ',');
+
+    $('.pos_checkoutPendingAmount').text(formatted);
+    $('.pos_checkoutPendingAmount').data('amount', pendingAmount);
+
+    $('.pos_checkoutCashFitPayment').text(formatted);
+    $('.pos_checkoutCardFitPayment').text(formatted);
+
+    if(pendingAmount <= 0) {
+        $('#pos_finalizeOrderBtn').prop('disabled', false);
+    } else {
+        $('#pos_finalizeOrderBtn').prop('disabled', true);
+    }
+}
+
+function printTicketFromOrder(order, payments, order_date, order_time) {
+    let items = getFormattedItemsForTicket(order.json.products, order.json.discounts);
+    let vat = getFormattedVatItemsForTicket(order.json.products);
+    let location = getActiveLocationDetails($('#pos_activeLocation').data('activeLocation'));
+    let orderPayments = getPaymentsForOrder(order, payments);
+
+    let job = {
+        location: location,
+        items: items,
+        subtotal: order.subtotal,
+        discount: order.discount,
+        total: order.total,
+        vat: vat,
+        payments: orderPayments,
+        date: order_date,
+        time: order_time,
+        customer: order.customer_id
+    };
+
+    printJob(job);
+}
+
+function getActiveLocationDetails(location_id) {
+    let elem = $('#pos_activeLocation');
+    let location = {
+        id: location_id,
+        name: elem.attr('data-pos-name'),
+        address1: elem.attr('data-pos-address'),
+        address2: (elem.attr('data-pos-address-t') !== undefined ? elem.attr('data-pos-address-t') : null),
+        vat: elem.attr('data-pos-vat'),
+        receipt_title: elem.attr('data-pos-receipt-title'),
+        receipt_footer1: (elem.attr('data-pos-receipt-footer-line') !== undefined ? elem.attr('data-pos-receipt-footer-line') : null),
+        receipt_footer2: (elem.attr('data-pos-receipt-footer-line-t') !== undefined ? elem.attr('data-pos-receipt-footer-line-t') : null),
+        receipt_footer3: (elem.attr('data-pos-receipt-footer-line-tt') !== undefined ? elem.attr('data-pos-receipt-footer-line-tt') : null)
+    };
+
+    return location;
+}
+
+function getPaymentsForOrder(order, payments) {
+    let orderPayments = [];
+
+    for (let p = 0; p < payments.length; p++) {
+        if (payments[p].status !== "paid") {
+            continue;
+        }
+
+        let paymentType;
+
+        if (payments[p].type == "cash") {
+            paymentType = 'cash';
+        }
+
+        if (payments[p].type == "pointofsale") {
+            paymentType = 'card';
+        }
+
+        if (payments[p].type == "change") {
+            paymentType = 'change';
+        }
+
+        let paymentAmount = payments[p].amount;
+
+        orderPayments.push({
+            type: paymentType,
+            value: paymentAmount
+        });
+    }
+
+    return orderPayments;
+
+    // let paidByCard = $('.cof_checkoutCardInput').val();
+    // let paidByCash = $('.cof_checkoutCashInput').val();
+
+    // let total_tethered = Number(paidByCard) + Number(paidByCash);
+    // let pendingAmount = total - total_tethered;
+
+    // if (Number(paidByCash) > 0) {
+    //     payments.push({type:"cash",value:Number(parseFloat(paidByCash).toFixed(2))});
+    // }
+
+    // if (Number(paidByCard) > 0) {
+    //     payments.push({type:"card",value:Number(parseFloat(paidByCard).toFixed(2))});
+    // }
+
+    // payments.push({type:"change",value:Number(parseFloat(pendingAmount).toFixed(2))});
+
+    // return payments;
+}
+
+function getFormattedItemsForTicket(products, discounts) {
+    let items = [];
+
+    let productsArray = Object.values(products);
+
+    for (var p = 0; p < productsArray.length; p++) {
+        if ( (p + 1) == productsArray.length) {
+            items = items.concat(formatLinesForProduct(productsArray[p], true, false));
+        } else {
+            items = items.concat(formatLinesForProduct(productsArray[p], false, checkIfProductHasOptionsOrExtrasOrDiscounts(productsArray[p+1])));
+        }
+    };
+    return items;
+}
+
+function getFormattedVatItemsForTicket(products) {
+    let vatLines = [];
+    let vatLine = "";
+
+    totalPricesPerVatRate = {};
+    totalVat = 0;
+
+    for (var i = 0; i < products.length; i++) {
+        let vat_rates = getAllVatPercentagesForProduct(products[i]);
+        for (var vrate = 0; vrate < vat_rates.length; vrate++) {
+            vat_rate = vat_rates[vrate];
+
+            if(vat_rate in totalPricesPerVatRate) {
+                totalPricesPerVatRate[vat_rate] = (totalPricesPerVatRate[vat_rate] + getVatForRateForProduct(vat_rate, products[i]));
+            } else {
+                totalPricesPerVatRate[vat_rate] = getVatForRateForProduct(vat_rate, products[i]);
+            }
+        };
+    };
+
+    Object.keys(totalPricesPerVatRate).forEach(function(rate) {
+        vatLine = "";
+
+        if (rate == 21) {
+            vatLine += "  A     ";
+        }
+        if (rate == 12) {
+            vatLine += "  B     ";
+        }
+        if (rate == 6) {
+            vatLine += "  C     ";
+        }
+        if (rate == 0) {
+            vatLine += "  D     ";
+        }
+
+        totalPriceWithoutVatRaw = Number(totalPricesPerVatRate[rate].toFixed(2)) - Number(getVatFromPriceAndRate(totalPricesPerVatRate[rate], rate).toFixed(2));
+
+        if (totalPriceWithoutVatRaw <= 9.99) {
+            vatLine += " ";
+        }
+
+        totalPriceWithoutVat = Number(totalPriceWithoutVatRaw.toFixed(2)).toFixed(2);
+
+        vatLine += totalPriceWithoutVat;
+        vatLine += "  @  ";
+        if (rate < 10) {
+            vatLine += " ";
+        }
+        vatLine += rate+"%";
+
+        vatLine += "  ";
+        if (Number(getVatFromPriceAndRate(totalPricesPerVatRate[rate], rate).toFixed(2)) <= 9.99) {
+            vatLine += " ";
+        }
+        vatLine += Number(getVatFromPriceAndRate(totalPricesPerVatRate[rate], rate).toFixed(2)).toFixed(2);
+
+        vatLines.push(vatLine);
+
+        totalVat = totalVat + Number(getVatFromPriceAndRate(totalPricesPerVatRate[rate], rate).toFixed(2));
+
+        // vatLine = "";
+        // vatLine += "VAT                    ";
+
+        // if (Number(getVatFromPriceAndRate(totalPricesPerVatRate[rate], rate).toFixed(2)) <= 9.99) {
+        //     vatLine += " ";
+        // }
+
+        // vatLine += Number(getVatFromPriceAndRate(totalPricesPerVatRate[rate], rate).toFixed(2));
+
+        // vatLines.push(vatLine);
+    });
+
+    vatLine = "";
+    vatLine += "VAT                            ";
+    vatLine += Number((totalVat).toFixed(2)).toFixed(2);
+
+    vatLines.push(vatLine);
+
+    return vatLines;
+}
+
+function formatLinesForProduct(product, isLastProduct, nextProductHasOptionsOrExtrasOrDiscounts) {
+    let lines = [];
+    let line = "";
+
+    line += product.quantity;
+    line += " ";
+    line += product.title;
+
+    let productHasExtras = false;
+    for (var phex = 0; phex < product.extras.length; phex++) {
+        if (!$.isEmptyObject(product.extras[phex])) {
+            productHasExtras = true;
+        }
+    };
+
+    // let productHasSubproducts = false;
+    // for (var phex = 0; phex < product.subproducts.length; phex++) {
+    //     if (!$.isEmptyObject(product.subproducts[phex])) {
+    //         productHasSubproducts = true;
+    //     }
+    // };
+
+    // if (product.attribute !== "" && product.attribute.length > 0 && !productHasExtras ) {
+    //     line += ": ";
+    //     line += product.attribute;
+    // }
+
+    if (line.length < 41) {
+        productLineLength = (40 - line.length);
+        for (var ll = 0; ll < productLineLength; ll++) {
+            line += " ";
+        };
+    }
+
+    if (line.length > 40) {
+        line = truncateString(line, 37);
+    }
+
+    if (product._price._final > 9.99 && product._price._final < 100 ) {
+        line += " ";
+    }
+
+    if (product._price._final > 0.99 && product._price._final < 10) {
+        line += "  ";
+    }
+
+    line += product.total;
+
+    if (productHasExtras) {
+        line += "  ";
+    } else {
+
+        if (getVatPercentageForProduct(product.id) == 21) {
+            line += " A";
+        }
+
+        if (getVatPercentageForProduct(product.id) == 12) {
+            line += " B";
+        }
+
+        if (getVatPercentageForProduct(product.id) == 6) {
+            line += " C";
+        }
+
+        if (getVatPercentageForProduct(product.id) == 0) {
+            line += " D";
+        }
+    }
+
+    lines.push(line);
+
+
+
+    // if ( (product.attribute !== "" && product.attribute.length > 0) && productHasExtras ) {
+    //     let unitExtrasPrice = 0;
+    //     for (var pextra = 0; pextra < product.extras.length; pextra++) {
+    //         if (!$.isEmptyObject(product.extras[pextra])) {
+    //             unitExtrasPrice = unitExtrasPrice + Number(parseFloat(product.extras[pextra].value).toFixed(2));
+    //         }
+    //     }
+    //     let attributePrice = Number((product.quantity * (product.current_price - unitExtrasPrice)).toFixed(2));
+
+    //     let attributePriceLine = attributePrice.toFixed(2)+"";
+    //     if (getVatPercentageForProduct(product.id) == 21) {
+    //         attributePriceLine += " A";
+    //     }
+
+    //     if (getVatPercentageForProduct(product.id) == 12) {
+    //         attributePriceLine += " B";
+    //     }
+
+    //     if (getVatPercentageForProduct(product.id) == 6) {
+    //         attributePriceLine += " C";
+    //     }
+
+    //     if (getVatPercentageForProduct(product.id) == 0) {
+    //         attributePriceLine += " D";
+    //     }
+
+    //     let attributeLine = "  1 "+product.attribute;
+
+    //     let neededAttributeLineLength = (48 - attributeLine.length - attributePriceLine.length);
+    //     for (var ell = 0; ell < neededAttributeLineLength; ell++) {
+    //         attributeLine += " ";
+    //     };
+    //     attributeLine += attributePriceLine;
+
+    //     lines.push(attributeLine);
+    // }
+
+
+
+    if (product.options.length > 0) {
+        //@TODO:  loop over object to get key and value
+        for (var pop = 0; pop < product.options.length; pop++) {
+            let optionLine = "";
+            optionLine += "    ";
+            optionLine += product.options[pop].name+": "+product.options[pop].value;
+
+            lines.push(optionLine);
+        }
+    }
+
+    if (product.extras.length > 0) {
+        for (var pex = 0; pex < product.extras.length; pex++) {
+            if (!$.isEmptyObject(product.extras[pex])) {
+                let extraLine = "";
+                extraLine += "  1 ";
+                extraLine += product.extras[pex].name;
+
+                if (extraLine.length < 41) {
+                    let neededLineLength = (40 - extraLine.length);
+                    for (var ell = 0; ell < neededLineLength; ell++) {
+                        extraLine += " ";
+                    };
+                }
+
+                if (extraLine.length > 40) {
+                    extraLine = truncateString(extraLine, 37);
+                }
+
+                let extrasUnitPrice = Number(parseFloat(product.extras[pex].value).toFixed(2));
+                let extrasPrice = Number((product.quantity * extrasUnitPrice).toFixed(2));
+
+                if (extrasPrice > 9.99 && extrasPrice < 100 ) {
+                    extraLine += " ";
+                }
+
+                if (extrasPrice > 0.99 && extrasPrice < 10) {
+                    extraLine += "  ";
+                }
+
+                if (extrasPrice == 0) {
+                    extraLine += "  ";
+                }
+
+                extraLine += (extrasPrice).toFixed(2);
+
+                if (getVatPercentageForExtra(product.extras[pex]) == 21) {
+                    extraLine += " A";
+                }
+
+                if (getVatPercentageForExtra(product.extras[pex]) == 12) {
+                    extraLine += " B";
+                }
+
+                if (getVatPercentageForExtra(product.extras[pex]) == 6) {
+                    extraLine += " C";
+                }
+
+                if (getVatPercentageForExtra(product.extras[pex]) == 0) {
+                    extraLine += " D";
+                }
+
+                lines.push(extraLine);
+            }
+        };
+    }
+
+    // if (product.subproducts.length > 0) {
+    //     for (var psub = 0; psub < product.subproducts.length; psub++) {
+    //         if (!$.isEmptyObject(product.subproducts[psub])) {
+    //             let extraLine = "";
+    //             extraLine += "  1 ";
+    //             let products = product.subproducts[psub].products;
+    //             for(var psubp = 0; psubp < products.length; psubp++){
+    //                 extraLine += products[psubp].p_name+" x "+products[psubp].p_qty+": ";
+    //                 if (extraLine.length < 41) {
+    //                 let neededLineLength = (40 - extraLine.length);
+    //                     for (var ell = 0; ell < neededLineLength; ell++) {
+    //                         extraLine += " ";
+    //                     };
+    //                 }
+
+    //                 if (extraLine.length > 40) {
+    //                     extraLine = truncateString(extraLine, 37);
+    //                 }
+
+    //                 let extraSubProductPrice = parseFloat(products[psubp].p_qty*products[psubp].p_extra_price).toFixed(2);
+
+    //                 if (extraSubProductPrice > 9.99 && extraSubProductPrice < 100 ) {
+    //                     extraLine += " ";
+    //                 }
+
+    //                 if (extraSubProductPrice > 0.99 && extraSubProductPrice < 10) {
+    //                     extraLine += "  ";
+    //                 }
+
+    //                 if (extraSubProductPrice == 0) {
+    //                     extraLine += "  ";
+    //                 }
+    //                 extraLine += extraSubProductPrice;
+    //             }
+
+    //             lines.push(extraLine);
+    //         }
+    //     };
+    // }
+
+    if (product.discounts.length > 0 && product.discount > 0) {
+        let discountLine = "";
+        discountLine += "    KORTING: ";
+
+        for (var pds = 0; pds < product.discounts.length; pds++) {
+            if (pds > 0) {
+                discountLine += ", ";
+            }
+            discountLine += product.discounts[pds].name;
+        };
+
+        if (discountLine.length < 41) {
+            let neededDiscountLineLength = (40 - discountLine.length);
+            for (var dll = 0; dll < neededDiscountLineLength; dll++) {
+                discountLine += " ";
+            };
+        }
+
+        if (discountLine.length > 40) {
+            discountLine = truncateString(discountLine, 37);
+        }
+
+        let discountPrice = Number(parseFloat(product.discount).toFixed(2));
+
+        if (discountPrice > 9.99 && discountPrice < 100 ) {
+            discountLine += "-";
+        }
+
+        if (discountPrice > 0.99 && discountPrice < 10) {
+            discountLine += " -";
+        }
+
+        if (discountPrice == 0) {
+            discountLine += " -";
+        }
+
+        discountLine += (discountPrice).toFixed(2);
+
+        if (getVatPercentageForProduct(product.id) == 21) {
+            discountLine += " A";
+        }
+
+        if (getVatPercentageForProduct(product.id) == 12) {
+            discountLine += " B";
+        }
+
+        if (getVatPercentageForProduct(product.id) == 6) {
+            discountLine += " C";
+        }
+
+        if (getVatPercentageForProduct(product.id) == 0) {
+            discountLine += " D";
+        }
+
+        lines.push(discountLine);
+    }
+
+    if ( ((product.options.length > 0 || productHasExtras) && !isLastProduct) || nextProductHasOptionsOrExtrasOrDiscounts) {
+        lines.push(" ");
+    }
+
+    return lines;
+}
+// PAYMENT FUNCTIONS
+
+
 
 
 
@@ -496,20 +1455,20 @@ $('body').on('click', '#cof_cancelOrderBtn', function (event) {
     $('#paymentModal').modal('hide');
 });
 
-$('body').on('click', '#cof_finalizeOrderBtn', function (event) {
-    event.preventDefault();
+// $('body').on('click', '#cof_finalizeOrderBtn', function (event) {
+//     event.preventDefault();
 
-    cof_pos_processing_order = true;
+//     cof_pos_processing_order = true;
 
-    $(this).prop('disabled', true);
-    $(this).html('<i class="fa fa-sync-alt fa-spin"></i> Verwerken... ');
+//     $(this).prop('disabled', true);
+//     $(this).html('<i class="fa fa-sync-alt fa-spin"></i> Verwerken... ');
 
-    let cartId = getActiveCart();
+//     let cartId = getActiveCart();
 
-    if(validateCartForOrder(cartId)) {
-        placeOrderFromCart(cartId)
-    }
-});
+//     if(validateCartForOrder(cartId)) {
+//         placeOrderFromCart(cartId)
+//     }
+// });
 
 
 // $('body').on('click', '.subproduct_group_product_qty .addbtn', function(event){
@@ -1262,59 +2221,59 @@ function validateCartForOrder(cartId) {
     // check if order has value?
 }
 
-function placeOrderFromCart(cartId) {
-    var order_pos_url = "{{ route('dashboard.module.ecommerce.pos.place_order') }}";
-    let a_token = "{{ Session::token() }}";
+// function placeOrderFromCart(cartId) {
+//     var order_pos_url = "{{ route('dashboard.module.ecommerce.pos.order.finalize') }}";
+//     let a_token = "{{ Session::token() }}";
 
-    cart = undefined;
-    products = undefined;
-    let carts = getAllCartsFromStorage();
-    for (var i = 0; i < carts.length; i++) {
-        if(carts[i].id == cartId) {
-            cart = carts[i];
-            products = carts[i].products;
-        }
-    };
+//     cart = undefined;
+//     products = undefined;
+//     let carts = getAllCartsFromStorage();
+//     for (var i = 0; i < carts.length; i++) {
+//         if(carts[i].id == cartId) {
+//             cart = carts[i];
+//             products = carts[i].products;
+//         }
+//     };
 
-    var ogDate = new Date,
-        order_date = [ogDate.getDate().padLeft(),
-                   (ogDate.getMonth()+1).padLeft(),
-                   ogDate.getFullYear()].join('/'),
-        order_time = [ogDate.getHours().padLeft(),
-                   ogDate.getMinutes().padLeft(),
-                   ogDate.getSeconds().padLeft()].join(':');
+//     var ogDate = new Date,
+//         order_date = [ogDate.getDate().padLeft(),
+//                    (ogDate.getMonth()+1).padLeft(),
+//                    ogDate.getFullYear()].join('/'),
+//         order_time = [ogDate.getHours().padLeft(),
+//                    ogDate.getMinutes().padLeft(),
+//                    ogDate.getSeconds().padLeft()].join(':');
 
-    $.ajax({
-        method: 'POST',
-        url: order_pos_url,
-        data: {
-            order_date: order_date,
-            order_time: order_time,
-            location: cof_pos_active_location,
-            customer_id: cart.customer_id,
-            products: products,
-            discounts: cart.discounts,
-            subtotal: cart.subtotal,
-            coupons: cart.coupons,
-            discount: cart.discount,
-            total: cart.total,
-            vat: cart.vat,
-            _token: a_token
-        }
-    })
-    .done(function(data) {
-        if (data.status == "success"){
-            orderSuccesfullyPlacedFromCart(cartId, data.order_number, order_date, order_time, data.order_table_line);
-        }
-        else{
-            $('#cof_placeOrderBtnNow').html('Bestellen');
-            $('#cof_placeOrderBtnNow').prop('disabled', false);
+//     $.ajax({
+//         method: 'POST',
+//         url: order_pos_url,
+//         data: {
+//             order_date: order_date,
+//             order_time: order_time,
+//             location: cof_pos_active_location,
+//             customer_id: cart.customer_id,
+//             products: products,
+//             discounts: cart.discounts,
+//             subtotal: cart.subtotal,
+//             coupons: cart.coupons,
+//             discount: cart.discount,
+//             total: cart.total,
+//             vat: cart.vat,
+//             _token: a_token
+//         }
+//     })
+//     .done(function(data) {
+//         if (data.status == "success"){
+//             orderSuccesfullyPlacedFromCart(cartId, data.order_number, order_date, order_time, data.order_table_line);
+//         }
+//         else{
+//             $('#cof_placeOrderBtnNow').html('Bestellen');
+//             $('#cof_placeOrderBtnNow').prop('disabled', false);
 
-            $('.error_span:first').html(' Er is iets misgelopen, probeer het later nog eens!');
-            $('.error_bag:first').removeClass('hidden');
-        }
-    });
-}
+//             $('.error_span:first').html(' Er is iets misgelopen, probeer het later nog eens!');
+//             $('.error_bag:first').removeClass('hidden');
+//         }
+//     });
+// }
 
 function orderSuccesfullyPlacedFromCart(cartId, order_number, order_date, order_time, order_table_line) {
     cof_pos_processing_order = false;
@@ -2641,7 +3600,7 @@ function formatPrice(raw) {
 
 
 
-function openPaymentModal(cartId) {
+function OLDopenPaymentModal(cartId) {
     $('.cof_checkoutCashInput').val('0.00');
     $('.cof_checkoutCardInput').val('0.00');
 
@@ -2651,7 +3610,6 @@ function openPaymentModal(cartId) {
             /*let products = carts[i].products;
 
             let shipping = 0;*/
-            // console.log(carts[i]);
 
             let price = getTotalPrice(cartId);
             $('.cof_checkoutCashFitPayment').text(formatPrice(price));
@@ -2833,7 +3791,6 @@ function updateProductListItemAttributes(cart_id, selector, product_id, product_
         extra_faulty_check = false;
         g = 0;
         for (var i = 0; i < product_extras.length; i++) {
-            //console.log('check ot the ',i,' th : ', product_extras[i]);
             if(!$.isEmptyObject(product_extras[i])) {
                 extra_faulty_check = true;
                 if(g > 0) {
@@ -3233,468 +4190,9 @@ function printTicketFromCart(cart_id, order_number, order_date, order_time) {
     printJob(job);
 }
 
-function getActiveLocationDetails(location_id) {
-    let elem = $('#cof_pos_location');
-    let location = {
-        id: location_id,
-        name: elem.attr('data-pos-name'),
-        address1: elem.attr('data-pos-address'),
-        address2: (elem.attr('data-pos-address-t') !== undefined ? elem.attr('data-pos-address-t') : null),
-        vat: elem.attr('data-pos-vat'),
-        receipt_title: elem.attr('data-pos-receipt-title'),
-        receipt_footer1: (elem.attr('data-pos-receipt-footer-line') !== undefined ? elem.attr('data-pos-receipt-footer-line') : null),
-        receipt_footer2: (elem.attr('data-pos-receipt-footer-line-t') !== undefined ? elem.attr('data-pos-receipt-footer-line-t') : null),
-        receipt_footer3: (elem.attr('data-pos-receipt-footer-line-tt') !== undefined ? elem.attr('data-pos-receipt-footer-line-tt') : null)
-    };
 
-    return location;
-}
 
-function getPaymentsForCart(cart_id, total) {
-    let payments = [];
 
-    let paidByCard = $('.cof_checkoutCardInput').val();
-    let paidByCash = $('.cof_checkoutCashInput').val();
-
-    let total_tethered = Number(paidByCard) + Number(paidByCash);
-    let pendingAmount = total - total_tethered;
-
-    if (Number(paidByCash) > 0) {
-        payments.push({type:"cash",value:Number(parseFloat(paidByCash).toFixed(2))});
-    }
-
-    if (Number(paidByCard) > 0) {
-        payments.push({type:"card",value:Number(parseFloat(paidByCard).toFixed(2))});
-    }
-
-    payments.push({type:"change",value:Number(parseFloat(pendingAmount).toFixed(2))});
-
-    return payments;
-}
-
-function getFormattedItemsForTicket(products, discounts) {
-    let items = [];
-
-    for (var p = 0; p < products.length; p++) {
-        if ( (p + 1) == products.length) {
-            items = items.concat(formatLinesForProduct(products[p], true, false));
-        } else {
-            items = items.concat(formatLinesForProduct(products[p], false, checkIfProductHasOptionsOrExtrasOrDiscounts(products[p+1])));
-        }
-    };
-    return items;
-}
-
-function getFormattedVatItemsForTicket(products) {
-    let vatLines = [];
-    let vatLine = "";
-
-    totalPricesPerVatRate = {};
-    totalVat = 0;
-
-    for (var i = 0; i < products.length; i++) {
-        let vat_rates = getAllVatPercentagesForProduct(products[i]);
-        for (var vrate = 0; vrate < vat_rates.length; vrate++) {
-            vat_rate = vat_rates[vrate];
-
-            if(vat_rate in totalPricesPerVatRate) {
-                totalPricesPerVatRate[vat_rate] = (totalPricesPerVatRate[vat_rate] + getVatForRateForProduct(vat_rate, products[i]));
-            } else {
-                totalPricesPerVatRate[vat_rate] = getVatForRateForProduct(vat_rate, products[i]);
-            }
-        };
-    };
-
-    Object.keys(totalPricesPerVatRate).forEach(function(rate) {
-        vatLine = "";
-
-        if (rate == 21) {
-            vatLine += "  A     ";
-        }
-        if (rate == 12) {
-            vatLine += "  B     ";
-        }
-        if (rate == 6) {
-            vatLine += "  C     ";
-        }
-        if (rate == 0) {
-            vatLine += "  D     ";
-        }
-
-        totalPriceWithoutVatRaw = Number(totalPricesPerVatRate[rate].toFixed(2)) - Number(getVatFromPriceAndRate(totalPricesPerVatRate[rate], rate).toFixed(2));
-
-        if (totalPriceWithoutVatRaw <= 9.99) {
-            vatLine += " ";
-        }
-
-        totalPriceWithoutVat = Number(totalPriceWithoutVatRaw.toFixed(2)).toFixed(2);
-
-        vatLine += totalPriceWithoutVat;
-        vatLine += "  @  ";
-        if (rate < 10) {
-            vatLine += " ";
-        }
-        vatLine += rate+"%";
-
-        vatLine += "  ";
-        if (Number(getVatFromPriceAndRate(totalPricesPerVatRate[rate], rate).toFixed(2)) <= 9.99) {
-            vatLine += " ";
-        }
-        vatLine += Number(getVatFromPriceAndRate(totalPricesPerVatRate[rate], rate).toFixed(2)).toFixed(2);
-
-        vatLines.push(vatLine);
-
-        totalVat = totalVat + Number(getVatFromPriceAndRate(totalPricesPerVatRate[rate], rate).toFixed(2));
-
-        // vatLine = "";
-        // vatLine += "VAT                    ";
-
-        // if (Number(getVatFromPriceAndRate(totalPricesPerVatRate[rate], rate).toFixed(2)) <= 9.99) {
-        //     vatLine += " ";
-        // }
-
-        // vatLine += Number(getVatFromPriceAndRate(totalPricesPerVatRate[rate], rate).toFixed(2));
-
-        // vatLines.push(vatLine);
-    });
-
-    vatLine = "";
-    vatLine += "VAT                            ";
-    vatLine += Number((totalVat).toFixed(2)).toFixed(2);
-
-    vatLines.push(vatLine);
-
-    return vatLines;
-}
-
-function formatLinesForProduct(product, isLastProduct, nextProductHasOptionsOrExtrasOrDiscounts) {
-    let lines = [];
-    let line = "";
-
-    line += product.quantity;
-    line += " ";
-    line += product.name;
-
-    let productHasExtras = false;
-    for (var phex = 0; phex < product.extras.length; phex++) {
-        if (!$.isEmptyObject(product.extras[phex])) {
-            productHasExtras = true;
-        }
-    };
-
-    let productHasSubproducts = false;
-    for (var phex = 0; phex < product.subproducts.length; phex++) {
-        if (!$.isEmptyObject(product.subproducts[phex])) {
-            productHasSubproducts = true;
-        }
-    };
-
-    if (product.attribute !== "" && product.attribute.length > 0 && !productHasExtras ) {
-        line += ": ";
-        line += product.attribute;
-    }
-
-    if (line.length < 41) {
-        productLineLength = (40 - line.length);
-        for (var ll = 0; ll < productLineLength; ll++) {
-            line += " ";
-        };
-    }
-
-    if (line.length > 40) {
-        line = truncateString(line, 37);
-    }
-
-    if (product.total_price > 9.99 && product.total_price < 100 ) {
-        line += " ";
-    }
-
-    if (product.total_price > 0.99 && product.total_price < 10) {
-        line += "  ";
-    }
-
-    line += (product.total_price).toFixed(2);
-
-    if ( (product.attribute !== "" && product.attribute.length > 0) && productHasExtras ) {
-        line += "  ";
-    } else {
-
-        if (getVatPercentageForProduct(product.id) == 21) {
-            line += " A";
-        }
-
-        if (getVatPercentageForProduct(product.id) == 12) {
-            line += " B";
-        }
-
-        if (getVatPercentageForProduct(product.id) == 6) {
-            line += " C";
-        }
-
-        if (getVatPercentageForProduct(product.id) == 0) {
-            line += " D";
-        }
-    }
-
-    lines.push(line);
-
-
-
-    if ( (product.attribute !== "" && product.attribute.length > 0) && productHasExtras ) {
-        let unitExtrasPrice = 0;
-        for (var pextra = 0; pextra < product.extras.length; pextra++) {
-            if (!$.isEmptyObject(product.extras[pextra])) {
-                unitExtrasPrice = unitExtrasPrice + Number(parseFloat(product.extras[pextra].value).toFixed(2));
-            }
-        }
-        let attributePrice = Number((product.quantity * (product.current_price - unitExtrasPrice)).toFixed(2));
-
-        let attributePriceLine = attributePrice.toFixed(2)+"";
-        if (getVatPercentageForProduct(product.id) == 21) {
-            attributePriceLine += " A";
-        }
-
-        if (getVatPercentageForProduct(product.id) == 12) {
-            attributePriceLine += " B";
-        }
-
-        if (getVatPercentageForProduct(product.id) == 6) {
-            attributePriceLine += " C";
-        }
-
-        if (getVatPercentageForProduct(product.id) == 0) {
-            attributePriceLine += " D";
-        }
-
-        let attributeLine = "  1 "+product.attribute;
-
-        let neededAttributeLineLength = (48 - attributeLine.length - attributePriceLine.length);
-        for (var ell = 0; ell < neededAttributeLineLength; ell++) {
-            attributeLine += " ";
-        };
-        attributeLine += attributePriceLine;
-
-        lines.push(attributeLine);
-    }
-
-
-
-    if (product.options.length > 0) {
-        for (var pop = 0; pop < product.options.length; pop++) {
-            let optionLine = "";
-            optionLine += "    ";
-            optionLine += product.options[pop].name+": "+product.options[pop].value;
-
-            lines.push(optionLine);
-        }
-    }
-
-    if (product.extras.length > 0) {
-        for (var pex = 0; pex < product.extras.length; pex++) {
-            if (!$.isEmptyObject(product.extras[pex])) {
-                let extraLine = "";
-                extraLine += "  1 ";
-                extraLine += product.extras[pex].name;
-
-                if (extraLine.length < 41) {
-                    let neededLineLength = (40 - extraLine.length);
-                    for (var ell = 0; ell < neededLineLength; ell++) {
-                        extraLine += " ";
-                    };
-                }
-
-                if (extraLine.length > 40) {
-                    extraLine = truncateString(extraLine, 37);
-                }
-
-                let extrasUnitPrice = Number(parseFloat(product.extras[pex].value).toFixed(2));
-                let extrasPrice = Number((product.quantity * extrasUnitPrice).toFixed(2));
-
-                if (extrasPrice > 9.99 && extrasPrice < 100 ) {
-                    extraLine += " ";
-                }
-
-                if (extrasPrice > 0.99 && extrasPrice < 10) {
-                    extraLine += "  ";
-                }
-
-                if (extrasPrice == 0) {
-                    extraLine += "  ";
-                }
-
-                extraLine += (extrasPrice).toFixed(2);
-
-                if (getVatPercentageForExtra(product.extras[pex]) == 21) {
-                    extraLine += " A";
-                }
-
-                if (getVatPercentageForExtra(product.extras[pex]) == 12) {
-                    extraLine += " B";
-                }
-
-                if (getVatPercentageForExtra(product.extras[pex]) == 6) {
-                    extraLine += " C";
-                }
-
-                if (getVatPercentageForExtra(product.extras[pex]) == 0) {
-                    extraLine += " D";
-                }
-
-                lines.push(extraLine);
-            }
-        };
-    }
-
-    if (product.subproducts.length > 0) {
-        for (var psub = 0; psub < product.subproducts.length; psub++) {
-            if (!$.isEmptyObject(product.subproducts[psub])) {
-                let extraLine = "";
-                extraLine += "  1 ";
-                let products = product.subproducts[psub].products;
-                for(var psubp = 0; psubp < products.length; psubp++){
-                    extraLine += products[psubp].p_name+" x "+products[psubp].p_qty+": ";
-                    if (extraLine.length < 41) {
-                    let neededLineLength = (40 - extraLine.length);
-                        for (var ell = 0; ell < neededLineLength; ell++) {
-                            extraLine += " ";
-                        };
-                    }
-
-                    if (extraLine.length > 40) {
-                        extraLine = truncateString(extraLine, 37);
-                    }
-
-                    let extraSubProductPrice = parseFloat(products[psubp].p_qty*products[psubp].p_extra_price).toFixed(2);
-
-                    if (extraSubProductPrice > 9.99 && extraSubProductPrice < 100 ) {
-                        extraLine += " ";
-                    }
-
-                    if (extraSubProductPrice > 0.99 && extraSubProductPrice < 10) {
-                        extraLine += "  ";
-                    }
-
-                    if (extraSubProductPrice == 0) {
-                        extraLine += "  ";
-                    }
-                    extraLine += extraSubProductPrice;
-                }
-
-                lines.push(extraLine);
-            }
-        };
-    }
-
-    if (product.discounts.length > 0 && product.discount > 0) {
-        let discountLine = "";
-        discountLine += "    KORTING: ";
-
-        for (var pds = 0; pds < product.discounts.length; pds++) {
-            if (pds > 0) {
-                discountLine += ", ";
-            }
-            discountLine += product.discounts[pds].name;
-        };
-
-        if (discountLine.length < 41) {
-            let neededDiscountLineLength = (40 - discountLine.length);
-            for (var dll = 0; dll < neededDiscountLineLength; dll++) {
-                discountLine += " ";
-            };
-        }
-
-        if (discountLine.length > 40) {
-            discountLine = truncateString(discountLine, 37);
-        }
-
-        let discountPrice = Number(parseFloat(product.discount).toFixed(2));
-
-        if (discountPrice > 9.99 && discountPrice < 100 ) {
-            discountLine += "-";
-        }
-
-        if (discountPrice > 0.99 && discountPrice < 10) {
-            discountLine += " -";
-        }
-
-        if (discountPrice == 0) {
-            discountLine += " -";
-        }
-
-        discountLine += (discountPrice).toFixed(2);
-
-        if (getVatPercentageForProduct(product.id) == 21) {
-            discountLine += " A";
-        }
-
-        if (getVatPercentageForProduct(product.id) == 12) {
-            discountLine += " B";
-        }
-
-        if (getVatPercentageForProduct(product.id) == 6) {
-            discountLine += " C";
-        }
-
-        if (getVatPercentageForProduct(product.id) == 0) {
-            discountLine += " D";
-        }
-
-        lines.push(discountLine);
-    }
-
-    if ( ((product.options.length > 0 || productHasExtras) && !isLastProduct) || nextProductHasOptionsOrExtrasOrDiscounts) {
-        lines.push(" ");
-    }
-
-    return lines;
-}
-
-function getFormattedPaymentLines(payments) {
-    let paymentLines = [];
-
-    for (var fpayl = 0; fpayl < payments.length; fpayl++) {
-        let paymentLine = "";
-
-        if (payments[fpayl].type == "change" || payments[fpayl].value == 0) {
-            continue;
-        }
-
-        if (payments[fpayl].type == "cash") {
-            paymentLine += "CONTANT";
-        } else if (payments[fpayl].type == "card") {
-            paymentLine += "KAARTBETALING";
-        }
-
-        let paymentLineValue = "€ "+payments[fpayl].value.toFixed(2)+"  ";
-
-        let neededPaymentLineLength = (48 - paymentLine.length - paymentLineValue.length);
-        for (var npll = 0; npll < neededPaymentLineLength; npll++) {
-            paymentLine += " ";
-        };
-        paymentLine += paymentLineValue;
-
-        paymentLines.push(paymentLine);
-    };
-
-    for (var fpayll = 0; fpayll < payments.length; fpayll++) {
-        if (payments[fpayll].type == "change") {
-            let changeLine = "WISSELGELD (EUR)";
-            let changeLineValue = "- € "+Math.abs(payments[fpayll].value).toFixed(2)+"  ";
-
-            let neededChangeLineLength = (48 - changeLine.length - changeLineValue.length);
-            for (var ncll = 0; ncll < neededChangeLineLength; ncll++) {
-                changeLine += " ";
-            };
-
-            changeLine += changeLineValue;
-
-            paymentLines.push(changeLine);
-            break;
-        }
-    }
-
-    return paymentLines;
-}
 
 function checkIfProductHasOptionsOrExtrasOrDiscounts(product) {
     if (product.options.length > 0) {

@@ -17,4 +17,22 @@ $.fn.setMIAH = function() {
     let ha = $('#pos_mainWrapper .main .handlerArea').outerHeight();
     $('#pos_mainWrapper .main .menuItemArea').css({"maxHeight": 'calc(100vh - '+(hh+ma+ha)+'px)'});
 };
+
+function popNotification(notification) {
+    Swal.fire({
+      icon: notification.icon,
+      title: notification.title,
+      text: notification.message,
+      timer: 2000,
+      timerProgressBar: true,
+    });
+}
+
+function popHelperNotification(notification) {
+    Swal.fire({
+      icon: notification.icon,
+      title: notification.title,
+      html: notification.message
+    });
+}
 </script>

@@ -33,6 +33,7 @@ class IntegrationsController extends Controller
     {
         
         $this->validate($request, [
+            'pos.logo' => 'nullable',
             'integrations.mollie.key' => 'required',
             'integrations.mollie.methods' => 'required|array',
             'integrations.banktransfer.active' => 'required|in:0,1',
@@ -45,6 +46,9 @@ class IntegrationsController extends Controller
         $ecommerce = $this->module->where('slug', 'chuckcms-module-ecommerce')->first();
         
         $json = $ecommerce->json;
+
+        $json['settings']['pos']['logo'] = $request->get('pos')['logo'];
+
         $json['settings']['integrations']['mollie']['key'] = $request->get('integrations')['mollie']['key'];
         $json['settings']['integrations']['mollie']['methods'] = $request->get('integrations')['mollie']['methods'];
 
