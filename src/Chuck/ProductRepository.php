@@ -62,16 +62,19 @@ class ProductRepository
      **/
     public function search(string $string)
     {
+        $locale = (string)app()->getLocale();
+
         return $this->product
                     ->where('json->is_displayed', true)
-                    ->where(function ($query) use ($string) {
+                    ->where(function ($query) use ($string, $locale) {
                         $query->where('json->code->sku', $string)
                             ->orWhere('json->code->upc', $string)
                             ->orWhere('json->code->ean', $string)
-                            ->orWhereRaw('LOWER(json_unquote(json_extract(`json`, '.'\'$."title"."'.(string)app()->getLocale().'"'.'\'))) LIKE "%'.strtolower($string).'%"')
-                            ->orWhereRaw('LOWER(json_unquote(json_extract(`json`, '.'\'$."page_title"."'.(string)app()->getLocale().'"'.'\'))) LIKE "%'.strtolower($string).'%"')
-                            ->orWhereRaw('LOWER(json_unquote(json_extract(`json`, '.'\'$."description"."short"."'.(string)app()->getLocale().'"'.'\'))) LIKE "%'.strtolower($string).'%"')
-                            ->orWhereRaw('LOWER(json_unquote(json_extract(`json`, '.'\'$."description"."long"."'.(string)app()->getLocale().'"'.'\'))) LIKE "%'.strtolower($string).'%"');
+
+                            ->orWhereRaw('LOWER(json_unquote(json_extract(`json`, "$.title.' . $locale .'") ) ) LIKE ?', ['%' . strtolower($string) . '%'])
+                            ->orWhereRaw('LOWER(json_unquote(json_extract(`json`, "$.page_title.' . $locale .'") ) ) LIKE ?', ['%' . strtolower($string) . '%'])
+                            ->orWhereRaw('LOWER(json_unquote(json_extract(`json`, "$.description.short.' . $locale .'") ) ) LIKE ?', ['%' . strtolower($string) . '%'])
+                            ->orWhereRaw('LOWER(json_unquote(json_extract(`json`, "$.description.long.' . $locale .'") ) ) LIKE ?', ['%' . strtolower($string) . '%']);
                     })
                     ->get();
     }
@@ -135,7 +138,10 @@ class ProductRepository
             }
             return $query->get(); 
         }
-        return $this->repeater->whereRaw('json LIKE "%'.$sku.'%"', [20000])->first();
+        return $this->repeater
+            ->where('slug', config('chuckcms-module-ecommerce.products.slug'))
+            ->whereRaw('json LIKE ?', ['%' . $sku . '%'])
+            ->first();
     }
 
     public function save(Request $values)
@@ -150,7 +156,7 @@ class ProductRepository
     	$json = [];
     	$json['code']['sku'] = $this->generateSingleSku();
         $json['code']['upc'] = $values->get('code')['upc'];
-        $json['code']['ean'] = $values->get('code')['ean'];
+        $json['code']['ean'] = $values->get('code')['ean'] ?? $this->generateSingleEan();
 
         $json['is_displayed'] = ($values->get('is_displayed') == '1' ? true : false);
         $json['is_buyable'] = ($values->get('is_buyable') == '1' ? true : false);
@@ -216,7 +222,7 @@ class ProductRepository
 
                 	$combinations[$combinationKey]['code']['sku'] = $this->generateSingleSku();
                 	$combinations[$combinationKey]['code']['upc'] = null;
-                	$combinations[$combinationKey]['code']['ean'] = null;
+                	$combinations[$combinationKey]['code']['ean'] = $this->generateSingleEan();
 
                 	$combinations[$combinationKey]['price']['unit']['amount'] = $values->get('price')['unit']['amount'];
         	        $combinations[$combinationKey]['price']['unit']['type'] = $values->get('price')['unit']['type'];
@@ -335,6 +341,7 @@ class ProductRepository
 
     public function update(Request $values)
     {
+        
     	$input = [];
         $template = ChuckEcommerce::getTemplate();
 
@@ -347,12 +354,13 @@ class ProductRepository
     	$json = [];
     	$json['code']['sku'] = $product->json['code']['sku'];
         $json['code']['upc'] = $values->get('code')['upc'];
-        $json['code']['ean'] = $values->get('code')['ean'];
+        $json['code']['ean'] = $values->get('code')['ean'] ?? $this->generateSingleEan();
 
         $json['is_displayed'] = ($values->get('is_displayed') == '1' ? true : false);
         $json['is_buyable'] = ($values->get('is_buyable') == '1' ? true : false);
         $json['is_download'] = ($values->get('is_download') == '1' ? true : false);
         $json['is_featured'] = ($values->get('is_featured') == '1' ? true : false);
+        $json['is_pos_available'] = ($values->get('is_pos_available') == '1' ? true : false);
 
         $json['price']['unit']['amount'] = $values->get('price')['unit']['amount'];
         $json['price']['unit']['type'] = $values->get('price')['unit']['type'];
@@ -414,11 +422,12 @@ class ProductRepository
                     if(array_key_exists($combinationKey, $product->json['combinations'])) {
                         $combinations[$combinationKey]['code']['sku'] = $product->json['combinations'][$combinationKey]['code']['sku'];
                         $combinations[$combinationKey]['code']['upc'] = $product->json['combinations'][$combinationKey]['code']['upc'];
-                        $combinations[$combinationKey]['code']['ean'] = $product->json['combinations'][$combinationKey]['code']['ean'];
+                        $combinations[$combinationKey]['code']['ean'] = $product->json['combinations'][$combinationKey]['code']['ean'] ?? $this->generateSingleEan();;
+                        
                     } else {
                         $combinations[$combinationKey]['code']['sku'] = $this->generateSingleSku();
                         $combinations[$combinationKey]['code']['upc'] = null;
-                        $combinations[$combinationKey]['code']['ean'] = null;
+                        $combinations[$combinationKey]['code']['ean'] = $this->generateSingleEan();
                     }
 
                 	$combinations[$combinationKey]['price']['unit']['amount'] = $values->get('price')['unit']['amount'];
@@ -557,13 +566,41 @@ class ProductRepository
     public function generateSingleSku()
     {
         $uid = rand(1000000, 9999999);
-        $uids = $this->repeater->where('slug', config('chuckcms-module-ecommerce.products.slug'))->whereRaw('json LIKE "%'.$uid.'%"', [20000])->get();
+        $uids = $this->repeater
+            ->where('slug', config('chuckcms-module-ecommerce.products.slug'))
+            ->whereRaw('json LIKE ?', ['%' . $uid . '%'])
+            ->get();
         if (count($uids) > 0) {
             $this->generateSingleSku();
         } else {
             return $uid;
         }
     }
+
+    public function generateSingleEan()
+    {
+        $random = rand(1000000, 9999999);
+
+        $code = '20' . str_pad($random, 10, '0');
+        $weightflag = true;
+        $sum = 0;
+
+        for ($i = strlen($code) - 1; $i >= 0; $i--) {
+            $sum += (int)$code[$i] * ($weightflag ? 3 : 1);
+            $weightflag = !$weightflag;
+        }
+        $code .= (10 - ($sum % 10)) % 10;
+
+        $count = $this->search($code)->count();
+
+        if ($count > 0) {
+            $this->generateSingleEan();
+        } else {
+            return $code;
+        }
+    }
+
+    
 
     public function getAttributes(Repeater $product)
     {
@@ -594,6 +631,15 @@ class ProductRepository
     {
         if (count($product->json['combinations']) > 0 ) {
             return $product->json['code']['sku'] !== $sku;
+        } else {
+            return false;
+        }
+    }
+
+    public function isEanCombination(Repeater $product, $ean) :bool
+    {
+        if (count($product->json['combinations']) > 0 ) {
+            return $product->json['code']['ean'] !== $ean;
         } else {
             return false;
         }
@@ -634,6 +680,17 @@ class ProductRepository
             }
         }
         
+        return array();
+    }
+
+    public function combinationForEan(Repeater $product, $ean)
+    {
+        foreach ( $product->json['combinations'] as $combination) {
+            if( $combination['code']['ean'] == $ean ) {
+                return $combination;
+            }
+        }
+
         return array();
     }
 

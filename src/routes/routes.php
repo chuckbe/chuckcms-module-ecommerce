@@ -1,5 +1,7 @@
 <?php
 
+use Chuckbe\ChuckcmsModuleEcommerce\Controllers\POSController;
+
 Route::group(['middleware' => ['web']], function() {
 	Route::group(['middleware' => 'auth'], function () {
 		Route::group(['middleware' => ['role:super-admin|administrator|moderator']], function () {
@@ -16,6 +18,7 @@ Route::group(['middleware' => ['web']], function() {
 			
 			//START OF: PRODUCTS ROUTES
 			Route::get('/dashboard/ecommerce/products', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\ProductController@index')->name('dashboard.module.ecommerce.products.index');
+			
 			Route::get('/dashboard/ecommerce/products/create', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\ProductController@create')->name('dashboard.module.ecommerce.products.create');
 			Route::get('/dashboard/ecommerce/products/{product}/edit', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\ProductController@edit')->name('dashboard.module.ecommerce.products.edit');
 			Route::post('/dashboard/ecommerce/products/save', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\ProductController@save')->name('dashboard.module.ecommerce.products.save');
@@ -57,6 +60,12 @@ Route::group(['middleware' => ['web']], function() {
 			Route::post('/dashboard/ecommerce/discounts/delete', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\DiscountController@delete')->name('dashboard.module.ecommerce.discounts.delete');
 			Route::post('/dashboard/ecommerce/discounts/refresh/code', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\DiscountController@refreshCode')->name('dashboard.module.ecommerce.discounts.refresh_code');
 			//END OF: DISCOUNTS ROUTES
+
+			//START OF: LOCATIONS ROUTES
+				Route::get('/dashboard/ecommerce/locations', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\LocationController@index')->name('dashboard.module.ecommerce.locations.index');
+				Route::post('/dashboard/ecommerce/locations/save', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\LocationController@save')->name('dashboard.module.ecommerce.locations.save');
+				Route::post('/dashboard/ecommerce/locations/delete', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\LocationController@delete')->name('dashboard.module.ecommerce.locations.delete');
+			//END OF:   LOCATIONS ROUTES
 			
 			//START OF: SETTINGS ROUTES
 			Route::get('/dashboard/ecommerce/settings', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\SettingController@index')->name('dashboard.module.ecommerce.settings.index');
@@ -79,6 +88,66 @@ Route::group(['middleware' => ['web']], function() {
 			Route::get('/dashboard/ecommerce/settings/integrations', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\SettingController@integrations')->name('dashboard.module.ecommerce.settings.index.integrations');
 			Route::post('/dashboard/ecommerce/settings/integrations/update', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\Settings\IntegrationsController@update')->name('dashboard.module.ecommerce.settings.index.integrations.update');
 			//END OF: SETTINGS ROUTES
+
+			// START OF: LABEL ROUTES
+			Route::post('/dashboard/ecommerce/settings/integrations/dymo/uploadLabel', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\Settings\IntegrationsController@dymoLabelUpload')->name('dashboard.module.ecommerce.settings.index.integrations.label.upload');
+			
+			Route::post('/dashboard/ecommerce/products/label-modal', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\ProductController@labelModal')->name('dashboard.module.ecommerce.products.label');
+			// END OF: LABEL ROUTES
+
+			// STARTOF: POS ROUTES
+			Route::get('/dashboard/ecommerce/pos', [
+				POSController::class, 'index'
+			])->name('dashboard.module.ecommerce.pos.index');
+
+			Route::post('/dashboard/ecommerce/pos/combinations', [
+				POSController::class, 'combinations'
+			])->name('dashboard.module.ecommerce.pos.combinations');
+
+			Route::post('/dashboard/ecommerce/pos/scanner', [
+				POSController::class, 'scanCode'
+			])->name('dashboard.module.ecommerce.pos.scanner');
+
+			Route::post('/dashboard/ecommerce/pos/add-to-cart', [
+				POSController::class, 'addToCart'
+			])->name('dashboard.module.ecommerce.pos.cart.add');
+
+			Route::post('/dashboard/ecommerce/pos/update', [
+				POSController::class, 'updateCartItem'
+			])->name('dashboard.module.ecommerce.pos.cart.update');
+
+			Route::post('/dashboard/ecommerce/pos/remove', [
+				POSController::class, 'removeCartItem'
+			])->name('dashboard.module.ecommerce.pos.cart.remove');
+
+			Route::post('/dashboard/ecommerce/pos/initiate-payment', [
+				POSController::class, 'initiatePayment'
+			])->name('dashboard.module.ecommerce.pos.payment.initiate');
+
+			Route::post('/dashboard/ecommerce/pos/cash-payment', [
+				POSController::class, 'cashPayment'
+			])->name('dashboard.module.ecommerce.pos.cash');
+
+			Route::post('/dashboard/ecommerce/pos/terminal-payment', [
+				POSController::class, 'terminalPayment'
+			])->name('dashboard.module.ecommerce.pos.terminal');
+
+			Route::post('/dashboard/ecommerce/pos/terminal-payment/check', [
+				POSController::class, 'checkTerminalPayment'
+			])->name('dashboard.module.ecommerce.pos.terminal.check');
+
+			Route::post('/dashboard/ecommerce/pos/payment/remove', [
+				POSController::class, 'removePayment'
+			])->name('dashboard.module.ecommerce.pos.payment.remove');
+
+			Route::post('/dashboard/ecommerce/pos/order/cancel', [
+				POSController::class, 'cancelOrder'
+			])->name('dashboard.module.ecommerce.pos.order.cancel');
+
+			Route::post('/dashboard/ecommerce/pos/order/finalize', [
+				POSController::class, 'order'
+			])->name('dashboard.module.ecommerce.pos.order.finalize');
+
 		});
 		
 		//START OF: FRONT_END ACCOUNT ROUTES
@@ -140,4 +209,7 @@ Route::group(['middleware' => ['web']], function() {
 
 	Route::post('/webhook/chuck-ecommerce-module-mollie', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\OrderController@webhookMollie')->name('module.ecommerce.mollie_webhook');
 
+	// Route::get('/convert', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\POSController@convert')->name('module.ecommerce.pos.convert'); 
+
+	//Route::post('/ecommerce-pos-url', 'Chuckbe\ChuckcmsModuleEcommerce\Controllers\POSController@posHandler')->name('ecommerce_pos_url');
 });

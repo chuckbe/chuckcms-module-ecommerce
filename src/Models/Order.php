@@ -35,6 +35,11 @@ class Order extends Eloquent
         return $this->belongsTo('Chuckbe\ChuckcmsModuleEcommerce\Models\Customer');
     }
 
+    public function payments()
+    {
+        return $this->hasMany('Chuckbe\ChuckcmsModuleEcommerce\Models\Payment');
+    }
+
     public function getHasDiscountAttribute()
     {
         return $this->hasDiscount();

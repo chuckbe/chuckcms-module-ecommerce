@@ -64,98 +64,88 @@
                     </span>
                     <input id="main_img_input" name="image" class="img_lfm_input form-control" accept="image/x-png" type="text">
                   </div>
-                  <img id="mainimgholder" src="" style="max-height:100px;">
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="form-group form-group-default required">
+                    <label>Kostprijs (BTW inbegrepen)</label>
+                    <input type="text" data-a-dec="." data-a-sep="" data-m-dec="6" data-a-pad=true class="autonumeric form-control" name="cost" value="0.000000" placeholder="Kostprijs" required>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="form-group form-group-default required">
+                    <label>Max Prijs Winkelwagen (Vul 0.000000 in om te negeren)</label>
+                    <input type="text" data-a-dec="." data-a-sep="" data-m-dec="6" data-a-pad=true class="autonumeric form-control" name="max_cart" value="0.000000" placeholder="Maximum waarde winkelwagen" required>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="form-group form-group-default required">
+                    <label>Min Gewicht (Vul 0.000 om te negeren)</label>
+                    <input type="text" data-a-dec="." data-a-sep="" data-m-dec="3" data-a-pad=true class="autonumeric form-control" name="min_weight" value="0.000" placeholder="Min Gewicht" required>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="form-group form-group-default required">
+                    <label>Max Gewicht (Vul 0.000 om te negeren)</label>
+                    <input type="text" data-a-dec="." data-a-sep="" data-m-dec="3" data-a-pad=true class="autonumeric form-control" name="max_weight" value="0.000" placeholder="Max Gewicht" required>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="form-group form-group-default required">
+                    <label>Gratis vanaf (Vul 0.00 in om te negeren)</label>
+                    <input type="text" data-a-dec="." data-a-sep="" data-m-dec="2" data-a-pad=true class="autonumeric form-control" name="free_from" value="0.00" placeholder="Gratis vanaf">
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="form-group form-group-default form-group-default-select2">
+                    <label>Actief in volgende landen </label>
+                    <select class="form-control" name="countries[]" multiple>
+                      @foreach(ChuckEcommerce::getSupportedCountries() as $country)
+                        <option value="{{ $country }}">{{ config('chuckcms-module-ecommerce.countries')[$country] }}</option>
+                      @endforeach
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="form-group form-group-default form-group-default-select2">
+                    <label>Standaard verzendmethode </label>
+                    <select class="form-control" name="default" required>
+                      <option selected disabled>-- Kies --</option>
+                      <option value="true">Ja</option>
+                      <option value="false">Nee</option>
+                    </select>
+                  </div>
                 </div>
               </div>
             </div>
-            <div class="row">
-              <div class="col-md-12">
-                <div class="form-group form-group-default required">
-                  <label>Min Prijs Winkelwagen </label>
-                  <input type="text" data-a-dec="." data-a-sep="" data-m-dec="6" data-a-pad=true class="autonumeric form-control" name="min_cart" value="0.000000" placeholder="Minimum waarde winkelwagen">
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-12">
-                <div class="form-group form-group-default required">
-                  <label>Kostprijs (BTW inbegrepen)</label>
-                  <input type="text" data-a-dec="." data-a-sep="" data-m-dec="6" data-a-pad=true class="autonumeric form-control" name="cost" value="0.000000" placeholder="Kostprijs" required>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-12">
-                <div class="form-group form-group-default required">
-                  <label>Max Prijs Winkelwagen (Vul 0.000000 in om te negeren)</label>
-                  <input type="text" data-a-dec="." data-a-sep="" data-m-dec="6" data-a-pad=true class="autonumeric form-control" name="max_cart" value="0.000000" placeholder="Maximum waarde winkelwagen" required>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-12">
-                <div class="form-group form-group-default required">
-                  <label>Min Gewicht (Vul 0.000 om te negeren)</label>
-                  <input type="text" data-a-dec="." data-a-sep="" data-m-dec="3" data-a-pad=true class="autonumeric form-control" name="min_weight" value="0.000" placeholder="Min Gewicht" required>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-12">
-                <div class="form-group form-group-default required">
-                  <label>Max Gewicht (Vul 0.000 om te negeren)</label>
-                  <input type="text" data-a-dec="." data-a-sep="" data-m-dec="3" data-a-pad=true class="autonumeric form-control" name="max_weight" value="0.000" placeholder="Max Gewicht" required>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-12">
-                <div class="form-group form-group-default required">
-                  <label>Gratis vanaf (Vul 0.00 in om te negeren)</label>
-                  <input type="text" data-a-dec="." data-a-sep="" data-m-dec="2" data-a-pad=true class="autonumeric form-control" name="free_from" value="0.00" placeholder="Gratis vanaf">
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-12">
-                <div class="form-group form-group-default form-group-default-select2">
-                  <label>Actief in volgende landen </label>
-                  <select class="form-control" name="countries[]" multiple>
-                    @foreach(ChuckEcommerce::getSupportedCountries() as $country)
-                      <option value="{{ $country }}">{{ config('chuckcms-module-ecommerce.countries')[$country] }}</option>
-                    @endforeach
-                  </select>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-12">
-                <div class="form-group form-group-default form-group-default-select2">
-                  <label>Standaard verzendmethode </label>
-                  <select class="form-control" name="default" required>
-                    <option selected disabled>-- Kies --</option>
-                    <option value="true">Ja</option>
-                    <option value="false">Nee</option>
-                  </select>
-                </div>
-              </div>
+          <div class="row">
+            <div class="col-md-12 m-t-10 sm-m-t-10">
+              <input type="hidden" name="create">
+              <input type="hidden" name="_token" value="{{ Session::token() }}">
+              <button type="button" class="btn btn-default m-t-5" data-dismiss="modal" aria-hidden="true">Annuleren</button>
+              <button type="submit" class="btn btn-primary m-t-5 pull-right">Aanmaken</button>
             </div>
           </div>
-        <div class="row">
-          <div class="col-md-12 m-t-10 sm-m-t-10">
-            <input type="hidden" name="create">
-            <input type="hidden" name="_token" value="{{ Session::token() }}">
-            <button type="button" class="btn btn-default m-t-5" data-dismiss="modal" aria-hidden="true">Annuleren</button>
-            <button type="submit" class="btn btn-primary m-t-5 pull-right">Aanmaken</button>
-          </div>
+          </form>
         </div>
-        </form>
       </div>
-    </div>
-  <!-- /.modal-content -->
-</div>
-</div>
-<style>
-  .select2-dropdown {z-index:9999;}
-</style>
-<!-- /.modal-dialog -->
+    <!-- /.modal-content -->
+  </div>
+  </div>
+  <style>
+    .select2-dropdown {z-index:9999;}
+  </style>
+  <!-- /.modal-dialog -->

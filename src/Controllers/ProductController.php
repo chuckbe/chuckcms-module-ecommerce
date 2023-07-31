@@ -106,5 +106,68 @@ class ProductController extends Controller
 
         return response()->json(['status' => 'error']);
     }
+
+
+    public function labelModal(Request $request)
+    {
+        $product = $this->productRepository->get($request->get('id'));
+
+        if ($product) {
+            $labelModal = view(
+                'chuckcms-module-ecommerce::backend.products.modals.labels_content',
+                compact('product')
+            )->render();
+
+            return response()->json([
+                'status' => 'success',
+                'modal' => $labelModal
+            ]);
+
+            // $ean = $product->json['code']['ean'];
+            // $sku = $product->json['code']['sku'];
+            // $finalPrice = $product->json['price']['final'];
+
+            // $brandName = '';
+            // $brand = Repeater::find($product->json['brand']);
+
+            // $combinations = $product->json['combinations'];
+            // $combinationData = [];
+
+            // if($brand){
+            //     $brandName = $brand->json['name'];
+            // }
+
+            // if(count($combinations)){
+            //     foreach ($combinations as $index=>$combination) {
+            //         $combinationdata[$index]['name'] = $combination['display_name']['nl'];
+            //         $combinationdata[$index]['sku'] = $combination['code']['sku'];
+            //         $combinationdata[$index]['ean'] = $combination['code']['ean'];
+            //         $combinationdata[$index]['price'] = $combination['price']['final'];
+            //         $combinationdata[$index]['quantity'] = $combination['quantity'];
+            //     }
+            // }
+            // // dd($combinationdata);
+            // // dd($product->json['combinations']);
+
+
+            // $productdata = [];
+            // $productdata['brand'] = $brandName;
+            // $productdata['sku'] = $sku;
+            // $productdata['ean'] = $ean;
+            // $productdata['price'] = $finalPrice;
+            // $productdata['combinations'] = $combinationdata;
+
+            // dd($productdata);
+
+
+
+
+            // return response()->json(['status' => 'success', 'product' => $product, 'brand' => $brandName]);
+        } else {
+            return response()->json([
+                'status' => 'error'
+            ]);
+        }
+    }
     
 }

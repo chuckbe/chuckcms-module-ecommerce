@@ -1,8 +1,17 @@
 @extends('chuckcms-module-ecommerce::backend.settings.index')
 
 @section('tab')
-<form action="{{ route('dashboard.module.ecommerce.settings.index.integrations.update') }}" method="POST">
+<form action="{{ route('dashboard.module.ecommerce.settings.index.integrations.update') }}" method="POST"  enctype="multipart/form-data">
     <div class="row">
+        <div class="col-sm-12">
+            <h6><b>POS</b></h6>
+        </div>
+        <div class="col-lg-12">
+            <div class="form-group form-group-default ">
+              <label>POS Logo</label>
+              <input type="text" class="form-control" placeholder="data64 IMG" name="pos[logo]" value="{{ array_key_exists('pos', $module->json['settings']) ? $module->json['settings']['pos']['logo'] : '' }}">
+            </div>
+        </div>
         <div class="col-sm-12">
             <h6><b>mollie</b></h6>
         </div>
@@ -51,6 +60,48 @@
             </div>
         </div>
     </div>
+
+    <hr>
+
+    <div class="row">
+        <div class="col-sm-12">
+            <h6><b>dymo printer</b></h6>
+        </div>
+        <div class="col-lg-12">
+            <div class="form-group form-group-default">
+                <div class="">
+                    <h6 class="font-weight-bold my-3">
+                        printer: 
+                        <span data-bind="text: printerName, visible: printerChecked()"></span>
+                    </h6>
+                    <h6 class="font-weight-bold my-3">status</h6>
+                    <p class="mb-2">printer connection: <span data-bind="text: message">Loading</span> </p>
+                    
+                    <p class="mb-2">browser supported: <span data-bind="text: browserSupported, visible: environmentChecked()"></span></p>
+                
+                    <p class="mb-2">dymo framework installed: <span data-bind="text: frameworkInstalled, visible: environmentChecked()"></span></p>
+                
+                    <p class="mb-2">dymo webservice ready: <span data-bind="text: webServicePresent, visible: environmentChecked()"></span></p>
+
+
+                    <h6 class="font-weight-bold my-3">
+                        <a class="px-2" data-bind="visible: lebelAjaxComplete()" href="{{ChuckEcommerce::getSetting('integrations.label.src') ?? '/chuckbe/chuckcms-module-ecommerce/test.label'}}" download >
+                            <i class="fa fa-download"></i>
+                        </a>
+                        Label:  <span data-bind="text: lebelaAcquired, visible: lebelAjaxComplete()"></span>
+                    </h6>
+                    <div class="label-input-group input-group flex-column">
+                        <div class="custom-file w-100 mb-3">
+                            <input type="file" class="custom-file-input" id="labelFile" name="integrations[label]">
+                            <label class="custom-file-label" data-src="{{ChuckEcommerce::getSetting('integrations.label.src') ?? ''}}" for="labelFile" data-bind="text: lebelTemplate">Choose file</label>
+                        </div>
+                        <div class="alert alert-danger labelError d-none" role="alert"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="row">
         <div class="col-sm-12 text-right">
             <input type="hidden" name="_token" value="{{ Session::token() }}">

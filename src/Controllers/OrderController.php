@@ -68,6 +68,7 @@ class OrderController extends Controller
 
     public function webhookMollie(Request $request)
     {
+        //@TODO: fix this method, clean up and add all other statuses from mollie too
         config(['mollie.key' => ChuckSite::get('chuckcms-module-ecommerce')->getSetting('integrations.mollie.key')]);
 
         if (! $request->has('id')) {

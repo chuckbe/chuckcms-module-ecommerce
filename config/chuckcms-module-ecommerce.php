@@ -12,6 +12,7 @@ return [
 
     'order' => [
         'payment_description' => 'Bestelling #',
+        'terminal_description' => 'Terminal Betaling #',
         'redirect_url' => [
             'nl' => 'bedankt',
             'en' => 'thanks'
@@ -59,6 +60,12 @@ return [
         'url' => 'discounts/',
         'page' => 'chuckcms-template-starter::templates.chuckcms-template-starter.default'
     ],
+
+    'locations' => [
+		'slug' 	=> 'ecommerce_locations',
+		'url' => 'of-locations/',
+		'page' => 'chuckcms-module-ecommerce::frontend.locations.detail'
+	],
 
 	'products' => [
 		'slug' 	=> 'products',

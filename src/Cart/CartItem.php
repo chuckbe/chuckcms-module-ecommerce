@@ -119,7 +119,7 @@ class CartItem implements Arrayable, Jsonable
 
         $this->id           = $id;
         $this->name         = $name;
-        $this->price        = floatval($price);
+        $this->price        = bcadd($price, '0', 2);
         $this->options      = new CartItemOptions($options);
         $this->extras       = new CartItemExtras($extras);
         $this->discounts    = new Collection;
@@ -140,7 +140,7 @@ class CartItem implements Arrayable, Jsonable
         }
 
         /* NEW ATTRIBUTES */
-        if($attribute == '_unit_base') { //price of 1 unit (with extras)
+        if($attribute == '_unit_base') { //price of 1 unit (without extras)
             return $this->price;
         }
 
@@ -148,28 +148,28 @@ class CartItem implements Arrayable, Jsonable
             return $this->taxed ? $this->extras->total() : $this->extras->subtotal();
         }
 
-        if($attribute == '_unit_raw') {
-            return $this->_unit_base + $this->_unit_extras;
+        if($attribute == '_unit_raw') { //@TODO: retire
+            return bcadd($this->_unit_base, $this->_unit_extras, 2);
         }
 
         if($attribute == '_unit') {
-            return round($this->_unit_raw, 2);
+            return $this->_unit_raw;
         }
 
         if($attribute == '_total_base') {
-            return $this->qty * $this->_unit_base;
+            return bcmul($this->qty, $this->_unit_base, 2);
         }
 
         if($attribute == '_total_extras') {
-            return $this->qty * $this->_unit_extras;
+            return bcmul($this->qty, $this->_unit_extras, 2);
         }
 
-        if($attribute == '_total_raw') {
-            return $this->qty * $this->_unit_raw;
+        if($attribute == '_total_raw') { //@TODO: retire
+            return bcmul($this->qty, $this->_unit_raw, 2);
         }
 
         if($attribute == '_total') {
-            return $this->qty * $this->_unit;
+            return bcmul($this->qty, $this->_unit, 2);
         }
 
         if($attribute == '_discount_base') {
@@ -185,7 +185,7 @@ class CartItem implements Arrayable, Jsonable
         }
 
         if($attribute == '_discount') {
-            return round($this->calculateDiscount($this->_total), 2);
+            return $this->calculateDiscount($this->_total);
         }
 
         if($attribute == '_final_base') {
@@ -352,20 +352,22 @@ class CartItem implements Arrayable, Jsonable
                 continue;
             }
             
+            $totalExtrasQuantity = bcmul($this->qty, $extra['qty'], 2);
+
             if($this->taxed) {
-                $extraPrice = $this->calculateDiscount(($this->qty * (int)$extra['qty']) * floatval($extra['final']), true);
+                $extraPrice = $this->calculateDiscount(bcmul($totalExtrasQuantity, $extra['final'], 2), true);
             } else {
-                $extraPrice = $this->calculateDiscount(($this->qty * (int)$extra['qty']) * floatval($extra['price']), true);
+                $extraPrice = $this->calculateDiscount(bcmul($totalExtrasQuantity, $extra['price'], 2), true);
             }
 
-            $tax = $tax + $this->calculateTax($extraPrice, $rate);
+            $tax = bcadd($tax, $this->calculateTax($extraPrice, $rate), 3);
         }
 
         if( count($this->taxRates) == 1 && head($this->taxRates) == $rate ){
             $tax = $this->calculateTax($this->_final, $rate);
         }
 
-        return round($tax,2);
+        return $tax;
     }
 
     /**
@@ -653,7 +655,7 @@ class CartItem implements Arrayable, Jsonable
         $value = 0;
         foreach($this->discounts as $discountCode => $discount) { //sort by priority
             //if conditions match
-            $value = $value + $discount->calculateDiscount($price);
+            $value = bcadd($value, $discount->calculateDiscount($price), 2);
             $price = $discount->applyDiscount($price);
         }
 
@@ -671,13 +673,16 @@ class CartItem implements Arrayable, Jsonable
     protected function calculateTax($price, int $rate, $applied = false)
     {
         if($this->taxed) {
-            $tax = ($price / (100 + $rate)) * $rate;
+            $tax = bcmul(bcdiv($price, bcadd('100', $rate, 2), 6), $rate, 6);
         } else {
-            $tax = $price * ($rate / 100);
+            $tax = bcmul($price, bcdiv($rate, '100'), 6);
         }
 
+        $taxed = round(bcsub($price, $tax, 6), 6);
+        $untaxed = round(bcadd($price, $tax, 6), 6);
+
         return !$applied ? 
-                    $tax : ($this->taxed ? ($price - $tax) : ($price + $tax));
+                    $tax : ($this->taxed ? $taxed : $untaxed);
     }
 
     /**
