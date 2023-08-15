@@ -3452,7 +3452,7 @@ function getAllVatPercentagesForProducts(products) {
 function getAllVatPercentagesForProduct(product) {
     let vat_percentages = [];
 
-    vat_percentage = getVatPercentageForProduct(product.id);
+    vat_percentage = product.price.vat.amount;
     vat_percentages.push(vat_percentage);
 
     if (product.extras.length > 0) {

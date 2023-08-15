@@ -32,12 +32,14 @@
     	</div>
     	<div class="col-sm-6 text-right">
     		<a href="{{ route('dashboard.module.ecommerce.products.create') }}" class="btn btn-sm btn-outline-success">Product Toevoegen</a>
+            <button id="deleteAllProducts" class="btn btn-sm btn-outline-danger d-none">Verwijder geselecteerde producten</button>
     	</div>
         <div class="col-sm-12 my-3">
         	<div class="table-responsive">
-        		<table class="table" data-datatable  style="width:100%">
+        		<table class="table" data-datatable-selectable  style="width:100%">
         			<thead>
         				<tr>
+                            <th scope="col"></th>
         					<th scope="col">#</th>
         					<th scope="col">Titel</th>
         					<th scope="col">Collectie</th>
@@ -51,7 +53,8 @@
         			<tbody>
         				@foreach($products as $product)
         				<tr class="product_line" data-id="{{ $product->id }}">
-        					<th scope="row">{{ $product->id }}</th>
+                            <td></td>
+        					<td>{{ $product->id }}</td>
         					<td>{{ $product->json['title'][ChuckSite::getFeaturedLocale()] }}</td>
         					<td>{{ is_null(ChuckProduct::collection($product)) ? '' : ChuckProduct::collection($product)->json['name']}}</td>
         					<td>{{ ChuckProduct::lowestPrice($product) }}</td>
@@ -110,10 +113,65 @@
 @include('chuckcms-module-ecommerce::backend.products.labels')
 <script>
 $( document ).ready(function (){
+    const _token = '{{ Session::token() }}';
+
+    $('body').on('click', '.product_line', function (event) {
+        toggleDeleteAllButton();
+    });
+
+    function toggleDeleteAllButton() {
+        if ($('.product_line.selected').length > 0) {
+            $('#deleteAllProducts').removeClass('d-none');
+        } else {
+            $('#deleteAllProducts').addClass('d-none');
+        }
+    }
+
+    $('body').on('click', '#deleteAllProducts', function (event) {
+        event.preventDefault();
+
+        let product_ids = [];
+
+        $('.product_line.selected').each(function (index) {
+            product_ids.push($(this).data('id'));
+        });
+
+        console.log('ids :: ', product_ids);
+
+        swal({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete them!'
+        }).then((result) => {
+            if (result.value) {
+                $.ajax({
+                    method: 'POST',
+                    url: "{{ route('dashboard.module.ecommerce.products.delete') }}",
+                    data: {
+                        product_id: product_ids,
+                        _token: _token
+                    }
+                }).done(function (data) {
+                    if(data.status == 'success'){
+                        for (let i = 0; i < product_ids.length; i++) {
+                            $(".product_line[data-id='"+product_ids[i]+"']").first().remove();
+                        }
+                        swal('Deleted!','The products has been deleted.','success')
+                    } else {
+                        swal('Oops!','Something went wrong...','danger')
+                    }
+                });
+            }
+        })
+    });
+
     $('body').on('click', '.product_delete', function (event) {
         event.preventDefault();
         var product_id = $(this).attr("data-id");
-        var token = '{{ Session::token() }}';
 
         swal({
             title: 'Are you sure?',
@@ -130,7 +188,7 @@ $( document ).ready(function (){
                     url: "{{ route('dashboard.module.ecommerce.products.delete') }}",
                     data: { 
                         product_id: product_id, 
-                        _token: token
+                        _token: _token
                     }
                 }).done(function (data) {
                     if(data.status == 'success'){

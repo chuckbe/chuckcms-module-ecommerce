@@ -19,7 +19,7 @@
       <label>Belasting (BTW) *</label>
       <select class="custom-select" id="tax-input" name="price[vat]" data-init-plugin="select2" data-minimum-results-for-search="Infinity" required>
         @foreach(config('chuckcms-module-ecommerce.vat') as $vatKey => $vatValue)
-          <option value="{{ $vatKey }}" data-amount="{{ $vatValue['amount'] }}" @if(old('price.vat') == $vatValue['amount']) selected @endif>{{ $vatValue['type'] }}</option>
+          <option value="{{ $vatKey }}" data-amount="{{ $vatValue['amount'] }}" @if(old('price.vat') !== null ? old('price.vat') == $vatValue['amount'] : config('chuckcms-module-ecommerce.vat.'.$vatKey.'.default')) selected @endif>{{ $vatValue['type'] }}</option>
         @endforeach
       </select>
     </div>

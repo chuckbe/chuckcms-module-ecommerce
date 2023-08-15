@@ -79,7 +79,15 @@ class ProductController extends Controller
 
     public function delete(DeleteProductRequest $request)
     {
-        $product = Product::where('id', $request->get('product_id'))->first();
+        if (is_array($request->get('product_id'))) {
+            $product = Product::whereIn('id', $request->get('product_id'));
+        } else {
+            $product = Product::where('id', $request->get('product_id'))->first();
+        }
+
+        if (is_null($product)) {
+            return response()->json(['status' => 'error']);
+        }
 
         if ($product->delete()) {
             return response()->json(['status' => 'success']);

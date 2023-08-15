@@ -35,13 +35,7 @@
                         <a class="nav-link" id="p_options-tab" data-toggle="tab" href="#p_options" role="tab" aria-controls="p_options" aria-selected="false">Opties</a>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <a class="nav-link" id="p_texts-tab" data-toggle="tab" href="#p_texts" role="tab" aria-controls="p_texts" aria-selected="false">Teksten</a>
-                    </li>
-                    <li class="nav-item" role="presentation">
                         <a class="nav-link" id="p_dimensions-tab" data-toggle="tab" href="#p_dimensions" role="tab" aria-controls="p_dimensions" aria-selected="false">Dimensies</a>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <a class="nav-link" id="p_files-tab" data-toggle="tab" href="#p_files" role="tab" aria-controls="p_files" aria-selected="false">Bijlagen</a>
                     </li>
                     <li class="nav-item" role="presentation">
                         <a class="nav-link" id="p_data-tab" data-toggle="tab" href="#p_data" role="tab" aria-controls="p_data" aria-selected="false">Data</a>
@@ -57,11 +51,9 @@
               @include('chuckcms-module-ecommerce::backend.products.create._tab_general')
             </div>
 
-
             <div class="col-sm-12 tab-pane fade" id="p_prices" role="tabpanel" aria-labelledby="p_prices-tab">
               @include('chuckcms-module-ecommerce::backend.products.create._tab_prices')
             </div>
-
 
             <div class="col-sm-12 tab-pane fade" id="p_associations" role="tabpanel" aria-labelledby="p_associations-tab">
               @include('chuckcms-module-ecommerce::backend.products.create._tab_associations')
@@ -79,16 +71,8 @@
               @include('chuckcms-module-ecommerce::backend.products.create._tab_options')
             </div>
 
-            <div class="col-sm-12 tab-pane fade" id="p_texts" role="tabpanel" aria-labelledby="p_texts-tab">
-              @include('chuckcms-module-ecommerce::backend.products.create._tab_texts')
-            </div>
-
             <div class="col-sm-12 tab-pane fade" id="p_dimensions" role="tabpanel" aria-labelledby="p_dimensions-tab">
               @include('chuckcms-module-ecommerce::backend.products.create._tab_dimensions')
-            </div>
-
-            <div class="col-sm-12 tab-pane fade" id="p_files" role="tabpanel" aria-labelledby="p_files-tab">
-              @include('chuckcms-module-ecommerce::backend.products.create._tab_files')
             </div>
 
             <div class="col-sm-12 tab-pane fade" id="p_data" role="tabpanel" aria-labelledby="p_data-tab">
@@ -96,7 +80,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-sm-12 text-right">
+            <div class="col-sm-12 mb-3 text-right">
                 <input type="hidden" name="_token" value="{{ Session::token() }}">
                 <button class="btn btn-outline-success" type="submit" name="create" value="1">Opslaan</button>
             </div>
@@ -115,6 +99,33 @@
 <script src="{{ URL::to('vendor/laravel-filemanager/js/lfm.js') }}"></script>
 <script src="//cdn.chuck.be/assets/plugins/jquery-autonumeric/autoNumeric.js"></script>
 <script src="//cdn.chuck.be/assets/plugins/summernote/js/summernote.min.js"></script>
+<script src="{{asset('chuckbe/chuckcms-module-ecommerce/scripts/onScan.js')}}"></script>
+
+<script>
+$(document).ready(function () {
+    $('body').on('keyup', '.featured-title', function(e) {
+        $('#product_slug').val(slugify($(this).val()));
+    });
+
+    $('body').on('keyup', '.title-input', function(e) {
+        let lang = $(this).data('lang');
+        let siteName = "{{ ChuckSite::getSite('name') }}";
+
+        $('input[name="meta_title['+lang+']"]').val($(this).val() + ' | ' + siteName);
+    });
+
+    function slugify(str) {
+        return String(str)
+            .normalize('NFKD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .trim()
+            .toLowerCase()
+            .replace(/[^a-z0-9 -]/g, '')
+            .replace(/\s+/g, '-')
+            .replace(/-+/g, '-');
+    }
+});
+</script>
 
 <script>
 $(document).ready(function() {
@@ -414,6 +425,13 @@ $(document).ready(function() {
       };       
     };
 
+    let productData = {
+      price: {
+        sale: $('input[name="price[sale]"]').val(),
+        final: $('input[name="price[final]"]').val(),
+        discount: $('input[name="price[discount]"]').val(),
+      }
+    };
     
     if($('.combination-row').length == 1) { // only 1 row => so no previous combinations...
       for (var i = 0; i < finalCombinations.length; i++) {
@@ -428,9 +446,9 @@ $(document).ready(function() {
           combinationSelector, 
           finalCombinations[i], 
           '0', 
-          '0.000000', 
-          '0.000000', 
-          '0.000000', 
+          productData.price.sale, //'0.000000',
+          productData.price.final, //'0.000000',
+          productData.price.discount, //'0.000000',
           '0,00', 
           '0,00', 
           '0,00', 
@@ -446,9 +464,9 @@ $(document).ready(function() {
         
         if($(presentSelector).length == 0){
           var oldQuantity = '0';
-          var oldPriceSale = '0.000000';
-          var oldPriceFinal = '0.000000';
-          var oldPriceDiscount = '0.000000';
+          var oldPriceSale = productData.price.sale; //'0.000000';
+          var oldPriceFinal = productData.price.final; //'0.000000';
+          var oldPriceDiscount = productData.price.discount; //'0.000000';
           var oldWidth = '0,00';
           var oldHeight = '0,00';
           var oldDepth = '0,00';
@@ -553,7 +571,7 @@ $(document).ready(function() {
     $('.file_lfm_link').filemanager('file', {prefix: domain});
 
     $('.summernote-text-editor').summernote({
-      height: 150,
+      height: 100,
       fontNames: ['Arial', 'Arial Black', 'Open Sans', 'Helvetica', 'Helvetica Neue', 'Lato'],
       toolbar: [
         // [groupName, [list of button]]

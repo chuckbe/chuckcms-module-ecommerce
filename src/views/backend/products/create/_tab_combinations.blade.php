@@ -102,9 +102,24 @@
         <input type="number" step="0.001" min="0.000" max="999.999" class="form-control combination_weight_input" placeholder="0.00" name="combinations[slug][dimensions][weight]" value="0.000">
       </div>
     </div>
-    <hr>
 
-    
+    <div class="col-sm-6">
+      <div class="form-group">
+        <label>UPC</label>
+        <input type="text" class="form-control combination_upc_input" placeholder="UPC Code" name="combinations[slug][code][upc]">
+      </div>
+    </div>
+    <div class="col-sm-6">
+      <div class="form-group">
+        <label>EAN</label>
+        <input type="text" class="form-control combination_ean_input" placeholder="EAN Code" name="combinations[slug][code][ean]">
+      </div>
+    </div>
+
+    <div class="col-sm-12">
+      <hr>
+    </div>
+
   </div>
 </div>
 
@@ -113,7 +128,7 @@
   <div class="col-sm-12">
     <div class="form-group form-group-default required">
       <label>Globaal Aantal</label>
-      <input type="text" data-v-min="0" data-v-max="999999" data-m-dec="0" data-a-pad=true class="autonumeric form-control quantity_input_global" name="quantity" value="{{ old('quantity') }}">
+      <input type="text" data-v-min="0" data-v-max="999999" data-m-dec="0" data-a-pad=true class="autonumeric form-control quantity_input_global" name="quantity" value="{{ old('quantity', 0) }}">
     </div>
   </div>
 </div>

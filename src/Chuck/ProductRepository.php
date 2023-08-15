@@ -221,17 +221,17 @@ class ProductRepository
                 	}
 
                 	$combinations[$combinationKey]['code']['sku'] = $this->generateSingleSku();
-                	$combinations[$combinationKey]['code']['upc'] = null;
-                	$combinations[$combinationKey]['code']['ean'] = $this->generateSingleEan();
+                	$combinations[$combinationKey]['code']['upc'] = $values->get('combinations')[$combinationKey]['code']['upc'] ?? null;
+                	$combinations[$combinationKey]['code']['ean'] = $values->get('combinations')[$combinationKey]['code']['ean'] ?? $this->generateSingleEan();
 
                 	$combinations[$combinationKey]['price']['unit']['amount'] = $values->get('price')['unit']['amount'];
         	        $combinations[$combinationKey]['price']['unit']['type'] = $values->get('price')['unit']['type'];
         	        $combinations[$combinationKey]['price']['wholesale'] = $values->get('price')['wholesale'];//inkoopprijs
-        	        $combinations[$combinationKey]['price']['sale'] = $values->get('price')['sale'];//verkoopprijs excl btw
-        	        $combinations[$combinationKey]['price']['discount'] = $values->get('price')['discount'];//kortingsprijs
+        	        $combinations[$combinationKey]['price']['sale'] = $values->get('combinations')[$combinationKey]['price']['sale'];//verkoopprijs excl btw
+        	        $combinations[$combinationKey]['price']['discount'] = $values->get('combinations')[$combinationKey]['price']['discount'];//kortingsprijs
         	        $combinations[$combinationKey]['price']['vat']['amount'] = config('chuckcms-module-ecommerce.vat.'.$values->get('price')['vat'].'.amount');
         	        $combinations[$combinationKey]['price']['vat']['type'] = config('chuckcms-module-ecommerce.vat.'.$values->get('price')['vat'].'.type');
-        	        $combinations[$combinationKey]['price']['final'] = $values->get('price')['final'];//verkoopprijs incl korting, incl btw
+        	        $combinations[$combinationKey]['price']['final'] = $values->get('combinations')[$combinationKey]['price']['final'];//verkoopprijs incl korting, incl btw
 
                     $combinations[$combinationKey]['dimensions']['width'] = $values->get('width');
                     $combinations[$combinationKey]['dimensions']['height'] = $values->get('height');

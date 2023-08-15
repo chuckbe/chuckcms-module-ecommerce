@@ -108,14 +108,14 @@
 
 @section('css')
   <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
-  <link href="//cdn.chuck.be/assets/plugins/summernote/css/summernote.css" rel="stylesheet" media="screen">
+  <link href="//cdn.chuck.be/assets/plugins/summernote/css/summernote-bs4.css" rel="stylesheet" media="screen">
 @endsection
 
 @section('scripts')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
-<script src="{{ URL::to('vendor/laravel-filemanager/js/filemanager.js') }}"></script>
+<script src="{{ URL::to('vendor/laravel-filemanager/js/lfm.js') }}"></script>
 <script src="//cdn.chuck.be/assets/plugins/jquery-autonumeric/autoNumeric.js"></script>
-<script src="//cdn.chuck.be/assets/plugins/summernote/js/summernote.min.js"></script>
+<script src="//cdn.chuck.be/assets/plugins/summernote/js/summernote-bs4.min.js"></script>
 
 <script>
 $(document).ready(function() {
