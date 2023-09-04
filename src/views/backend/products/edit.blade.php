@@ -25,9 +25,11 @@
                     <li class="nav-item" role="presentation">
                         <a class="nav-link" id="p_associations-tab" data-toggle="tab" href="#p_associations" role="tab" aria-controls="p_associations" aria-selected="false">Associaties</a>
                     </li>
+                    [LOOP=getuigenissen]
                     <li class="nav-item" role="presentation">
-                        <a class="nav-link" id="p_images-tab" data-toggle="tab" href="#p_images" role="tab" aria-controls="p_images" aria-selected="false">Afbeeldingen</a>
+                        <a class="nav-link" id="p_images-tab" data-toggle="tab" href="#p_images" role="tab" aria-controls="p_images" aria-selected="false">[title]</a>
                     </li>
+                    [/LOOP]
                     <li class="nav-item" role="presentation">
                         <a class="nav-link" id="p_combinations-tab" data-toggle="tab" href="#p_combinations" role="tab" aria-controls="p_combinations" aria-selected="false">Combinaties</a>
                     </li>
@@ -35,13 +37,7 @@
                         <a class="nav-link" id="p_options-tab" data-toggle="tab" href="#p_options" role="tab" aria-controls="p_options" aria-selected="false">Opties</a>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <a class="nav-link" id="p_texts-tab" data-toggle="tab" href="#p_texts" role="tab" aria-controls="p_texts" aria-selected="false">Teksten</a>
-                    </li>
-                    <li class="nav-item" role="presentation">
                         <a class="nav-link" id="p_dimensions-tab" data-toggle="tab" href="#p_dimensions" role="tab" aria-controls="p_dimensions" aria-selected="false">Dimensies</a>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <a class="nav-link" id="p_files-tab" data-toggle="tab" href="#p_files" role="tab" aria-controls="p_files" aria-selected="false">Bijlagen</a>
                     </li>
                     <li class="nav-item" role="presentation">
                         <a class="nav-link" id="p_data-tab" data-toggle="tab" href="#p_data" role="tab" aria-controls="p_data" aria-selected="false">Data</a>
@@ -79,16 +75,8 @@
               @include('chuckcms-module-ecommerce::backend.products.edit._tab_options')
             </div>
 
-            <div class="col-sm-12 tab-pane fade" id="p_texts" role="tabpanel" aria-labelledby="p_texts-tab">
-              @include('chuckcms-module-ecommerce::backend.products.edit._tab_texts')
-            </div>
-
             <div class="col-sm-12 tab-pane fade" id="p_dimensions" role="tabpanel" aria-labelledby="p_dimensions-tab">
               @include('chuckcms-module-ecommerce::backend.products.edit._tab_dimensions')
-            </div>
-
-            <div class="col-sm-12 tab-pane fade" id="p_files" role="tabpanel" aria-labelledby="p_files-tab">
-              @include('chuckcms-module-ecommerce::backend.products.edit._tab_files')
             </div>
 
             <div class="col-sm-12 tab-pane fade" id="p_data" role="tabpanel" aria-labelledby="p_data-tab">
@@ -107,15 +95,42 @@
 @endsection
 
 @section('css')
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
-  <link href="//cdn.chuck.be/assets/plugins/summernote/css/summernote-bs4.css" rel="stylesheet" media="screen">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
+<link href="//cdn.chuck.be/assets/plugins/summernote/css/summernote.css" rel="stylesheet" media="screen">
 @endsection
 
 @section('scripts')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
 <script src="{{ URL::to('vendor/laravel-filemanager/js/lfm.js') }}"></script>
 <script src="//cdn.chuck.be/assets/plugins/jquery-autonumeric/autoNumeric.js"></script>
-<script src="//cdn.chuck.be/assets/plugins/summernote/js/summernote-bs4.min.js"></script>
+<script src="//cdn.chuck.be/assets/plugins/summernote/js/summernote.min.js"></script>
+<script src="{{asset('chuckbe/chuckcms-module-ecommerce/scripts/onScan.js')}}"></script>
+
+<script>
+$(document).ready(function () {
+    $('body').on('keyup', '.featured-title', function(e) {
+        $('#product_slug').val(slugify($(this).val()));
+    });
+
+    $('body').on('keyup', '.title-input', function(e) {
+        let lang = $(this).data('lang');
+        let siteName = "{{ ChuckSite::getSite('name') }}";
+
+        $('input[name="meta_title['+lang+']"]').val($(this).val() + ' | ' + siteName);
+    });
+
+    function slugify(str) {
+        return String(str)
+            .normalize('NFKD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .trim()
+            .toLowerCase()
+            .replace(/[^a-z0-9 -]/g, '')
+            .replace(/\s+/g, '-')
+            .replace(/-+/g, '-');
+    }
+});
+</script>
 
 <script>
 $(document).ready(function() {

@@ -249,7 +249,13 @@ function printLabel($manufacturer,$product_name,$barcode,$attributes,$price,$qua
     let price = $price;
     let quantity = $quantity;
 
-    let basicPrintParamsXML = '<?xml version="1.0" encoding="utf-8"?>\n' +
+    let baseString = "<";
+    baseString += "?";
+    baseString += 'xml version="1.0" encoding="utf-8"';
+    baseString += "?";
+    baseString += ">";
+    baseString += '\n';
+    let basicPrintParamsXML = baseString +
     '<LabelWriterPrintParams>\n' +
     '  <Copies>'+quantity+'</Copies>\n' +
     '  <JobTitle>'+$printJobName+'</JobTitle>\n' +

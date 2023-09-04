@@ -1,3 +1,5 @@
+@include('chuckcms-module-ecommerce::backend.products.edit._tab_files')
+
 <div class="my-3">
     <ul class="nav nav-tabs justify-content-start" role="tablist">
         @foreach(ChuckSite::getSupportedLocales() as $langKey => $langValue)

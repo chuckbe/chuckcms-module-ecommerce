@@ -136,7 +136,7 @@ $( document ).ready(function (){
             product_ids.push($(this).data('id'));
         });
 
-        console.log('ids :: ', product_ids);
+        let dataTableSelectable = $('table[data-datatable-selectable]').DataTable();
 
         swal({
             title: 'Are you sure?',
@@ -158,7 +158,10 @@ $( document ).ready(function (){
                 }).done(function (data) {
                     if(data.status == 'success'){
                         for (let i = 0; i < product_ids.length; i++) {
-                            $(".product_line[data-id='"+product_ids[i]+"']").first().remove();
+                            dataTableSelectable
+                                .row($(".product_line[data-id='"+product_ids[i]+"']").first())
+                                .remove()
+                                .draw();
                         }
                         swal('Deleted!','The products has been deleted.','success')
                     } else {
@@ -192,7 +195,7 @@ $( document ).ready(function (){
                     }
                 }).done(function (data) {
                     if(data.status == 'success'){
-                        $(".product_line[data-id='"+product_id+"']").first().remove();
+                        dataTableSelectable.row($(".product_line[data-id='"+product_id+"']").first()).remove().draw();
                         swal('Deleted!','The product has been deleted.','success')
                     } else {
                         swal('Oops!','Something went wrong...','danger')

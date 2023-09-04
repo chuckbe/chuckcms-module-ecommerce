@@ -1,3 +1,7 @@
+@include('chuckcms-module-ecommerce::backend.products.edit._tab_texts')
+
+<hr>
+
 <div class="form-group row required">
     <label for="slug" class="col-sm-2 col-form-label">Slug *</label>
     <div class="col-sm-10">
