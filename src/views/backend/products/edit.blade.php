@@ -25,11 +25,9 @@
                     <li class="nav-item" role="presentation">
                         <a class="nav-link" id="p_associations-tab" data-toggle="tab" href="#p_associations" role="tab" aria-controls="p_associations" aria-selected="false">Associaties</a>
                     </li>
-                    [LOOP=getuigenissen]
                     <li class="nav-item" role="presentation">
-                        <a class="nav-link" id="p_images-tab" data-toggle="tab" href="#p_images" role="tab" aria-controls="p_images" aria-selected="false">[title]</a>
+                        <a class="nav-link" id="p_images-tab" data-toggle="tab" href="#p_images" role="tab" aria-controls="p_images" aria-selected="false">Afbeeldingen</a>
                     </li>
-                    [/LOOP]
                     <li class="nav-item" role="presentation">
                         <a class="nav-link" id="p_combinations-tab" data-toggle="tab" href="#p_combinations" role="tab" aria-controls="p_combinations" aria-selected="false">Combinaties</a>
                     </li>
