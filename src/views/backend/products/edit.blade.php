@@ -562,7 +562,7 @@ $(document).ready(function() {
     $('.autonumeric').autoNumeric('init');
 
     //init media manager inputs 
-    var domain = "{{ URL::to('/')}}";
+    var domain = "{{ URL::to('dashboard/media')}}";
     $('.img_lfm_link').filemanager('image', {prefix: domain});
     $('.file_lfm_link').filemanager('file', {prefix: domain});
 
